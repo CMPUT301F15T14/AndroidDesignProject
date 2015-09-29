@@ -6,3 +6,63 @@ Michael Xi was here.
 Tianyu Hu(Andy) edit this.
 Joel Johnston made this change.
 Brigitte Ng edit this doc.
+
+Theme: 
+1. Music - Cds, record, etc
+2. Games - All genres (anything on a CD/cards, Not steam)
+3. Textbooks - University level courses
+
+Theme chosen: Games (pending)
+
+Create page Wiki - Notes about meeting
+
+Standup Meeting format
+
+  1. What have you done? 
+    - Created repo, sent the link Dr. Hindle.
+    - Added name to Test file.
+  
+  2. What do you plan?
+    - Divide up workload into small groups
+    - Work on mockup UI
+    - To get a portion of part 2 done for next week.
+  
+  3. What's blocking your progress?
+    - Nothing
+    - Dont' know who's doing what!
+  
+All participants must do an equal amount of work!
+Tempting to divide up the work, All parts must be synchronized.
+Take ownership of chunks of user stories. 
+Ex. screen in mockups (activity) but not in UML that's a problem!!!
+Project part 2 - Use cases must be worked out before anything.
+Mockups can be made with anything (including pen and paper but not likely) use android studio.
+
+UI Mockups - one picture for each screen (activity)
+Storyboard - Only need to do one use case
+Gossary - Provide citations for all definitions, eg if it mentions a cache, describe what a cache is/does. 
+Better to not write your own definitions. Copy/paste in glossary. You're done!
+Before you write code, make sure everything else has been handled.
+Uml, documentation, glossary, mockups, etc -> can get most of the points w/o any code.
+
+
+Use Case example:
+
+As an owner, I want to view my inventory and its details.
+
+Task: Inventory button that opens a new activity, that holds a list of inventory items. This list also includes other details.
+
+Test: Junit testing. Test getList(), getItemDetails().
+Use test driven development.
+
+
+Complete Part 1: Requirements Specification
+
+Andy - 1st 5
+Michael - 2nd 5
+Brigitte - 3rd 5
+Aaron - 4th 5
+Ryan - 5th 5
+Suzanne - 6th 5
+Joel - 7th %
+
