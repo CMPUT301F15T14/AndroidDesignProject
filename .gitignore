@@ -25,3 +25,19 @@ proguard/
 
 # Log Files
 *.log
+
+# Windows image chache
+Thumbs.db
+ehthumbs.db
+
+# Folder config
+Desktop.ini
+
+# Windows recyclebin thingie
+$RECYCLE.BIN/
+
+#Linux temp files
+*~
+
+#Apple tmp stuff
+.DS_Store
