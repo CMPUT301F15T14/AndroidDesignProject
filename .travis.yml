@@ -7,15 +7,15 @@ language: android
 jdk: oraclejdk7
 env:
   matrix:
-    - ANDROID_TARGET=android-18
+    - ANDROID_TARGET=18
 
 # getting android builds tools to work 
 # taken from Eugen Martynov http://stackoverflow.com/questions/21055966/how-should-i-configure-travis-ci-for-an-android-library
 before_install:
   - chmod +x gradlew
   # Install base Android SDK
-  - sudo apt-get update -qq
-  - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
+  #- sudo apt-get update -qq
+  #- if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
   - wget http://dl.google.com/android/android-sdk_r18-linux.tgz
   - tar xzf android-sdk_r18-linux.tgz
   - export ANDROID_HOME=$PWD/android-sdk-linux
