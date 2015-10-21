@@ -9,34 +9,11 @@ env:
   matrix:
     - ANDROID_TARGET=android-18
 
-# getting android builds tools to work 
-# taken from Eugen Martynov http://stackoverflow.com/questions/21055966/how-should-i-configure-travis-ci-for-an-android-library
-before_install:
-  - chmod +x gradlew
-  # Install base Android SDK
-  #- sudo apt-get update -qq
-  #- if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
-  - wget http://dl.google.com/android/android-sdk_r18-linux.tgz
-  - tar xzf android-sdk_r18-linux.tgz
-  - export ANDROID_HOME=$PWD/android-sdk-linux
-  - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-  # install android build tools
-  - wget https://dl-ssl.google.com/android/repository/build-tools_r21.0.1-linux.zip
-  - unzip build-tools_r21.0.1-linux.zip -d $ANDROID_HOME
-  - mkdir -p $ANDROID_HOME/build-tools/
-  - mv $ANDROID_HOME/android-5.0 $ANDROID_HOME/build-tools/21.0.1
-  # Install required components.
-  - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter android-18 --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
-  - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
-
-install:
-  - true
-    
 android:
   components:
     - build-tools-21.0.1
+    - android-18
+    - sys-img-x86-android-18
     
 before_script:
   # Create and start emulator
