@@ -41,3 +41,9 @@ $RECYCLE.BIN/
 
 #Apple tmp stuff
 .DS_Store
+
+# From Android Studio default gitIgnore merged.
+/.idea/workspace.xml
+/.idea/libraries
+/captures
+
