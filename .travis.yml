@@ -1,6 +1,7 @@
 # from https://github.com/pestrada/android-tdd-playground/blob/master/.travis.yml
 # for help http://docs.travis-ci.com/user/customizing-the-build/
 # for android specific help http://docs.travis-ci.com/user/languages/android/
+# to validate if script is valid try at http://docs.travis-ci.com/user/travis-lint/
 
 language: android
 jdk: oraclejdk7
@@ -20,4 +21,3 @@ before_script:
   - adb shell input keyevent 82 &
 
 script: ./gradlew connectedCheck
-
