@@ -7,7 +7,7 @@ language: android
 jdk: oraclejdk7
 env:
   matrix:
-    - ANDROID_TARGET=18
+    - ANDROID_TARGET=android-18
 
 # getting android builds tools to work 
 # taken from Eugen Martynov http://stackoverflow.com/questions/21055966/how-should-i-configure-travis-ci-for-an-android-library
