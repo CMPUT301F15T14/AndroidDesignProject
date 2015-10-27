@@ -47,3 +47,7 @@ $RECYCLE.BIN/
 /.idea/libraries
 /captures
 
+#dia temporaries
+*.dia~
+
+
