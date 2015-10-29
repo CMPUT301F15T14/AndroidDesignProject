@@ -1,5 +1,7 @@
 package ca.ualberta.t14.gametrader;
 
+import android.graphics.Bitmap;
+import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class GameTest extends ActivityInstrumentationTestCase2 {
@@ -21,8 +23,11 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         item.setQuantities(1);
 
         // Including attaching a photo (4.1 AttachPhotographToItem)
-        Image pic = new Image();
-        item.addPhoto(pic);
+        //Image pic = new Image();
+
+        String imageLocation = Environment.getExternalStorageDirectory().getAbsolutePath() + "/BestGame.png";
+        item.addPhoto(imageLocation);
+        //item.setImage(Bitmap);
     }
 
 }

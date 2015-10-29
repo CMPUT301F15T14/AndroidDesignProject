@@ -1,5 +1,8 @@
 package ca.ualberta.t14.gametrader;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
 /**
  * Created by satyabra on 10/29/15.
  */
@@ -14,6 +17,7 @@ public class Game {
     private String title;
     private Boolean sharableStatus;
     private String additionalInfo;
+    private Bitmap picture;
 
     private int quantities;
 
@@ -67,6 +71,15 @@ public class Game {
         this.quantities = quantities;
     }
 
+    public void addPhoto(String location) {
+        picture = BitmapFactory.decodeFile(location);
+        if(picture == null) {
+            //TODO: handle that something went wrong, image data could not be decoded
+        }
+    }
 
+    public Bitmap getPhoto() {
+        return picture;
+    }
 
 }
