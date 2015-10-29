@@ -71,11 +71,8 @@ public class Game {
         this.quantities = quantities;
     }
 
-    public void addPhoto(String location) {
-        picture = BitmapFactory.decodeFile(location);
-        if(picture == null) {
-            //TODO: handle that something went wrong, image data could not be decoded
-        }
+    public void setPicture(Bitmap image) {
+        picture = image;
     }
 
     public Bitmap getPhoto() {
