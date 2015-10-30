@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:label="My Items"
+    android:label="@string/myItems"
+    android:background="#1c5bdb"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="16dp"
@@ -15,7 +16,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/searchView"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="#007b6b6b" />
 
     <Button
         android:layout_width="match_parent"
@@ -23,7 +25,9 @@
         android:text="@string/recent"
         android:id="@+id/recentItem"
         android:layout_below="@+id/searchView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:layout_width="match_parent"
@@ -31,7 +35,9 @@
         android:text="@string/nopic"
         android:id="@+id/noPicture"
         android:layout_below="@+id/recentItem"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:layout_width="match_parent"
@@ -39,7 +45,9 @@
         android:text="@string/titleTooLong"
         android:id="@+id/titleTooLong"
         android:layout_below="@+id/noPicture"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:layout_width="match_parent"
@@ -47,7 +55,9 @@
         android:text="@string/notListed"
         android:id="@+id/notListed"
         android:layout_below="@+id/titleTooLong"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
 
     <Button
         android:layout_width="match_parent"
@@ -55,5 +65,8 @@
         android:text="@string/oldestItem"
         android:id="@+id/oldest"
         android:layout_below="@+id/notListed"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="16dp" />
 </RelativeLayout>

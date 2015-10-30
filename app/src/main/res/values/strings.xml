@@ -9,4 +9,5 @@
     <string name="titleTooLong">Title Way Too Long</string>
     <string name="oldestItem">Oldest Posted Item</string>
     <string name="notListed">Not Listed Item</string>
+    <string name="myItems">My Items</string>
 </resources>
