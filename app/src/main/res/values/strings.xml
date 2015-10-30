@@ -3,4 +3,10 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_my_inventory_main">myInventoryMain</string>
+    <string name="recent">Most Recent Item</string>
+    <string name="nopic">No Picture Item</string>
+    <string name="titleTooLong">Title Way Too Long</string>
+    <string name="oldestItem">Oldest Posted Item</string>
+    <string name="notListed">Not Listed Item</string>
 </resources>
