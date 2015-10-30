@@ -26,8 +26,8 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         assertEquals(Game.Condition.NEW, item.getCondition());
 
         // Being able to flag an item as not listed (1.4 FlagItemAsNotListed)
-        item.setSharable(Boolean.TRUE);
-        assertTrue(item.isSharable());
+        item.setShared(Boolean.TRUE);
+        assertTrue(item.isShared());
 
         String moreInfo = "Still in original package! You get the honour of opening it.";
         item.setAdditionalInfo(moreInfo);
