@@ -17,8 +17,10 @@
  */
 
 package ca.ualberta.t14.gametrader;
+
 import android.graphics.Bitmap;
-import java.util.Collection;
+
+import java.util.ArrayList;
 
 /**
  * This obsservable class represents the Game Model which stores an inventory item's data: a game.
@@ -55,7 +57,7 @@ public class Game implements AppObservable {
     private int quantities;
 
     // volatile because GSON shouldn't store this.
-    private volatile Collection<AppObserver> observers;
+    private volatile ArrayList<AppObserver> observers;
 
     /**
      * Constructor for the Game class.Initializes its variables.
@@ -68,6 +70,7 @@ public class Game implements AppObservable {
         additionalInfo = "";
         picture = null;
         quantities = 0;
+        observers = new ArrayList<AppObserver>();
     }
 
     /**
@@ -198,9 +201,6 @@ public class Game implements AppObservable {
     }
 
     private void notifyAllObservers() {
-        if(observers.isEmpty()) {
-            return;
-        }
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
