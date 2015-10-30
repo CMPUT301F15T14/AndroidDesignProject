@@ -75,7 +75,7 @@ public class Game {
         picture = image;
     }
 
-    public Bitmap getPhoto() {
+    public Bitmap getPicture() {
         return picture;
     }
 

@@ -22,3 +22,5 @@ before_script:
 script: 
   - chmod +x gradlew
   - ./gradlew connectedAndroidTest
+  # running unit tests, taken from http://tools.android.com/tech-docs/unit-testing-support
+  - ./gradlew test --continue
