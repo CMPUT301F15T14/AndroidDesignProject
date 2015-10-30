@@ -10,9 +10,9 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         super(ca.ualberta.t14.gametrader.MainActivity.class);
     }
 
+    // This is testing the model, not the controller.
     public void testGame() {
         // Create items that get added to your inventory (1.1 AddItemToInventory)
-        // This is testing the model, not the controller.
         Game item = new Game();
 
         item.setPlatform(Game.Platform.PLAYSTATION1);
