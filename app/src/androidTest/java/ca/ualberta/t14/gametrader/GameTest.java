@@ -45,4 +45,6 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         assertEquals(testImage, item.getPicture());
     }
 
+    // TODO: Test Cases testing the Game's observable and observing.
+
 }

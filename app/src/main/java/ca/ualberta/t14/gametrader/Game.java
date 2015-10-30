@@ -198,6 +198,9 @@ public class Game implements AppObservable {
     }
 
     private void notifyAllObservers() {
+        if(observers.isEmpty()) {
+            return;
+        }
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
