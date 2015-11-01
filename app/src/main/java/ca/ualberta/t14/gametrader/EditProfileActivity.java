@@ -8,6 +8,8 @@ import android.view.MenuItem;
 
 public class EditProfileActivity extends Activity {
 
+    ProfileController profileController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,5 +37,9 @@ public class EditProfileActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void SaveChanges() {
+        profileController.SaveProfileEdits();
     }
 }
