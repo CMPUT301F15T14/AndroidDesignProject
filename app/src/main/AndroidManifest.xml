@@ -24,32 +24,31 @@
             android:label="My Inventory" >
         </activity>
         <activity android:name=".recentItems" >
-
-            android:name=".FriendsList"
+            android:name=".FriendsListActivity"
             android:label="@string/title_activity_friends_list" >
         </activity>
         <activity
-            android:name=".InventoryList"
+            android:name=".InventoryListActivity"
             android:label="@string/title_activity_inventory_list" >
         </activity>
         <activity
-            android:name=".Profile"
+            android:name=".ProfileActivity"
             android:label="@string/title_activity_profile" >
         </activity>
         <activity
-            android:name=".EditProfile"
+            android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile" >
         </activity>
         <activity
-            android:name=".InventoryItem"
+            android:name=".InventoryItemActivity"
             android:label="@string/title_activity_inventory_item" >
         </activity>
         <activity
-            android:name=".EditInventoryItem"
+            android:name=".EditInventoryItemActivity"
             android:label="@string/title_activity_edit_inventory_item" >
         </activity>
         <activity
-            android:name=".SearchPage"
+            android:name=".SearchPageActivity"
             android:label="@string/title_activity_search_page" >
         </activity>
     </application>
