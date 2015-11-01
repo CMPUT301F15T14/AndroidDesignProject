@@ -6,10 +6,12 @@ import java.util.ArrayList;
  * Created by jjohnston on 10/30/15.
  */
 public class ProfileController {
-    private ArrayList<User> model;
+    private User model;
 
-    void SaveProfileEdits(String userName){
-
+    void SaveProfileEdits(String userName, String email, String address, String phoneNumber){
+        model.userName = userName;
+        model.address = address;
+        model.phoneNumber = phoneNumber;
     }
 
 }
