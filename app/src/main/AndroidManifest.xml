@@ -19,6 +19,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".FriendsList"
+            android:label="@string/title_activity_friends_list" >
+        </activity>
+        <activity
+            android:name=".InventoryList"
+            android:label="@string/title_activity_inventory_list" >
+        </activity>
+        <activity
+            android:name=".Profile"
+            android:label="@string/title_activity_profile" >
+        </activity>
+        <activity
+            android:name=".EditProfile"
+            android:label="@string/title_activity_edit_profile" >
+        </activity>
+        <activity
+            android:name=".InventoryItem"
+            android:label="@string/title_activity_inventory_item" >
+        </activity>
+        <activity
+            android:name=".EditInventoryItem"
+            android:label="@string/title_activity_edit_inventory_item" >
+        </activity>
+        <activity
+            android:name=".SearchPage"
+            android:label="@string/title_activity_search_page" >
+        </activity>
     </application>
 
 </manifest>
