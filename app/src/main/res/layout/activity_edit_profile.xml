@@ -86,7 +86,8 @@
         android:text="Save"
         android:id="@+id/saveProfileButton"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:onClick="SaveChanges"/>
 
     <Button
         android:layout_width="wrap_content"

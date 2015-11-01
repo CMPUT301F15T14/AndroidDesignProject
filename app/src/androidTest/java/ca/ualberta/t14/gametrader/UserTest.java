@@ -15,6 +15,6 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
     public void testEditProfile() {
         EditProfileActivity activity = (EditProfileActivity) getActivity();
 
-
+        
     }
 }

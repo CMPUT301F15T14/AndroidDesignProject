@@ -10,6 +10,7 @@ public class ProfileController {
 
     void SaveProfileEdits(String userName, String email, String address, String phoneNumber){
         model.userName = userName;
+        model.email = email;
         model.address = address;
         model.phoneNumber = phoneNumber;
     }
