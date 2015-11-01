@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ca.ualberta.t14.gametrader" >
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -20,8 +20,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".myInventoryMain"
-            android:label="@string/title_activity_my_inventory_main" >
+            android:name=".InventoryActivity"
+            android:label="My Inventory" >
+        </activity>
+        <activity android:name=".recentItems" >
         </activity>
     </application>
 
