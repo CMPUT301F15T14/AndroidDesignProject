@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 /**
  * Created by jjohnston on 10/30/15.
+ *
+ * Represents the phone user (one for each phone accessing the app) and their related information (profile)
  */
 public class User {
     public String getUserName() {

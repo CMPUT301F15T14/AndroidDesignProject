@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-
+// Offers a set controls to change a user's information.
 public class EditProfileActivity extends Activity {
 
     ProfileController profileController;
@@ -41,7 +41,8 @@ public class EditProfileActivity extends Activity {
     }
 
     public void SaveChanges(View view) {
-        profileController.SaveProfileEdits("", this.findViewById(R.id.email).toString(),
+        profileController.SaveProfileEdits(this.findViewById(R.id.profile),
+                                                this.findViewById(R.id.email).toString(),
                                                 this.findViewById(R.id.address).toString(),
                                                 this.findViewById(R.id.phone).toString());
     }
