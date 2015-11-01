@@ -26,7 +26,15 @@ public class User {
 
     String email;
 
-    Address address;
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    String address;
 
     public String getPhoneNumber() {
         return phoneNumber;
