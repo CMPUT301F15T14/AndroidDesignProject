@@ -6,19 +6,19 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class InventoryItem extends Activity {
+public class EditInventoryItemActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inventory_item);
+        setContentView(R.layout.activity_edit_inventory_item);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_inventory_item, menu);
+        getMenuInflater().inflate(R.menu.menu_edit_inventory_item, menu);
         return true;
     }
 
@@ -37,3 +37,6 @@ public class InventoryItem extends Activity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+//here is the link on how to radio buttons: http://developer.android.com/guide/topics/ui/controls/radiobutton.html
+//by default I have checked the Public radio button
