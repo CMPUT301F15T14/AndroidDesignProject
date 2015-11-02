@@ -12,4 +12,8 @@ public class InventoryController {
         stock.gameCollections.add(game1);
     }
 
+    public void removeItem(Game game){
+        stock.gameCollections.remove(game);
+    }
+
 }

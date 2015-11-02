@@ -15,6 +15,8 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         Game game1=new Game();
         itemlist.add(game1);
         assertTrue(itemlist.contains(game1));
+        itemlist.remove(game1);
+        assertFalse(itemlist.contains(game1));
     }
     public void ViewEachItem(){
         //Item item1 = new Item();
