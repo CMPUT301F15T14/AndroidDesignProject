@@ -12,10 +12,9 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
 
     public void testViewInventory(){
         Inventory itemlist = new Inventory();
-        InventoryController control=new InventoryController();
         Game game1=new Game();
-        control.addItem(game1);
-        assertTrue(itemlist.gameCollections.contains(game1));
+        itemlist.add(game1);
+        assertTrue(itemlist.contains(game1));
     }
     public void ViewEachItem(){
         //Item item1 = new Item();
