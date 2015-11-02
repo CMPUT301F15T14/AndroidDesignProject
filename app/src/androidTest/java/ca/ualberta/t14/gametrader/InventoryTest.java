@@ -10,14 +10,12 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         super(ca.ualberta.t14.gametrader.MainActivity.class);
     }
 
-
-    public void ViewInventory(Game testItem){
+    public void testViewInventory(){
         Inventory itemlist = new Inventory();
         InventoryController control=new InventoryController();
         Game game1=new Game();
         control.addItem(game1);
-        //assertEquals(game1,itemlist.());
-
+        assertTrue(itemlist.gameCollections.contains(game1));
     }
     public void ViewEachItem(){
         //Item item1 = new Item();

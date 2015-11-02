@@ -6,6 +6,6 @@ import java.util.ArrayList;
  * Created by michaelximac on 2015-11-01.
  */
 public class Inventory {
-    ArrayList gameCollections=new ArrayList();
-
+    public ArrayList<Game> gameCollections=new ArrayList<Game>();
+    private User owner=new User();
 }
