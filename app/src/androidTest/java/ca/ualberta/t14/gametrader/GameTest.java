@@ -10,17 +10,31 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         super(ca.ualberta.t14.gametrader.MainActivity.class);
     }
 
+    // This is testing the model, not the controller.
     public void testGame() {
         // Create items that get added to your inventory (1.1 AddItemToInventory)
-        // This is testing the model, not the controller.
         Game item = new Game();
+
         item.setPlatform(Game.Platform.PLAYSTATION1);
-        item.setTitle("Crash Bandicoot Team Racing");
+        assertEquals(Game.Platform.PLAYSTATION1, item.getPlatform());
+
+        String gameName = "Crash Bandicoot Team Racing";
+        item.setTitle(gameName);
+        assertEquals(gameName, item.getTitle());
+
         item.setCondition(Game.Condition.NEW);
+        assertEquals(Game.Condition.NEW, item.getCondition());
+
         // Being able to flag an item as not listed (1.4 FlagItemAsNotListed)
-        item.setSharable(Boolean.TRUE);
-        item.setAdditionalInfo("Still in original package! You get the honour of opening it.");
+        item.setShared(Boolean.TRUE);
+        assertTrue(item.isShared());
+
+        String moreInfo = "Still in original package! You get the honour of opening it.";
+        item.setAdditionalInfo(moreInfo);
+        assertEquals(moreInfo, item.getAdditionalInfo());
+
         item.setQuantities(1);
+        assertEquals(1, item.getQuantities());
 
         // Including attaching a photo (4.1 AttachPhotographToItem)
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -28,6 +42,9 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
         Bitmap testImage = Bitmap.createBitmap(displayMetrics,120,120, Bitmap.Config.ARGB_8888);
         item.setPicture(testImage);
+        assertEquals(testImage, item.getPicture());
     }
+
+    // TODO: Test Cases testing the Game's observable and observing.
 
 }
