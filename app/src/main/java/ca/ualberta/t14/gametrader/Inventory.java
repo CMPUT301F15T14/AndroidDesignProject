@@ -7,9 +7,10 @@ import java.util.ArrayList;
  */
 public class Inventory {
     public ArrayList<Game> gameCollections;
-    private User owner=new User();
+    private User owner;
     public Inventory(){
         this.gameCollections=new ArrayList<Game>();
+        //this.owner=new User();
     }
     private InventoryController control=new InventoryController(this);
 
@@ -25,4 +26,11 @@ public class Inventory {
         return gameCollections.contains(game);
     }
 
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public User getOwner() {
+        return control.identifyOwner(owner);
+    }
 }

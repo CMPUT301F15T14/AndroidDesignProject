@@ -12,11 +12,14 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
 
     public void testViewInventory(){
         Inventory itemlist = new Inventory();
+        User mike=new User();
         Game game1=new Game();
         itemlist.add(game1);
         assertTrue(itemlist.contains(game1));
         itemlist.remove(game1);
         assertFalse(itemlist.contains(game1));
+        itemlist.setOwner(mike);
+        assertEquals(mike,itemlist.getOwner());
     }
     public void ViewEachItem(){
         //Item item1 = new Item();

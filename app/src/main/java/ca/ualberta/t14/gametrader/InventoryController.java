@@ -16,4 +16,8 @@ public class InventoryController {
         stock.gameCollections.remove(game);
     }
 
+    public User identifyOwner(User owner){
+        return owner;
+    }
+
 }
