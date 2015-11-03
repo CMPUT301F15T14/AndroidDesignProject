@@ -5,9 +5,33 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 
 // Offers a set controls to change a user's information.
 public class EditProfileActivity extends Activity {
+    public EditText getProfileText() {
+        return profileText;
+    }
+
+    private EditText profileText;
+
+    public EditText getPhoneText() {
+        return phoneText;
+    }
+
+    private EditText phoneText;
+
+    public EditText getEmailText() {
+        return emailText;
+    }
+
+    private EditText emailText;
+
+    public EditText getAddressText() {
+        return addressText;
+    }
+
+    private EditText addressText;
 
     ProfileController profileController; // we need to instantiate this with an intent
 
@@ -15,6 +39,13 @@ public class EditProfileActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+        profileText = (EditText) findViewById(R.id.profile);
+        phoneText = (EditText) findViewById(R.id.phone);
+        emailText = (EditText) findViewById(R.id.email);
+        addressText = (EditText) findViewById(R.id.address);
+
+        profileController = new ProfileController((User)getIntent().getSerializableExtra("User"));
     }
 
 

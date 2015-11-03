@@ -1,5 +1,6 @@
 package ca.ualberta.t14.gametrader;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -7,7 +8,7 @@ import java.util.ArrayList;
  *
  * Represents the phone user (one for each phone accessing the app) and their related information (profile)
  */
-public class User {
+public class User implements Serializable, AppObservable {
     public User() {
         // if a user file already exists simply load it from the file
         // otherwise, create a new user file and prompt the user to create a user name
@@ -57,4 +58,8 @@ public class User {
 
     ArrayList<User> friendList;
     ArrayList<User> pendingFriendList;
+
+    public void addObserver(AppObserver observer) {
+
+    }
 }

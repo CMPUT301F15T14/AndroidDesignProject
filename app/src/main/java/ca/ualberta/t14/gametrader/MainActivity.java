@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
+    User user = new User(); // the constructor automatically handles loading of saved data
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("User", user);
                 startActivity(intent);
             }
         });
