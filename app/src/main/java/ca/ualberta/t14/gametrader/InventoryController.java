@@ -5,19 +5,27 @@ package ca.ualberta.t14.gametrader;
  */
 public class InventoryController {
     private Inventory stock;
-    public InventoryController(Inventory inventory){
+    public InventoryController(Inventory inventory,User owner){
         this.stock=inventory;
+        stock.setOwner(owner);
     }
-    public void addItem(Game game1){
-        stock.gameCollections.add(game1);
+    public void addItem(Game game){
+        stock.add(game);
     }
 
     public void removeItem(Game game){
-        stock.gameCollections.remove(game);
+        stock.remove(game);
     }
 
-    public User identifyOwner(User owner){
-        return owner;
+    public User identifyOwner(){
+        return stock.getOwner();
+    }
+
+    public void clearInventory(){
+        stock.clear();
+    }
+    public boolean contains(Game game){
+        return stock.contains(game);
     }
 
 }
