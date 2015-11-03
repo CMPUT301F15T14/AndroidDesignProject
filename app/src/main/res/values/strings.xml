@@ -11,5 +11,7 @@
     <string name="title_activity_inventory_item">InventoryItem</string>
     <string name="title_activity_edit_inventory_item">EditInventoryItem</string>
     <string name="title_activity_search_page">SearchPage</string>
+    <string name="title_activity_setting">Setting</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>
