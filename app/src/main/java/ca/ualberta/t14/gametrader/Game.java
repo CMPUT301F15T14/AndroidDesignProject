@@ -19,7 +19,12 @@
 package ca.ualberta.t14.gametrader;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -70,6 +75,7 @@ public class Game implements AppObservable {
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;
+        pictureJsonable = "";
         quantities = 0;
         observers = new ArrayList<AppObserver>();
     }
@@ -185,14 +191,48 @@ public class Game implements AppObservable {
     }
 
     /**
+     * Get the string representation of the bitmap.
+     * @return a string containing the byteArray of the bitmap encoded as a string in Base64.
+     */
+    public String getPictureJson() {
+        return pictureJsonable;
+    }
+
+    /**
+     * sets the Bitmap of the game object to the json-able image given.
+     * @param jsonBitmap a string containing the byteArray of the bitmap encoded as a string in Base64.
+     * @return a Boolean: whether or not the image data could be decoded.
+     */
+    public Boolean setPictureFromJson(String jsonBitmap) {
+        //taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        byte[] decodedString = Base64.decode(jsonBitmap, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        if(decodedByte != null) {
+            picture = decodedByte.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
+            // set the json image to the current image.
+            pictureJsonable = jsonBitmap;
+        }
+        return decodedByte != null;
+    }
+
+    /**
      * Sets a picture for the game.
      * @param image a Bitmap picture of the game.
      */
     public void setPicture(Bitmap image) {
-        picture = image;
-        // Todo: To have the image Bitmap JSON-able (Bitmap is volatile) http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
+        picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
+
+        // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        final int COMPRESSION_QUALITY = 100;
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        picture.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        pictureJsonable = Base64.encodeToString(b, Base64.DEFAULT);
+
         notifyAllObservers();
     }
+
 
     /**
      * The Game Model is observable thus anything wanting to obsserve can be added to the watch list.

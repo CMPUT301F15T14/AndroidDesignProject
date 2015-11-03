@@ -23,7 +23,11 @@
         android:maxWidth="128dp"
         android:maxHeight="128dp"
         android:layout_alignTop="@+id/uploadImageText"
-        android:layout_toEndOf="@+id/gameConditionText" />
+        android:layout_toEndOf="@+id/gameConditionText"
+        android:clickable="true"
+        android:onClick="uploadImage"
+        />
+
 
     <EditText
         android:layout_width="wrap_content"

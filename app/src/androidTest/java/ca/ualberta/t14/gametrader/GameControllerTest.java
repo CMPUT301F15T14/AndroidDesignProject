@@ -51,8 +51,8 @@ public class GameControllerTest extends ActivityInstrumentationTestCase2 {
         // should launch the activity's edit screen.
         gc.editGame(game1);
 
-        String imageLocation = "no location yet";
-        gc.addPhoto(imageLocation);
+        // test with uri.... halp plz b0ss.
+        //gc.addPhoto(imageLocation);
 
         Bitmap downloadedImage = gc.manualDownloadPhoto(game1);
 

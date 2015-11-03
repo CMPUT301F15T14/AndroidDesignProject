@@ -42,7 +42,18 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
         Bitmap testImage = Bitmap.createBitmap(displayMetrics,120,120, Bitmap.Config.ARGB_8888);
         item.setPicture(testImage);
-        assertEquals(testImage, item.getPicture());
+        assertTrue(testImage.sameAs(item.getPicture()));
+
+        // Test for JSON-able bitmap.
+        String json = item.getPictureJson();
+
+        // make sure the pictures are not same initially
+        Bitmap testImage2 = Bitmap.createBitmap(displayMetrics, 200, 200, Bitmap.Config.ARGB_8888);
+        item.setPicture(testImage2);
+        assertFalse(testImage.sameAs(item.getPicture()));
+
+        item.setPictureFromJson(json);
+        assertTrue(testImage.sameAs(item.getPicture()));
     }
 
     // TODO: Test Cases testing the Game's observable and observing.

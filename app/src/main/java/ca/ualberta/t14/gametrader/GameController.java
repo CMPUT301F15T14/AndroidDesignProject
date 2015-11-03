@@ -30,15 +30,13 @@ public class GameController {
 
     }
 
-    public void addPhoto(String path) {
-        // these should go in the activity. And then addPhoto shall be called there.
-        // stuff from EditInventoryItemActivity.java
-
-
+    public void addPhoto(Bitmap img) {
+        model.setPicture(img);
     }
 
     public Bitmap manualDownloadPhoto(Game game) {
         // TODO: from cache or elastisearch, find the image associated to this game and force download it (disregard the settings)
+        return null;
     }
 
     public void removeGame(Game game) {

@@ -25,7 +25,6 @@
         android:minWidth="128dp"
         android:maxWidth="128dp"
         android:maxHeight="128dp"
-        android:nestedScrollingEnabled="false"
         android:contentDescription="Game Image" />
 
     <TextView
