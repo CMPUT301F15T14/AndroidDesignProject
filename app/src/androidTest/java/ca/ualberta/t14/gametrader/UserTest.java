@@ -23,5 +23,6 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
         EditText emailView = (EditText) activity.findViewById(R.id.email);
         emailView.setText("edit@changed.biz");
 
+
     }
 }

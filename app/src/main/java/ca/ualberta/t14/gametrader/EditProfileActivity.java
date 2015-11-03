@@ -9,7 +9,7 @@ import android.view.View;
 // Offers a set controls to change a user's information.
 public class EditProfileActivity extends Activity {
 
-    ProfileController profileController;
+    ProfileController profileController; // we need to instantiate this with an intent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,7 @@ public class EditProfileActivity extends Activity {
     }
 
     public void SaveChanges(View view) {
-        profileController.SaveProfileEdits(this.findViewById(R.id.profile),
+        profileController.SaveProfileEdits(this.findViewById(R.id.profile).toString(),
                                                 this.findViewById(R.id.email).toString(),
                                                 this.findViewById(R.id.address).toString(),
                                                 this.findViewById(R.id.phone).toString());
