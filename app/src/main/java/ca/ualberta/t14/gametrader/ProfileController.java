@@ -14,9 +14,9 @@ public class ProfileController {
     private User model;
 
     void SaveProfileEdits(String userName, String email, String address, String phoneNumber){
-        model.userName = userName;
-        model.email = email;
-        model.address = address;
-        model.phoneNumber = phoneNumber;
+        model.setUserName(userName);
+        model.setEmail(email);
+        model.setAddress(address);
+        model.setPhoneNumber(phoneNumber);
     }
 }

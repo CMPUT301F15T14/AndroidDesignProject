@@ -22,7 +22,7 @@ public class User implements Serializable, AppObservable {
         this.userName = userName;
     }
 
-    String userName;
+    private String userName;
 
     public String getEmail() {
         return email;
@@ -32,7 +32,7 @@ public class User implements Serializable, AppObservable {
         this.email = email;
     }
 
-    String email;
+    private String email;
 
     public String getAddress() {
         return address;
@@ -42,7 +42,7 @@ public class User implements Serializable, AppObservable {
         this.address = address;
     }
 
-    String address;
+    private String address;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -52,7 +52,7 @@ public class User implements Serializable, AppObservable {
         this.phoneNumber = phoneNumber;
     }
 
-    String phoneNumber;
+    private String phoneNumber;
 
     private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
 

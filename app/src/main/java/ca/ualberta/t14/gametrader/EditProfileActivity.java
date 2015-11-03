@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 // Offers a set controls to change a user's information.
@@ -33,7 +34,23 @@ public class EditProfileActivity extends Activity {
 
     private EditText addressText;
 
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    private Button saveButton;
+
     ProfileController profileController; // we need to instantiate this with an intent
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +61,10 @@ public class EditProfileActivity extends Activity {
         phoneText = (EditText) findViewById(R.id.phone);
         emailText = (EditText) findViewById(R.id.email);
         addressText = (EditText) findViewById(R.id.address);
+        saveButton = (Button) findViewById(R.id.saveProfileButton);
 
-        profileController = new ProfileController((User)getIntent().getSerializableExtra("User"));
+        user = (User)getIntent().getSerializableExtra("User");
+        profileController = new ProfileController(user);
     }
 
 

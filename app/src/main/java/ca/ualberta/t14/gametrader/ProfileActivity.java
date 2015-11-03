@@ -10,17 +10,21 @@ import android.widget.Button;
 
 
 public class ProfileActivity extends Activity {
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        user = (User)getIntent().getSerializableExtra("User");
+
         Button editprof = (Button) findViewById(R.id.editProfile);
         editprof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                intent.putExtra("User", user);
                 startActivity(intent);
             }
         });
