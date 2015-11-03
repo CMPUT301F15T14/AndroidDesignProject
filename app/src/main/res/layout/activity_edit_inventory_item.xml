@@ -12,22 +12,26 @@
         android:id="@+id/inventoryItemTitle"
         android:text="Item Title"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/iploadImage" />
+        android:layout_alignStart="@+id/uploadImage" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/iploadImage"
-        android:layout_below="@+id/inventoryItemTitle"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/uploadImage"
+        android:minHeight="128dp"
+        android:minWidth="128dp"
+        android:maxWidth="128dp"
+        android:maxHeight="128dp"
+        android:layout_alignTop="@+id/uploadImageText"
+        android:layout_toEndOf="@+id/gameConditionText" />
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gameTitle"
         android:text="Game Title"
-        android:layout_below="@+id/iploadImage"
-        android:layout_alignStart="@+id/iploadImage" />
+        android:layout_below="@+id/uploadImage"
+        android:layout_alignStart="@+id/uploadImage" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -41,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gameCondition"
-        android:text="\?/10"
+        android:text="New"
         android:layout_below="@+id/gameConsole"
         android:layout_alignStart="@+id/gameConsole" />
 
@@ -69,7 +73,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Game Title"
         android:id="@+id/gameTitleText"
-        android:layout_below="@+id/iploadImage"
+        android:layout_below="@+id/uploadImage"
         android:layout_alignParentStart="true" />
 
     <TextView

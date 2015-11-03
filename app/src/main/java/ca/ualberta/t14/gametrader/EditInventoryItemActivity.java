@@ -22,6 +22,14 @@ public class EditInventoryItemActivity extends Activity {
         return true;
     }
 
+    /*
+        // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
+        // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
+        Intent imgGet = new Intent(Intent.ACTION_GET_CONTENT);
+        imgGet.setType("image/*");
+        startActivityForResult(Intent.createChooser(imgGet, "Pick a photo representing the Game:"));
+     */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

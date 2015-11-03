@@ -53,7 +53,8 @@ public class Game implements AppObservable {
     private String title;
     private Boolean sharableStatus;
     private String additionalInfo;
-    private Bitmap picture;
+    volatile private Bitmap picture;
+    private String pictureJsonable;
     private int quantities;
 
     // volatile because GSON shouldn't store this.
@@ -189,6 +190,7 @@ public class Game implements AppObservable {
      */
     public void setPicture(Bitmap image) {
         picture = image;
+        // Todo: To have the image Bitmap JSON-able (Bitmap is volatile) http://mobile.cs.fsu.edu/converting-images-to-json-objects/
         notifyAllObservers();
     }
 
