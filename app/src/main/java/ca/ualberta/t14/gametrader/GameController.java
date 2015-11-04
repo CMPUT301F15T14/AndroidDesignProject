@@ -31,7 +31,7 @@ public class GameController {
     }
 
     public void addPhoto(Bitmap img) {
-        model.setPicture(img);
+        Boolean imageSizeOk = model.setPicture(img);
     }
 
     public Bitmap manualDownloadPhoto(Game game) {

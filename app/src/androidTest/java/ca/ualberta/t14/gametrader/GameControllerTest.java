@@ -48,7 +48,7 @@ public class GameControllerTest extends ActivityInstrumentationTestCase2 {
         // It will check for the game object in the user's inventory if it contains the object game then is owner, else not owner.
         assertTrue(gc.isOwner(game1));
 
-        // should launch the activity's edit screen.
+        // should launch the activity's edit screen. Like ur looking at the normal game item's detail and with this BAM editable.
         gc.editGame(game1);
 
         // test with uri.... halp plz b0ss.

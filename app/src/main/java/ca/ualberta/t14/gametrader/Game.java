@@ -22,8 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
@@ -61,6 +59,8 @@ public class Game implements AppObservable {
     volatile private Bitmap picture;
     private String pictureJsonable;
     private int quantities;
+    private final int MAX_BYTES_IMG_SIZE = 65536;
+    private final int COMPRESSION_QUALITY = 100;
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
@@ -218,19 +218,24 @@ public class Game implements AppObservable {
     /**
      * Sets a picture for the game.
      * @param image a Bitmap picture of the game.
+     * @return a Boolean whether the image was set or not. If not it means image is bigger than 65536 bytes or Bitmap was null.
      */
-    public void setPicture(Bitmap image) {
+    public Boolean setPicture(Bitmap image) {
         // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
+        if(image == null || getImageJpgSize(image) > MAX_BYTES_IMG_SIZE) {
+            return Boolean.FALSE;
+        }
+        // set the volatile bitmap
         picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
 
         // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
-        final int COMPRESSION_QUALITY = 100;
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        picture.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, byteArrayBitmapStream);
+        picture.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
         pictureJsonable = Base64.encodeToString(b, Base64.DEFAULT);
 
         notifyAllObservers();
+        return Boolean.TRUE;
     }
 
 
@@ -246,6 +251,13 @@ public class Game implements AppObservable {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
+    }
+
+    private Long getImageJpgSize(Bitmap image) {
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        return new Long(b.length);
     }
 
 }
