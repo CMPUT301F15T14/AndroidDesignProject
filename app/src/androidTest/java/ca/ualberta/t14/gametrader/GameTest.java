@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
@@ -15,20 +16,20 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         super(ca.ualberta.t14.gametrader.MainActivity.class);
     }
 
+    private Bitmap getBitmapFromJson(String json) {
+        byte[] decodedString = Base64.decode(json, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return decodedByte;
+    }
+
     private Long getImageJpgSize(Bitmap image) {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
+        // the following returns byte size of the uncompressed bitmap!
+        // Note: As of KITKAT API 19+ the result of getByteCount method can no longer be used to determine memory usage of a bitmap. See getAllocationByteCount().
+        //return new Long(image.getByteCount());
         return new Long(b.length);
-    }
-
-    // Convert to Android's jpg compression because slight differences exist in image when using original image.
-    private Bitmap getAndroidJpg(Bitmap image) {
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(b, 0, b.length);
-        return decodedByte;
     }
 
     // This is testing the model, not the controller.
@@ -63,42 +64,42 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
         Activity activity = getActivity();
 
-        // Test an image that is too big, this jpeg is 214kb
+        // Test an image that is too big, this jpeg is 219.8kb
         Bitmap testImage1 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.big_game);
-        testImage1 = getAndroidJpg(testImage1);
         assertFalse(item.setPicture(testImage1));
 
-        // Test an image that is ok size, this jpeg is 24.4kb
+        // Test an image that is ok size, this jpeg is 12.7kb
         Bitmap testImage2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.best_game_ok);
-        Log.d("AAAAAAAAAA--testImage2b", getImageJpgSize(testImage2).toString());
-        testImage2 = getAndroidJpg(testImage2);
+        Log.d("sizeBytes--testImage2b", getImageJpgSize(testImage2).toString());
 
         // a different empty image
         Bitmap testImage3 = Bitmap.createBitmap(displayMetrics, 200, 200, Bitmap.Config.ARGB_8888);
-        testImage3 = getAndroidJpg(testImage3);
 
         assertTrue(item.setPicture(testImage2));
         assertTrue(testImage2.sameAs(item.getPicture()));
 
         // Test for JSON-able bitmap.
-        Bitmap origImage = item.getPicture();
         String json = item.getPictureJson();
+        Bitmap origImage = getBitmapFromJson(json);
 
         // make sure the pictures are not same initially
         item.setPicture(testImage3);
         assertFalse(origImage.sameAs(item.getPicture()));
 
-        Log.d("AAAAAAAAAA---testImage2", getImageJpgSize(testImage2).toString());
+        Log.d("sizeBytes---testImage2", getImageJpgSize(testImage2).toString());
 
-        Log.d("AAAAAAAAAA---testImage1", getImageJpgSize(testImage1).toString());
-        Log.d("AAAAAAAAAA---testImage3", getImageJpgSize(testImage3).toString());
+        Log.d("sizeBytes---testImage1", getImageJpgSize(testImage1).toString());
+        Log.d("sizeBytes---testImage3", getImageJpgSize(testImage3).toString());
 
         assertTrue(item.setPictureFromJson(json));
-        Log.d("AAAAAAAAAA---getPic", getImageJpgSize(item.getPicture()).toString());
-        Log.d("AAAAAAAAAA---origImage", getImageJpgSize(origImage).toString());
+        Log.d("sizeBytes---getPic", getImageJpgSize(item.getPicture()).toString());
+        Log.d("sizeBytes---origImage", getImageJpgSize(origImage).toString());
 
-        // fails cuz jpg is lossy and looses some stuff... hence never same?
-        //assertTrue(origImage.sameAs(item.getPicture()));
+
+
+        //Todo: resize feature instead of rejecting image
+
+        assertTrue(origImage.sameAs(item.getPicture()));
         assertSame(json, item.getPictureJson());
     }
 

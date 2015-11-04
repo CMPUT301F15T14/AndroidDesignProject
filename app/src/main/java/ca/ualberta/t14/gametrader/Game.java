@@ -222,11 +222,22 @@ public class Game implements AppObservable {
      */
     public Boolean setPicture(Bitmap image) {
         // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
-        if(image == null || getImageJpgSize(image) > MAX_BYTES_IMG_SIZE) {
-            return Boolean.FALSE;
+        // set the volatile bitmap, when resizing: maintains aspect ratio of the image.
+        if (image.getWidth() > 128 || image.getHeight() > 128) {
+            if(image.getWidth() < image.getHeight()) {
+                float aspectRatio = image.getWidth() / image.getHeight();
+                int newHeight = 128;
+                int newWidth = Math.round(aspectRatio * newHeight);
+                picture = Bitmap.createScaledBitmap(image,newWidth, newHeight, Boolean.TRUE);
+            } else if(image.getWidth() > image.getHeight()) {
+                float aspectRatio = image.getHeight() / image.getWidth();
+                int newWidth = 128;
+                int newHeight = Math.round(aspectRatio * newWidth);
+                picture = Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+            }
+        } else {
+            picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
         }
-        // set the volatile bitmap
-        picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
 
         // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
