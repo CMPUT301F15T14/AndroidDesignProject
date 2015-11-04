@@ -6,12 +6,12 @@ package ca.ualberta.t14.gametrader;
 public class SettingsController {
 
     public void EnableDownloadPhotos(){
-        Settings downloadPic = new Settings();
+        SettingsMode downloadPic = new SettingsMode();
         downloadPic.setEnableDownloadPhoto1(Boolean.TRUE);
     }
 
     public void DisableDownloadPhotos(){
-        Settings downloadPic = new Settings();
+        SettingsMode downloadPic = new SettingsMode();
         downloadPic.setEnableDownloadPhoto1(Boolean.FALSE);
     }
 }

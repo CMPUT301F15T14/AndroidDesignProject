@@ -1,6 +1,5 @@
 package ca.ualberta.t14.gametrader;
 
-import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
 
 /**
@@ -11,12 +10,12 @@ public class SettingsTest extends ActivityInstrumentationTestCase2 {
         super(ca.ualberta.t14.gametrader.MainActivity.class);
     }
     public void testEnableDownloadPhotos(){
-        Settings downloadPic = new Settings();
+        SettingsMode downloadPic = new SettingsMode();
         downloadPic.setEnableDownloadPhoto1(Boolean.TRUE);
     }
 
     public void testDisableDownloadPhotos(){
-        Settings downloadPic = new Settings();
+        SettingsMode downloadPic = new SettingsMode();
         downloadPic.setEnableDownloadPhoto1(Boolean.FALSE);
     }
     /*
