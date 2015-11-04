@@ -21,6 +21,7 @@ public class Setting extends Activity {
         controller = new SettingsController();
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
+            //switch ON, user can download the pic for the item
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     Toast.makeText(getApplicationContext(),"Enable Download the Picture",Toast.LENGTH_LONG).show();

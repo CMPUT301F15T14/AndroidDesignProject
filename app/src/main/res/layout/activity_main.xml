@@ -53,4 +53,11 @@
         android:id="@+id/search"
         android:layout_below="@+id/pendingTrades"
         android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:id="@+id/setting"
+        android:layout_below="@+id/search" />
 </RelativeLayout>

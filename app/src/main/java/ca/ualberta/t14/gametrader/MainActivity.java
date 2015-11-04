@@ -43,8 +43,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button pendtrades = (Button) findViewById(R.id.pendingTrades);
-        pendtrades.setOnClickListener(new View.OnClickListener() {
+        Button pendTrades = (Button) findViewById(R.id.pendingTrades);
+        pendTrades.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
@@ -57,6 +57,15 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchPageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button settings = (Button) findViewById(R.id.setting);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Setting.class);
                 startActivity(intent);
             }
         });
