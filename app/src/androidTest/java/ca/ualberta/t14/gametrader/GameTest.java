@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
@@ -5,8 +23,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.test.ActivityInstrumentationTestCase2;
 import android.util.Base64;
-import android.util.DisplayMetrics;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 
@@ -14,22 +30,6 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
     public GameTest() {
         super(ca.ualberta.t14.gametrader.MainActivity.class);
-    }
-
-    private Bitmap getBitmapFromJson(String json) {
-        byte[] decodedString = Base64.decode(json, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        return decodedByte;
-    }
-
-    private Long getImageJpgSize(Bitmap image) {
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        // the following returns byte size of the uncompressed bitmap!
-        // Note: As of KITKAT API 19+ the result of getByteCount method can no longer be used to determine memory usage of a bitmap. See getAllocationByteCount().
-        //return new Long(image.getByteCount());
-        return new Long(b.length);
     }
 
     // This is testing the model, not the controller.
@@ -58,27 +58,50 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         item.setQuantities(1);
         assertEquals(1, item.getQuantities());
 
+
+    }
+
+    private Bitmap getBitmapFromJson(String json) {
+        byte[] decodedString = Base64.decode(json, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return decodedByte;
+    }
+
+    private Long getImageJpgSize(Bitmap image) {
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 85, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        return new Long(b.length);
+    }
+
+    public void testGameImages() {
         // Including attaching a photo (4.1 AttachPhotographToItem)
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        displayMetrics.setToDefaults();
+        Game item = new Game();
 
         Activity activity = getActivity();
 
-        int resizedMaxVal = 128;
+        int resizedMaxVal = 200;
+        Long maxFileSize = new Long(65536);
 
         // Test an image that is too big and gets resized with width being longest edge
         Bitmap testImage1 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.big_game);
         assertTrue(item.setPicture(testImage1));
         assertEquals(resizedMaxVal, item.getPicture().getWidth());
+        // filesize check of testImage1
+        assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
         // Test an image that has no resizing issue.
         Bitmap testImage2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.best_game_ok);
         assertTrue(item.setPicture(testImage2));
+        // filesize check of testImage2
+        assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
         // Test image that is too big and gets resized with height being longest edge
         Bitmap testImage3 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.game_goty);
         assertTrue(item.setPicture(testImage3));
         assertEquals(resizedMaxVal, item.getPicture().getHeight());
+        // filesize check of testImage3
+        assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
         // Images being actually changed
         assertFalse(testImage2.sameAs(item.getPicture()));
@@ -93,18 +116,11 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         item.setPicture(testImage3);
         assertFalse(origImage.sameAs(item.getPicture()));
 
-        Log.d("sizeBytes---testImage1", getImageJpgSize(testImage1).toString());
-        Log.d("sizeBytes---testImage2", getImageJpgSize(testImage2).toString());
-        Log.d("sizeBytes---testImage3", getImageJpgSize(testImage3).toString());
-
         assertTrue(item.setPictureFromJson(json));
-        Log.d("sizeBytes---getPic", getImageJpgSize(item.getPicture()).toString());
-        Log.d("sizeBytes---origImage", getImageJpgSize(origImage).toString());
 
         // json and resulting image are same.
         assertSame(json, item.getPictureJson());
         assertTrue(origImage.sameAs(item.getPicture()));
-
     }
 
     // TODO: Test Cases testing the Game's observable and observing.

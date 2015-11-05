@@ -21,7 +21,6 @@ package ca.ualberta.t14.gametrader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -60,8 +59,8 @@ public class Game implements AppObservable {
     volatile private Bitmap picture;
     private String pictureJsonable;
     private int quantities;
-    private final int MAX_BYTES_IMG_SIZE = 65536;
-    private final int COMPRESSION_QUALITY = 90;
+    private final int COMPRESSION_QUALITY = 85;
+    private final int RESIZE_VALUE = 200;
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
@@ -218,39 +217,22 @@ public class Game implements AppObservable {
 
     /**
      * Sets a picture for the game.
-     * If image given is bigger than 128x128 it gets scaled down with longest edge being 128, the aspect ratio kept same.
+     * If image given is bigger than 128x128 it gets scaled down with longest edge becoming 128, the aspect ratio is kept same.
      * @param image a Bitmap picture of the game.
-     * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid.
+     * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
      */
     public Boolean setPicture(Bitmap image) {
         // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
+        // 400x400 seems acceptable = below 65536 bytes when compress jpg 85% in gimp. Try 350x350 and hope its always below 65536 bytes
         // set the volatile bitmap, when resizing: maintains aspect ratio of the image.
-        int imgW = image.getWidth();
-        int imgH = image.getHeight();
-        int resizedValue = 128;
 
-        if( imgW <=0 || imgH <= 0) {
-            Log.d("IMAGE FAIL", " Aaaaaa");
+        if( image.getWidth() <=0 || image.getHeight() <= 0) {
             return Boolean.FALSE;
-        } else if (imgW > resizedValue || imgH > resizedValue) {
-            if(imgW < imgH) {
-                float aspectRatio = ((float) imgW) / imgH;
-                int newHeight = resizedValue;
-                int newWidth = Math.round(aspectRatio * newHeight);
-                Log.d("IMAGE REEEEESIZE", " H" + imgH + " W" + imgW + " newH" + newHeight + " newW" + newWidth + " Ratio:" + aspectRatio );
-                picture = Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
-
-            } else if(imgW > imgH) {
-                float aspectRatio = ((float) imgH) / imgW;
-                int newWidth = resizedValue;
-                int newHeight = Math.round(aspectRatio * newWidth);
-
-                Log.d("IMAGE REEEEESIZE", " H" + imgH + " W" + imgW + " newH" + newHeight + " newW" + newWidth + " Ratio:" + aspectRatio );
-                picture = Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
-
-            }
+        } else if (image.getWidth() > RESIZE_VALUE || image.getHeight() > RESIZE_VALUE) {
+            // preserve aspect ratio of image
+            // TODO: maybe make it so you can put in image and if filesize is bigger than 65kb then downscale to longest side 500px and then keep checking while loop filesize>65kb and decrease downscale 50px a time if. Can take long time... because compress method is slow tho.
+            picture = preserveAspectRatio(image);
         } else {
-            Log.d("IMAGE NOTRESIZEEE", " Aaaaaa");
             picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
         }
 
@@ -284,6 +266,27 @@ public class Game implements AppObservable {
         image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
         return new Long(b.length);
+    }
+
+    private Bitmap preserveAspectRatio(Bitmap image) {
+        int imgW = image.getWidth();
+        int imgH = image.getHeight();
+
+        if(imgW < imgH) {
+            float aspectRatio = ((float) imgW) / imgH;
+            int newHeight = RESIZE_VALUE;
+            int newWidth = Math.round(aspectRatio * newHeight);
+            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+        } else if(imgW > imgH) {
+            float aspectRatio = ((float) imgH) / imgW;
+            int newWidth = RESIZE_VALUE;
+            int newHeight = Math.round(aspectRatio * newWidth);
+            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+        } else if(imgW == imgH) {
+            return Bitmap.createScaledBitmap(image, RESIZE_VALUE, RESIZE_VALUE, Boolean.TRUE);
+        }
+        // something went horribly wrong.
+        return null;
     }
 
 }
