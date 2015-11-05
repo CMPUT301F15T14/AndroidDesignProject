@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                intent.putExtra("User", user);
+                //intent.putExtra("User", user);
                 startActivity(intent);
             }
         });
