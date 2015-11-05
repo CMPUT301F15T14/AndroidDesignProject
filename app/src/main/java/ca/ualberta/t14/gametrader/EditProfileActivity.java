@@ -1,6 +1,7 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -57,14 +58,28 @@ public class EditProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        profileText = (EditText) findViewById(R.id.profile);
-        phoneText = (EditText) findViewById(R.id.phone);
-        emailText = (EditText) findViewById(R.id.email);
-        addressText = (EditText) findViewById(R.id.address);
-        saveButton = (Button) findViewById(R.id.saveProfileButton);
-
         user = (User)getIntent().getSerializableExtra("User");
         profileController = new ProfileController(user);
+
+        profileText = (EditText) findViewById(R.id.profile);
+        profileText.setText(user.getUserName());
+        phoneText = (EditText) findViewById(R.id.phone);
+        phoneText.setText(user.getPhoneNumber());
+        emailText = (EditText) findViewById(R.id.email);
+        emailText.setText(user.getEmail());
+        addressText = (EditText) findViewById(R.id.address);
+        addressText.setText(user.getAddress());
+
+        saveButton = (Button) findViewById(R.id.saveProfileButton);
+        saveButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                profileController.SaveProfileEdits(profileText.toString(),
+                        emailText.toString(),
+                        addressText.toString(),
+                        phoneText.toString());
+        }
+        });
     }
 
 
