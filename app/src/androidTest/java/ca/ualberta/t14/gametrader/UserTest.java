@@ -14,11 +14,11 @@ import android.widget.EditText;
  */
 public class UserTest extends ActivityInstrumentationTestCase2 {
 
-    /*public UserTest() {
+    public UserTest() {
         super(EditProfileActivity.class);
     }
 
-    public void testEditProfile() {
+    /*public void testEditProfile() {
         EditProfileActivity activity = (EditProfileActivity) getActivity();
 
         final EditText profileText = activity.getProfileText();
@@ -47,4 +47,8 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
         assertEquals("this is not correct", activity.getUser().getUserName());
         //assertEquals("one", "two");
     }*/
+
+    public void testStub() {
+        assertEquals("True", "True");
+    }
 }
