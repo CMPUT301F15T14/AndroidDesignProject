@@ -32,15 +32,17 @@ public class GameController {
         //model.loadJson();//???
     }
 
-    public Game createGame() {
+    public Game createGame(User user) {
         model = new Game();
-
+        Inventory inventory = user.getInventory();
+        inventory.add(model);
         return model;
     }
 
-    public Boolean isOwner(Game game) {
+    public Boolean isOwner(Game game, User user) {
         // TODO: 1. get device-id from user here (the owner of this device has a profile) and 2. search for inventory that belongs to this user. 3. Then check this inventory if it contains this game
-        return Boolean.FALSE;
+        Inventory inventory = user.getInventory();
+        return inventory.contains(game);
     }
 
     public void editGame(Game game) {
@@ -48,8 +50,9 @@ public class GameController {
 
     }
 
-    public void addPhoto(Bitmap img) {
-        Boolean imageSizeOk = model.setPicture(img);
+    public Boolean addPhoto(Bitmap img) {
+        // returns false if the Bitmap supplied is invalid: has a height or width of 0.
+        return model.setPicture(img);
     }
 
     public Bitmap manualDownloadPhoto(Game game) {
@@ -57,8 +60,11 @@ public class GameController {
         return null;
     }
 
-    public void removeGame(Game game) {
+    public void removeGame(Game game, User user) {
         // TODO: removeGame will remove the entry from the inventory.
+        if(isOwner(game, user)) {
+            
+        }
     }
 
 }

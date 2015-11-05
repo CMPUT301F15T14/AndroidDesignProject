@@ -56,8 +56,10 @@ public class Game implements AppObservable {
     private String title;
     private Boolean sharableStatus;
     private String additionalInfo;
+
     volatile private Bitmap picture;
     private String pictureJsonable;
+
     private int quantities;
     private final int COMPRESSION_QUALITY = 85;
     private final int RESIZE_VALUE = 200;
@@ -79,6 +81,7 @@ public class Game implements AppObservable {
         quantities = 0;
         observers = new ArrayList<AppObserver>();
     }
+
 
     /**
      * Returns the platform the game was intended to run on.
