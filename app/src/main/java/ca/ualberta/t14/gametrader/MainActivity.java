@@ -17,6 +17,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ProfileController profCon = new ProfileController(user);
+        profCon.SaveProfileEdits("n00bpwnr", "pwnsnoobs@gmail.com", "603 30 Carleton Avenue", "587-877-2072");
+
         Button profile = (Button) findViewById(R.id.myProfile);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override

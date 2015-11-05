@@ -7,20 +7,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 public class ProfileActivity extends Activity {
+    User user;
+
+    TextView userNameView;
+    TextView phoneView;
+    TextView emailView;
+    TextView addressView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        user = (User)getIntent().getSerializableExtra("User");
+
         Button editprof = (Button) findViewById(R.id.editProfile);
         editprof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                intent.putExtra("User", user);
                 startActivity(intent);
             }
         });
@@ -33,6 +43,18 @@ public class ProfileActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        userNameView = (TextView) findViewById(R.id.userNameDisplay);
+        userNameView.setText(user.getUserName());
+
+        phoneView = (TextView) findViewById(R.id.phoneDisplay);
+        phoneView.setText(user.getPhoneNumber());
+
+        emailView = (TextView) findViewById(R.id.emailDisplay);
+        emailView.setText(user.getEmail());
+
+        addressView = (TextView) findViewById(R.id.addressDisplay);
+        addressView.setText(user.getAddress());
     }
 
 

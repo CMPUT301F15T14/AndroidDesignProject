@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Contact Information:"
+        android:text="                              "
         android:id="@+id/textView"
         android:layout_below="@+id/profileInfoName"
         android:layout_alignParentStart="true" />
@@ -76,5 +76,41 @@
         android:id="@+id/profileInfoName"
         android:layout_below="@+id/profileText"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Some text"
+        android:id="@+id/userNameDisplay"
+        android:layout_above="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="New Text"
+        android:id="@+id/phoneDisplay"
+        android:layout_below="@+id/textView"
+        android:layout_alignStart="@+id/userNameDisplay" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="New Text"
+        android:id="@+id/emailDisplay"
+        android:layout_below="@+id/phoneDisplay"
+        android:layout_alignStart="@+id/phoneDisplay" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="New Text"
+        android:id="@+id/addressDisplay"
+        android:layout_below="@+id/emailDisplay"
+        android:layout_toEndOf="@+id/textView" />
 
 </RelativeLayout>

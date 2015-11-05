@@ -1,10 +1,12 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 // Offers a set controls to change a user's information.
@@ -33,19 +35,51 @@ public class EditProfileActivity extends Activity {
 
     private EditText addressText;
 
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    private Button saveButton;
+
     ProfileController profileController; // we need to instantiate this with an intent
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        profileText = (EditText) findViewById(R.id.profile);
-        phoneText = (EditText) findViewById(R.id.phone);
-        emailText = (EditText) findViewById(R.id.email);
-        addressText = (EditText) findViewById(R.id.address);
+        user = (User)getIntent().getSerializableExtra("User");
+        profileController = new ProfileController(user);
 
-        profileController = new ProfileController((User)getIntent().getSerializableExtra("User"));
+        profileText = (EditText) findViewById(R.id.profile);
+        profileText.setText(user.getUserName());
+        phoneText = (EditText) findViewById(R.id.phone);
+        phoneText.setText(user.getPhoneNumber());
+        emailText = (EditText) findViewById(R.id.email);
+        emailText.setText(user.getEmail());
+        addressText = (EditText) findViewById(R.id.address);
+        addressText.setText(user.getAddress());
+
+        saveButton = (Button) findViewById(R.id.saveProfileButton);
+        saveButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                profileController.SaveProfileEdits(profileText.toString(),
+                        emailText.toString(),
+                        addressText.toString(),
+                        phoneText.toString());
+        }
+        });
     }
 
 

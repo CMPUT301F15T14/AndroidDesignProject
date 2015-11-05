@@ -9,9 +9,12 @@ import java.util.ArrayList;
  * Represents the phone user (one for each phone accessing the app) and their related information (profile)
  */
 public class User implements Serializable, AppObservable {
+    private volatile ArrayList<AppObserver> observers;
+
     public User() {
         // if a user file already exists simply load it from the file
         // otherwise, create a new user file and prompt the user to create a user name
+        observers = new ArrayList<AppObserver>();
     }
 
     public String getUserName() {
@@ -22,7 +25,7 @@ public class User implements Serializable, AppObservable {
         this.userName = userName;
     }
 
-    String userName;
+    private String userName;
 
     public String getEmail() {
         return email;
@@ -32,7 +35,7 @@ public class User implements Serializable, AppObservable {
         this.email = email;
     }
 
-    String email;
+    private String email;
 
     public String getAddress() {
         return address;
@@ -42,7 +45,7 @@ public class User implements Serializable, AppObservable {
         this.address = address;
     }
 
-    String address;
+    private String address;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -52,7 +55,7 @@ public class User implements Serializable, AppObservable {
         this.phoneNumber = phoneNumber;
     }
 
-    String phoneNumber;
+    private String phoneNumber;
 
     private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
 
@@ -60,6 +63,14 @@ public class User implements Serializable, AppObservable {
     ArrayList<User> pendingFriendList;
 
     public void addObserver(AppObserver observer) {
-
+        observers.add(observer);
     }
+
+    private void notifyAllObservers() {
+        for(AppObserver obs : observers) {
+            obs.appNotify(this);
+        }
+    }
+
+    Inventory inventory;
 }
