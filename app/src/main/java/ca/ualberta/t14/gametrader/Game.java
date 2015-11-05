@@ -65,7 +65,7 @@ public class Game implements AppObservable {
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
 
-    /**
+    /**RESIZE_VALUE
      * Constructor for the Game class.Initializes its variables.
      */
     public Game() {

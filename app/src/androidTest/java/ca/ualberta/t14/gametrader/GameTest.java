@@ -93,6 +93,7 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         // Test an image that has no resizing issue.
         Bitmap testImage2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.best_game_ok);
         assertTrue(item.setPicture(testImage2));
+        testImage2 = item.getPicture();
         // filesize check of testImage2
         assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
