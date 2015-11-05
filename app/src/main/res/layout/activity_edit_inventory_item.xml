@@ -125,16 +125,16 @@
         android:text="@string/addInfo"
         android:id="@+id/addInfo"
         android:textSize="20dp"
-        android:layout_alignTop="@+id/AddInfoText"
+        android:layout_below="@+id/shareStatus"
         android:layout_alignParentStart="true" />
 
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/AddInfoText"
-        android:layout_above="@+id/saveInventory"
-        android:layout_alignStart="@+id/shareStatus"
-        android:inputType="text" />
+        android:inputType="text"
+        android:layout_below="@+id/shareStatus"
+        android:layout_toEndOf="@+id/gameConditionText" />
 
 
 </RelativeLayout>
