@@ -43,7 +43,6 @@ public class GameController {
         // TODO: 1. get device-id from user here (the owner of this device has a profile) and 2. search for inventory that belongs to this user. 3. Then check this inventory if it contains this game
         Inventory inventory = user.getInventory();
         return inventory.contains(game);
-
     }
 
     public void editGame(Game game) {

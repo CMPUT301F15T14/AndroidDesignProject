@@ -60,11 +60,12 @@ public class GameControllerTest extends ActivityInstrumentationTestCase2 {
 
         // createGame() should return a Game type! Fix that later in UML. It will also automatically add it to user's inventory.
         // it then launches the activity's edit screen for it.
-        Game game1 = gc.createGame();
+        User user = new User();
+        Game game1 = gc.createGame(user);
         setupGame1(game1);
 
         // It will check for the game object in the user's inventory if it contains the object game then is owner, else not owner.
-        assertTrue(gc.isOwner(game1));
+        assertTrue(gc.isOwner(game1, user));
 
         // should launch the activity's edit screen. Like ur looking at the normal game item's detail and with this BAM editable.
         gc.editGame(game1);
@@ -75,7 +76,7 @@ public class GameControllerTest extends ActivityInstrumentationTestCase2 {
         Bitmap downloadedImage = gc.manualDownloadPhoto(game1);
 
         // removeGame will remove the entry from the inventory.
-        gc.removeGame(game1);
+        gc.removeGame(game1, user);
 
     }
 
