@@ -54,6 +54,10 @@
         <activity
             android:name=".Setting"
             android:label="@string/title_activity_setting" >
+
+            android:name=".AddInventory"
+            android:label="@string/title_activity_add_inventory" >
+
         </activity>
     </application>
 

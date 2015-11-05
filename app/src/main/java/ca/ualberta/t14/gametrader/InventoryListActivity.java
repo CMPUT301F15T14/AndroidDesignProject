@@ -1,9 +1,12 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 
 public class InventoryListActivity extends Activity {
@@ -12,6 +15,16 @@ public class InventoryListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
+
+        Button AddGame= (Button)findViewById(R.id.newInventoryItem);
+
+        AddGame.setOnClickListener(new Button.OnClickListener() {
+            // Navigating to another activity.
+            public void onClick(View arg0) {
+                Intent myIntent = new Intent(InventoryListActivity.this, AddInventory.class);
+                startActivity(myIntent);
+            }
+        });
     }
 
 
