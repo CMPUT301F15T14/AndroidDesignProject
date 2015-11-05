@@ -21,6 +21,7 @@ package ca.ualberta.t14.gametrader;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class Game implements AppObservable {
     private String pictureJsonable;
     private int quantities;
     private final int MAX_BYTES_IMG_SIZE = 65536;
-    private final int COMPRESSION_QUALITY = 100;
+    private final int COMPRESSION_QUALITY = 90;
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
@@ -217,25 +218,39 @@ public class Game implements AppObservable {
 
     /**
      * Sets a picture for the game.
+     * If image given is bigger than 128x128 it gets scaled down with longest edge being 128, the aspect ratio kept same.
      * @param image a Bitmap picture of the game.
-     * @return a Boolean whether the image was set or not. If not it means image is bigger than 65536 bytes or Bitmap was null.
+     * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid.
      */
     public Boolean setPicture(Bitmap image) {
         // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
         // set the volatile bitmap, when resizing: maintains aspect ratio of the image.
-        if (image.getWidth() > 128 || image.getHeight() > 128) {
-            if(image.getWidth() < image.getHeight()) {
-                float aspectRatio = image.getWidth() / image.getHeight();
-                int newHeight = 128;
+        int imgW = image.getWidth();
+        int imgH = image.getHeight();
+        int resizedValue = 128;
+
+        if( imgW <=0 || imgH <= 0) {
+            Log.d("IMAGE FAIL", " Aaaaaa");
+            return Boolean.FALSE;
+        } else if (imgW > resizedValue || imgH > resizedValue) {
+            if(imgW < imgH) {
+                float aspectRatio = ((float) imgW) / imgH;
+                int newHeight = resizedValue;
                 int newWidth = Math.round(aspectRatio * newHeight);
-                picture = Bitmap.createScaledBitmap(image,newWidth, newHeight, Boolean.TRUE);
-            } else if(image.getWidth() > image.getHeight()) {
-                float aspectRatio = image.getHeight() / image.getWidth();
-                int newWidth = 128;
-                int newHeight = Math.round(aspectRatio * newWidth);
+                Log.d("IMAGE REEEEESIZE", " H" + imgH + " W" + imgW + " newH" + newHeight + " newW" + newWidth + " Ratio:" + aspectRatio );
                 picture = Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+
+            } else if(imgW > imgH) {
+                float aspectRatio = ((float) imgH) / imgW;
+                int newWidth = resizedValue;
+                int newHeight = Math.round(aspectRatio * newWidth);
+
+                Log.d("IMAGE REEEEESIZE", " H" + imgH + " W" + imgW + " newH" + newHeight + " newW" + newWidth + " Ratio:" + aspectRatio );
+                picture = Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+
             }
         } else {
+            Log.d("IMAGE NOTRESIZEEE", " Aaaaaa");
             picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
         }
 

@@ -64,17 +64,24 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
         Activity activity = getActivity();
 
-        // Test an image that is too big, this jpeg is 219.8kb
+        int resizedMaxVal = 128;
+
+        // Test an image that is too big and gets resized with width being longest edge
         Bitmap testImage1 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.big_game);
-        assertFalse(item.setPicture(testImage1));
+        assertTrue(item.setPicture(testImage1));
+        assertEquals(resizedMaxVal, item.getPicture().getWidth());
 
-        // Test an image that is ok size, this jpeg is 12.7kb
+        // Test an image that has no resizing issue.
         Bitmap testImage2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.best_game_ok);
-        Log.d("sizeBytes--testImage2b", getImageJpgSize(testImage2).toString());
+        assertTrue(item.setPicture(testImage2));
 
-        // a different empty image
-        Bitmap testImage3 = Bitmap.createBitmap(displayMetrics, 200, 200, Bitmap.Config.ARGB_8888);
+        // Test image that is too big and gets resized with height being longest edge
+        Bitmap testImage3 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.game_goty);
+        assertTrue(item.setPicture(testImage3));
+        assertEquals(resizedMaxVal, item.getPicture().getHeight());
 
+        // Images being actually changed
+        assertFalse(testImage2.sameAs(item.getPicture()));
         assertTrue(item.setPicture(testImage2));
         assertTrue(testImage2.sameAs(item.getPicture()));
 
@@ -86,21 +93,18 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         item.setPicture(testImage3);
         assertFalse(origImage.sameAs(item.getPicture()));
 
-        Log.d("sizeBytes---testImage2", getImageJpgSize(testImage2).toString());
-
         Log.d("sizeBytes---testImage1", getImageJpgSize(testImage1).toString());
+        Log.d("sizeBytes---testImage2", getImageJpgSize(testImage2).toString());
         Log.d("sizeBytes---testImage3", getImageJpgSize(testImage3).toString());
 
         assertTrue(item.setPictureFromJson(json));
         Log.d("sizeBytes---getPic", getImageJpgSize(item.getPicture()).toString());
         Log.d("sizeBytes---origImage", getImageJpgSize(origImage).toString());
 
-
-
-        //Todo: resize feature instead of rejecting image
-
-        assertTrue(origImage.sameAs(item.getPicture()));
+        // json and resulting image are same.
         assertSame(json, item.getPictureJson());
+        assertTrue(origImage.sameAs(item.getPicture()));
+
     }
 
     // TODO: Test Cases testing the Game's observable and observing.
