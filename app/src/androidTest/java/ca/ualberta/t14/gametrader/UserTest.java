@@ -14,7 +14,7 @@ import android.widget.EditText;
  */
 public class UserTest extends ActivityInstrumentationTestCase2 {
 
-    public UserTest() {
+    /*public UserTest() {
         super(EditProfileActivity.class);
     }
 

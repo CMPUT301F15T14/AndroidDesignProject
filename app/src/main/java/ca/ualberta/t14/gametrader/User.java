@@ -71,4 +71,6 @@ public class User implements Serializable, AppObservable {
             obs.appNotify(this);
         }
     }
+
+    Inventory inventory;
 }
