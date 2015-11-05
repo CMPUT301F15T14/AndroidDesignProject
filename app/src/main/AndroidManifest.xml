@@ -51,6 +51,10 @@
             android:name=".SearchPageActivity"
             android:label="@string/title_activity_search_page" >
         </activity>
+        <activity
+            android:name=".AddInventory"
+            android:label="@string/title_activity_add_inventory" >
+        </activity>
     </application>
 
 </manifest>

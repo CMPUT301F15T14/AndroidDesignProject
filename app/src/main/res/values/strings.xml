@@ -21,5 +21,31 @@
     <string name="title_activity_search_page">SearchPage</string>
     <string name="AddInventory">Add Game to Inventory</string>
     <string name="invetoryList">Inventory List</string>
+    <string name="title_activity_add_inventory">AddInventory</string>
+    <string name="additionalInfo">Additional Info:</string>
+    <string name="Address">Address:</string>
+    <string name="adressString">Address</string>
+    <string name="phone">Phone:</string>
+    <string name="contactInfo">Contact Information:</string>
+    <string name="condition">Condition:</string>
+    <string name="owner">Owner:</string>
+    <string name="status">Status:</string>
+    <string name="conditionString">Game Condition</string>
+    <string name="ownerString">Game Owner</string>
+    <string name="statusString">Game Status</string>
+    <string name="GameTitleString">Item Title</string>
+    <string name="shareStatus">Share Status</string>
+    <string name="gameCondition">Game Condition</string>
+    <string name="gameConsole">Game Console:</string>
+    <string name="save">Save</string>
+    <string name="uploadImage">Upload image</string>
+    <string name="gameTitle">Game Title</string>
+    <string name="addInfo">Additional Info</string>
+    <string name="home">Home</string>
+    <string name="myProfile">My Profile</string>
+    <string name="myInventory">My Inventory</string>
+    <string name="friends">Friends</string>
+    <string name="pendingTrades">Pending Trades</string>
+    <string name="search">Search</string>
 
 </resources>

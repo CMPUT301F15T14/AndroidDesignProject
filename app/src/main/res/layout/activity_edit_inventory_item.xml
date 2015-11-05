@@ -10,9 +10,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/inventoryItemTitle"
-        android:text="Item Title"
+        android:text="@string/GameTitleString"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/uploadImage" />
+        android:layout_alignStart="@+id/uploadImage"
+        android:inputType="text" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -29,22 +30,14 @@
         />
 
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gameTitle"
-        android:text="Game Title"
-        android:layout_below="@+id/uploadImage"
-        android:layout_alignStart="@+id/uploadImage" />
-
     <!-- regarding spinners: http://developer.android.com/guide/topics/ui/controls/spinner.html -->
     <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gameConsole"
-        android:layout_below="@+id/gameTitle"
-        android:layout_alignStart="@+id/gameTitle"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/uploadImage"
+        android:layout_alignStart="@+id/uploadImage" />
 
     <Spinner
         android:layout_width="wrap_content"
@@ -58,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Item Title"
+        android:text="@string/gameTitle"
         android:id="@+id/inventoryItemTitleText"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -67,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Upload image"
+        android:text="@string/uploadImage"
         android:id="@+id/uploadImageText"
         android:layout_below="@+id/inventoryItemTitle"
         android:layout_alignParentStart="true" />
@@ -76,25 +69,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Game Title"
-        android:id="@+id/gameTitleText"
-        android:layout_below="@+id/uploadImage"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Game Console"
+        android:text="@string/gameConsole"
         android:id="@+id/gameConsoleText"
-        android:layout_below="@+id/gameTitle"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/uploadImage" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Game Condition"
+        android:text="@string/gameCondition"
         android:id="@+id/gameConditionText"
         android:layout_below="@+id/gameConsole"
         android:layout_alignParentStart="true" />
@@ -103,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Share Status"
+        android:text="@string/shareStatus"
         android:id="@+id/shareStatusText"
         android:layout_below="@+id/gameCondition"
         android:layout_alignParentStart="true" />
@@ -129,10 +113,28 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/saveInventoryItemButton"
+        android:text="@string/save"
+        android:id="@+id/saveInventory"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/addInfo"
+        android:id="@+id/addInfo"
+        android:textSize="20dp"
+        android:layout_alignTop="@+id/AddInfoText"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/AddInfoText"
+        android:layout_above="@+id/saveInventory"
+        android:layout_alignStart="@+id/shareStatus"
+        android:inputType="text" />
 
 
 </RelativeLayout>
