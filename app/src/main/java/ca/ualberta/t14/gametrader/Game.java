@@ -239,11 +239,7 @@ public class Game implements AppObservable {
             picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
         }
 
-        // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        picture.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        pictureJsonable = Base64.encodeToString(b, Base64.DEFAULT);
+        pictureJsonable = makeBitmapJsonable(picture);
 
         notifyAllObservers();
         return Boolean.TRUE;
@@ -269,6 +265,14 @@ public class Game implements AppObservable {
         image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
         return new Long(b.length);
+    }
+
+    private String makeBitmapJsonable(Bitmap image) {
+        // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
     private Bitmap preserveAspectRatio(Bitmap image) {
