@@ -45,6 +45,6 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
         getInstrumentation().waitForIdleSync();
 
         assertEquals("this is not correct", activity.getUser().getUserName());
-        //assertEquals("one", "two");*/
-    }
+        //assertEquals("one", "two");
+    }*/
 }
