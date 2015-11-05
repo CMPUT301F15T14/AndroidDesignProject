@@ -63,9 +63,9 @@
         android:layout_marginBottom="16dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Settings"
+        android:text="@string/setting"
         android:id="@+id/setting"
         android:layout_below="@+id/pendingTrades"
         android:layout_centerHorizontal="true"

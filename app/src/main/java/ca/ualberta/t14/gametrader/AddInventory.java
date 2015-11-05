@@ -1,6 +1,5 @@
 package ca.ualberta.t14.gametrader;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
@@ -16,10 +15,8 @@ public class AddInventory extends Activity {
 
         Button saveInventory=(Button)findViewById(R.id.saveInventory);
         saveInventory.setOnClickListener(new Button.OnClickListener() {
-            // Navigating to another activity.
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(AddInventory.this, InventoryListActivity.class);
-                startActivity(myIntent);
+                finish();
             }
         });
 

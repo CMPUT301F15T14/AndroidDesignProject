@@ -23,7 +23,7 @@
         android:id="@+id/inventoryList"
         android:layout_below="@+id/newInventoryItem"
         android:layout_alignParentStart="true"
-        android:background="#30605151"
+        android:background="#0e97f1"
         android:visibility="visible" />
 
     <Button
