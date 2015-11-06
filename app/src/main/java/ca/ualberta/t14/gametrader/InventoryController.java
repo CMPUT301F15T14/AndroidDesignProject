@@ -18,6 +18,7 @@ package ca.ualberta.t14.gametrader;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+// Controller class of Inventory Class.
 public class InventoryController {
     private Inventory stock;
     public InventoryController(Inventory inventory,User owner){
