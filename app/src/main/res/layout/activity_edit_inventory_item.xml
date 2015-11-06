@@ -4,52 +4,59 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="ca.ualberta.t14.gametrader.EditInventoryItemActivity">
+    tools:context="ca.ualberta.t14.gametrader.EditInventoryItemActivity"
+    android:background="#0e97f1"
+    android:id="@+id/editItemRelativeLayout">
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/inventoryItemTitle"
-        android:text="Item Title"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/iploadImage" />
+        android:layout_alignStart="@+id/uploadImage"
+        android:inputType="text"
+        android:textSize="28dp"
+        android:minWidth="50dp" />
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/iploadImage"
-        android:layout_below="@+id/inventoryItemTitle"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/uploadImage"
+        android:minHeight="128dp"
+        android:minWidth="128dp"
+        android:maxWidth="128dp"
+        android:maxHeight="128dp"
+        android:layout_alignTop="@+id/uploadImageText"
+        android:layout_toEndOf="@+id/gameConditionText"
+        android:clickable="true"
+        android:contentDescription="Picure of the game."
+        android:scaleType="fitCenter" />
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/gameTitle"
-        android:text="Game Title"
-        android:layout_below="@+id/iploadImage"
-        android:layout_alignStart="@+id/iploadImage" />
 
-    <EditText
+    <!-- regarding spinners: http://developer.android.com/guide/topics/ui/controls/spinner.html -->
+    <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gameConsole"
-        android:text="Console"
-        android:layout_below="@+id/gameTitle"
-        android:layout_alignStart="@+id/gameTitle" />
 
-    <EditText
+        android:layout_below="@+id/uploadImage"
+        android:layout_alignStart="@+id/uploadImage"
+        android:spinnerMode="dropdown"
+        android:entries="@array/platforms_array" />
+
+    <Spinner
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gameCondition"
-        android:text="\?/10"
         android:layout_below="@+id/gameConsole"
-        android:layout_alignStart="@+id/gameConsole" />
+        android:layout_alignStart="@+id/gameConsole"
+        android:entries="@array/conditions_array" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Item Title"
+        android:text="@string/gameTitle"
         android:id="@+id/inventoryItemTitleText"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -58,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Upload image"
+        android:text="@string/uploadImage"
         android:id="@+id/uploadImageText"
         android:layout_below="@+id/inventoryItemTitle"
         android:layout_alignParentStart="true" />
@@ -67,25 +74,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Game Title"
-        android:id="@+id/gameTitleText"
-        android:layout_below="@+id/iploadImage"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Game Console"
+        android:text="@string/gameConsole"
         android:id="@+id/gameConsoleText"
-        android:layout_below="@+id/gameTitle"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/uploadImage" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Game Condition"
+        android:text="@string/gameCondition"
         android:id="@+id/gameConditionText"
         android:layout_below="@+id/gameConsole"
         android:layout_alignParentStart="true" />
@@ -94,7 +92,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Share Status"
+        android:text="@string/shareStatus"
         android:id="@+id/shareStatusText"
         android:layout_below="@+id/gameCondition"
         android:layout_alignParentStart="true" />
@@ -110,19 +108,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Public"
+            android:textColor="#000000"
             android:checked="true" />
         <RadioButton android:id="@+id/sharePrivate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Private"/>
+            android:text="Private"
+            android:textColor="#000000"/>
         </RadioGroup>
 
     <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:id="@+id/saveInventory"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:clickable="true" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/saveInventoryItemButton"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/addInfo"
+        android:id="@+id/addInfo"
+        android:textSize="20dp"
+        android:layout_below="@+id/shareStatus"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/AddInfoText"
+        android:inputType="textMultiLine"
+        android:layout_below="@+id/shareStatus"
+        android:layout_toEndOf="@+id/gameConditionText" />
+
 
 </RelativeLayout>

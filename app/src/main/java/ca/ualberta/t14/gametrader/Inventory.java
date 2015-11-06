@@ -35,4 +35,8 @@ public class Inventory {
     public User getOwner() {
         return owner;
     }
+
+    public ArrayList<Game> getAllGames() {
+        return gameCollections;
+    }
 }

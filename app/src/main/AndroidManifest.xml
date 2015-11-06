@@ -25,11 +25,13 @@
         </activity>
         <activity android:name=".recentItems" >
             android:name=".FriendsListActivity"
-            android:label="@string/title_activity_friends_list" >
+            android:label="@string/title_activity_friends_list"
+            android:theme="@style/ListFont">
         </activity>
         <activity
             android:name=".InventoryListActivity"
-            android:label="@string/title_activity_inventory_list" >
+            android:label="@string/title_activity_inventory_list"
+            android:theme="@style/ListFont">
         </activity>
         <activity
             android:name=".ProfileActivity"
@@ -50,6 +52,10 @@
         <activity
             android:name=".SearchPageActivity"
             android:label="@string/title_activity_search_page" >
+        </activity>
+        <activity
+            android:name=".Setting"
+            android:label="@string/title_activity_setting" >
         </activity>
     </application>
 

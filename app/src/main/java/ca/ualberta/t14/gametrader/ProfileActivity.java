@@ -23,14 +23,13 @@ public class ProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        user = (User)getIntent().getSerializableExtra("User");
+        user = UserSingleton.getInstance().getUser();
 
         Button editprof = (Button) findViewById(R.id.editProfile);
         editprof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-                intent.putExtra("User", user);
                 startActivity(intent);
             }
         });

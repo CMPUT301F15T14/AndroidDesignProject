@@ -27,11 +27,16 @@ import java.util.ArrayList;
 
 public class User implements Serializable, AppObservable {
     private volatile ArrayList<AppObserver> observers;
+    private Inventory inventory;
+
+    ArrayList<User> friendList;
+    ArrayList<User> pendingFriendList;
 
     public User() {
         // if a user file already exists simply load it from the file
         // otherwise, create a new user file and prompt the user to create a user name
         observers = new ArrayList<AppObserver>();
+        inventory = new Inventory();
     }
 
     /**
@@ -108,8 +113,14 @@ public class User implements Serializable, AppObservable {
 
     private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
 
-    ArrayList<User> friendList;
-    ArrayList<User> pendingFriendList;
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
 
     /**
      * Adds a class to the observer's list
@@ -127,6 +138,4 @@ public class User implements Serializable, AppObservable {
             obs.appNotify(this);
         }
     }
-
-    Inventory inventory;
 }

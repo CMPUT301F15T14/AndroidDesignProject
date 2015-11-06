@@ -42,9 +42,9 @@ public class ProfileController {
      * @param phoneNumber is a String containing the updated phone number.
      */
     void SaveProfileEdits(String userName, String email, String address, String phoneNumber){
-        model.setUserName(userName);
-        model.setEmail(email);
-        model.setAddress(address);
-        model.setPhoneNumber(phoneNumber);
+        UserSingleton.getInstance().getUser().setUserName(userName);
+        UserSingleton.getInstance().getUser().setEmail(email);
+        UserSingleton.getInstance().getUser().setAddress(address);
+        UserSingleton.getInstance().getUser().setPhoneNumber(phoneNumber);
     }
 }
