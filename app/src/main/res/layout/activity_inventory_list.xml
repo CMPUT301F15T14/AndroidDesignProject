@@ -4,28 +4,39 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="ca.ualberta.t14.gametrader.InventoryListActivity">
+    tools:context="ca.ualberta.t14.gametrader.InventoryListActivity"
+    android:background="@drawable/bluebackground">
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
+
         android:text="Inventory List"
+        android:textColor="#ffffff"
+
         android:id="@+id/inventoryListText"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/inventoryList"
         android:layout_below="@+id/newInventoryItem"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:background="#30605151"
+        android:visibility="visible" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Create Inventory"
+        android:textColor="#ffffff"
+
         android:id="@+id/newInventoryItem"
         android:layout_alignParentTop="true"
         android:layout_alignEnd="@+id/inventoryList" />

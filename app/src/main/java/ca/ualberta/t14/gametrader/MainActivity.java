@@ -10,17 +10,22 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
+    User user = new User(); // the constructor automatically handles loading of saved data
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ProfileController profCon = new ProfileController(user);
+        profCon.SaveProfileEdits("n00bpwnr", "pwnsnoobs@gmail.com", "603 30 Carleton Avenue", "587-877-2072");
+
         Button profile = (Button) findViewById(R.id.myProfile);
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("User", user);
                 startActivity(intent);
             }
         });
@@ -43,8 +48,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button pendtrades = (Button) findViewById(R.id.pendingTrades);
-        pendtrades.setOnClickListener(new View.OnClickListener() {
+        Button pendTrades = (Button) findViewById(R.id.pendingTrades);
+        pendTrades.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
@@ -57,6 +62,15 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchPageActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button settings = (Button) findViewById(R.id.setting);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, Setting.class);
                 startActivity(intent);
             }
         });

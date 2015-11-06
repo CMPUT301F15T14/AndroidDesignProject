@@ -53,7 +53,7 @@ public class Game implements AppObservable {
     private String title;
     private Boolean sharableStatus;
     private String additionalInfo;
-    private Bitmap picture;
+    public Bitmap picture;
     private int quantities;
 
     // volatile because GSON shouldn't store this.
@@ -72,6 +72,7 @@ public class Game implements AppObservable {
         quantities = 0;
         observers = new ArrayList<AppObserver>();
     }
+
 
     /**
      * Returns the platform the game was intended to run on.
