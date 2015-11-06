@@ -1,3 +1,13 @@
+/*
+ * Copyright 2015 Aaron Aranson
+ * Copyright 2015 Ryan Satyabrata
+ * Copyright 2015 Suzanne Boulet
+ * Copyright 2015 Michael Xi
+ * Copyright 2015 Tianyu Hu
+ * Copyright 2015 Joel Johnston
+ * Copyright 2015 Brigitte Ng
+ */
+
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
@@ -11,7 +21,23 @@ import android.widget.Toast;
 public class Setting extends Activity {
 
     private SettingsController controller;
-
+    /** 
+     * This function is switch ON or OFF the mode of the download the picture for the items 
+     * This state information includes:  * <ol>The Setting has the following features and function: 
+     * <ui> 
+     * <li>The function turn on the mode of download pictures for items 
+     * <li>The function turn off the mode of download pictures for items 
+     * <li>if user chooses to enable download the pictures for items, the switch turns ON. 
+     * <li>Else if, the switch will be off and disable download pictures for items. 
+     * <li>Once the switch turn ON or OFF, the controller will change the value of function 
+     * <li> which called EnableDownloadPhotos and DisableDownloadPhotos 
+     * </ui> 
+     * </ol> 
+     * 
+     * @author Tianyu Hu 
+     * @version 1.0 
+     * @since 2015-11-03 
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
