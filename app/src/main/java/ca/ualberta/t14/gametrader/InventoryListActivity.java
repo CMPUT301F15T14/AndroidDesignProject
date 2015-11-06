@@ -43,7 +43,7 @@ public class InventoryListActivity extends Activity {
                 Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
                 ObjParseSingleton.getInstance().addObject("game", g);
 
-                Intent myIntent = new Intent(InventoryListActivity.this, EditInventoryItemActivity.class);
+                Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
 
                 startActivity(myIntent);
             }
