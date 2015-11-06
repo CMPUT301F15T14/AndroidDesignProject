@@ -33,6 +33,16 @@ public class InventoryListActivity extends Activity {
                 startActivity(myIntent);
             }
         });
+
+        Button Itemdetail= (Button)findViewById(R.id.GameList);
+        //Setting the button helps navigating to InventoryItemActivity.
+        Itemdetail.setOnClickListener(new Button.OnClickListener() {
+            // Navigating to another activity.
+            public void onClick(View arg0) {
+                Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
+                startActivity(myIntent);
+            }
+        });
     }
 
     @Override
