@@ -57,10 +57,6 @@
             android:name=".Setting"
             android:label="@string/title_activity_setting" >
         </activity>
-        <activity
-            android:name=".FriendsListActivity"
-            android:label="@string/title_activity_friends_list" >
-        </activity>
     </application>
 
 </manifest>

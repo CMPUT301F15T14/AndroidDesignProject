@@ -20,7 +20,6 @@ package ca.ualberta.t14.gametrader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Parcel;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -62,7 +61,6 @@ public class Game implements AppObservable {
     //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
     //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
     //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
-
     volatile private Bitmap picture;
     private String pictureJsonable;
 
@@ -74,8 +72,8 @@ public class Game implements AppObservable {
     private volatile ArrayList<AppObserver> observers;
 
 
-    /**RESIZE_VALUE
-     * Constructor for the Game class.Initializes its variables.
+    /**
+     * Constructor for the Game class. Initializes its variables.
      */
     public Game() {
         platform = Platform.OTHER;
@@ -228,7 +226,8 @@ public class Game implements AppObservable {
 
     /**
      * Sets a picture for the game.
-     * If image given is bigger than 128x128 it gets scaled down with longest edge becoming 128, the aspect ratio is kept same.
+     * If image given is bigger than 200x200 it gets scaled down with longest edge becoming 200, the aspect ratio is kept same.
+     * It also compresses the Bitmap to JPG with 85% compression quality so its JSON-able and stores the JSON to the game object.
      * @param image a Bitmap picture of the game.
      * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
      */
