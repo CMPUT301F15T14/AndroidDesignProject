@@ -8,10 +8,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 
 public class ProfileActivity extends Activity {
-    User user;
+    public static String userProfile = "MainUserProfile";
+
+    ProfileController profileController;
 
     TextView userNameView;
     TextView phoneView;
@@ -23,15 +28,34 @@ public class ProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        user = (User)getIntent().getSerializableExtra("User");
+        addressView = (TextView) findViewById(R.id.addressDisplay);
+        emailView = (TextView) findViewById(R.id.emailDisplay);
+        phoneView = (TextView) findViewById(R.id.phoneDisplay);
+        userNameView = (TextView) findViewById(R.id.userNameDisplay);
+
+        User mainUser = new User();
+        try {
+            mainUser = (User) mainUser.loadJson(userProfile, getApplicationContext());
+            addressView.setText(mainUser.getAddress());
+            emailView.setText(mainUser.getEmail());
+            phoneView.setText(mainUser.getPhoneNumber());
+            userNameView.setText(mainUser.getUserName());
+
+            //Toast.makeText(this, mainUser.getAddress(), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
 
         Button editprof = (Button) findViewById(R.id.editProfile);
         editprof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-                intent.putExtra("User", user);
+                //intent.putExtra("User", user);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -41,20 +65,11 @@ public class ProfileActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileActivity.this, InventoryListActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
-        userNameView = (TextView) findViewById(R.id.userNameDisplay);
-        userNameView.setText(user.getUserName());
 
-        phoneView = (TextView) findViewById(R.id.phoneDisplay);
-        phoneView.setText(user.getPhoneNumber());
-
-        emailView = (TextView) findViewById(R.id.emailDisplay);
-        emailView.setText(user.getEmail());
-
-        addressView = (TextView) findViewById(R.id.addressDisplay);
-        addressView.setText(user.getAddress());
     }
 
 
