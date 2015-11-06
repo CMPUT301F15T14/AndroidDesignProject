@@ -15,7 +15,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/uploadImage"
         android:inputType="text"
-        android:textSize="28dp" />
+        android:textSize="28dp"
+        android:minWidth="50dp" />
 
     <ImageButton
         android:layout_width="wrap_content"

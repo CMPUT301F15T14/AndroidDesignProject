@@ -39,8 +39,15 @@ public class InventoryListActivity extends Activity {
         AddGame.setOnClickListener(new Button.OnClickListener() {
             // Navigating to another activity.
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(InventoryListActivity.this, AddInventory.class);
+
+                GameController gc = new GameController();
+                Game freshGame = gc.createGame(UserSingleton.getInstance().getUser());
+                ObjParseSingleton.getInstance().addObject("game", freshGame);
+
+                Intent myIntent = new Intent(InventoryListActivity.this, EditInventoryItemActivity.class);
+
                 startActivity(myIntent);
+
             }
         });
 
