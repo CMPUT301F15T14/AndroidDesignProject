@@ -25,7 +25,8 @@ import java.util.ArrayList;
  * Represents a user (one for each phone accessing the app) and their related information (profile).
  */
 
-public class User implements Serializable, AppObservable {
+public class User extends FileIO implements Serializable, AppObservable {
+
     private volatile ArrayList<AppObserver> observers;
     private Inventory inventory;
 
