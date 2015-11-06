@@ -12,10 +12,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class InventoryListActivity extends Activity {
 
-    private String mobileArray[]={"Game1","Game2","Game3"};
+    private ArrayList<String> mobileArray;
     private ListView GameList;
     private ArrayAdapter<String> adapter;
 
@@ -23,6 +25,13 @@ public class InventoryListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
+
+        mobileArray = new ArrayList<String>();
+        //later add observer observing the inventory:
+        mobileArray.clear();
+        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+            mobileArray.add(each.getTitle());
+        }
 
         GameList=(ListView)findViewById(R.id.inventoryList);
         //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
@@ -61,6 +70,14 @@ public class InventoryListActivity extends Activity {
         GameList.setAdapter(adapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mobileArray.clear();
+        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+            mobileArray.add(each.getTitle());
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
