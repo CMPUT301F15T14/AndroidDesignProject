@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class InventoryListActivity extends Activity {
@@ -23,6 +25,14 @@ public class InventoryListActivity extends Activity {
         setContentView(R.layout.activity_inventory_list);
 
         GameList=(ListView)findViewById(R.id.inventoryList);
+        //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
+        GameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            // Navigating to InventoryItemActivity.
+            public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
+                Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
+                startActivity(myIntent);
+            }
+        });
 
         Button AddGame= (Button)findViewById(R.id.newInventoryItem);
         //Setting the button helps navigating to AddInventory Activity.
@@ -33,6 +43,8 @@ public class InventoryListActivity extends Activity {
                 startActivity(myIntent);
             }
         });
+
+
     }
 
     @Override
