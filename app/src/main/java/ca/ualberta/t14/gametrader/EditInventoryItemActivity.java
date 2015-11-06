@@ -69,6 +69,9 @@ public class EditInventoryItemActivity extends Activity {
         imageButton = (ImageButton) findViewById(R.id.uploadImage);
 
         g = (Game) ObjParseSingleton.getInstance().popObject("game");
+        if( g == null) {
+            g = new Game();
+        }
 
         gc = new GameController();
 

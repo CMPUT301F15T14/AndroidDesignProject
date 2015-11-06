@@ -27,6 +27,9 @@ public class InventoryItemActivity extends Activity {
         setContentView(R.layout.activity_inventory_item);
 
         game = (Game) ObjParseSingleton.getInstance().popObject("game");
+        if( game == null) {
+            game = new Game();
+        }
 
         gameTitle = (TextView) findViewById(R.id.gameInfoTitle);
         platform = (TextView) findViewById(R.id.gameInfoConsole);
