@@ -38,7 +38,13 @@ public class InventoryListActivity extends Activity {
         GameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
             public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
-                Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
+
+                // assuming the adapter view order is same as the array game list order
+                Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
+                ObjParseSingleton.getInstance().addObject("game", g);
+
+                Intent myIntent = new Intent(InventoryListActivity.this, EditInventoryItemActivity.class);
+
                 startActivity(myIntent);
             }
         });
