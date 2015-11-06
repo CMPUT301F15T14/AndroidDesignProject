@@ -6,18 +6,26 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 
 public class InventoryListActivity extends Activity {
+
+    private String mobileArray[]={"Game1","Game2","Game3"};
+    private ListView GameList;
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
 
-        Button AddGame= (Button)findViewById(R.id.newInventoryItem);
+        GameList=(ListView)findViewById(R.id.inventoryList);
 
+        Button AddGame= (Button)findViewById(R.id.newInventoryItem);
+        //Setting the button helps navigating to AddInventory Activity.
         AddGame.setOnClickListener(new Button.OnClickListener() {
             // Navigating to another activity.
             public void onClick(View arg0) {
@@ -25,6 +33,13 @@ public class InventoryListActivity extends Activity {
                 startActivity(myIntent);
             }
         });
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        adapter=new ArrayAdapter<String>(this, R.layout.text_view,R.id.GameList,mobileArray);
+        GameList.setAdapter(adapter);
     }
 
 
