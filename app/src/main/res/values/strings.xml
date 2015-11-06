@@ -12,8 +12,8 @@
     <string name="notListed">Not Listed Item</string>
     <string name="myItems">My Items</string>
 
-    <string name="title_activity_friends_list">FriendsList</string>
-    <string name="title_activity_inventory_list">InventoryList</string>
+    <string name="title_activity_friends_list">Friends List</string>
+    <string name="title_activity_inventory_list">Inventory List</string>
     <string name="title_activity_profile">Profile</string>
     <string name="title_activity_edit_profile">EditProfile</string>
     <string name="title_activity_inventory_item">InventoryItem</string>
