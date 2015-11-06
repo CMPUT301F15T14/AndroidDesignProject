@@ -20,6 +20,7 @@ package ca.ualberta.t14.gametrader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Parcel;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -67,6 +68,7 @@ public class Game implements AppObservable {
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
 
+
     /**RESIZE_VALUE
      * Constructor for the Game class.Initializes its variables.
      */
@@ -80,6 +82,7 @@ public class Game implements AppObservable {
         pictureJsonable = "";
         quantities = 0;
         observers = new ArrayList<AppObserver>();
+
     }
 
 

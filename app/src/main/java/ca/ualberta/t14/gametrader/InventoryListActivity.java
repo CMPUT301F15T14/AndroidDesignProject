@@ -12,10 +12,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 
 public class InventoryListActivity extends Activity {
 
-    private String mobileArray[]={"Game1","Game2","Game3"};
+    private ArrayList<String> mobileArray;
     private ListView GameList;
     private ArrayAdapter<String> adapter;
 
@@ -24,12 +26,25 @@ public class InventoryListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
 
+        mobileArray = new ArrayList<String>();
+        //later add observer observing the inventory:
+        mobileArray.clear();
+        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+            mobileArray.add(each.getTitle());
+        }
+
         GameList=(ListView)findViewById(R.id.inventoryList);
         //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
         GameList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
             public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
+
+                // assuming the adapter view order is same as the array game list order
+                Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
+                ObjParseSingleton.getInstance().addObject("game", g);
+
                 Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
+
                 startActivity(myIntent);
             }
         });
@@ -39,8 +54,15 @@ public class InventoryListActivity extends Activity {
         AddGame.setOnClickListener(new Button.OnClickListener() {
             // Navigating to another activity.
             public void onClick(View arg0) {
-                Intent myIntent = new Intent(InventoryListActivity.this, AddInventory.class);
+
+                GameController gc = new GameController();
+                Game freshGame = gc.createGame(UserSingleton.getInstance().getUser());
+                ObjParseSingleton.getInstance().addObject("game", freshGame);
+
+                Intent myIntent = new Intent(InventoryListActivity.this, EditInventoryItemActivity.class);
+
                 startActivity(myIntent);
+
             }
         });
 
@@ -54,6 +76,14 @@ public class InventoryListActivity extends Activity {
         GameList.setAdapter(adapter);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mobileArray.clear();
+        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+            mobileArray.add(each.getTitle());
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
