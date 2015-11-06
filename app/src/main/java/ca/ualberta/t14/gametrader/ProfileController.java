@@ -41,7 +41,7 @@ public class ProfileController {
      * @param address is a String containing the updated address.
      * @param phoneNumber is a String containing the updated phone number.
      */
-    void SaveProfileEdits(String userName, String email, String address, String phoneNumber){
+    void SaveProfileEdits(String userName, String email, String address, String phoneNumber) {
         UserSingleton.getInstance().getUser().setUserName(userName);
         UserSingleton.getInstance().getUser().setEmail(email);
         UserSingleton.getInstance().getUser().setAddress(address);
