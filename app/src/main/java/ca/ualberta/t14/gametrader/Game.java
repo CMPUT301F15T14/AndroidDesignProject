@@ -19,7 +19,11 @@
 package ca.ualberta.t14.gametrader;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Parcel;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -53,13 +57,24 @@ public class Game implements AppObservable {
     private String title;
     private Boolean sharableStatus;
     private String additionalInfo;
-    public Bitmap picture;
+
+    // TODO: many pictures to 1 item... see eclass prof. hindle's response:
+    //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
+    //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
+    //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
+
+    volatile private Bitmap picture;
+    private String pictureJsonable;
+
     private int quantities;
+    private final int COMPRESSION_QUALITY = 85;
+    private final int RESIZE_VALUE = 200;
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
 
-    /**
+
+    /**RESIZE_VALUE
      * Constructor for the Game class.Initializes its variables.
      */
     public Game() {
@@ -69,8 +84,10 @@ public class Game implements AppObservable {
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;
+        pictureJsonable = "";
         quantities = 0;
         observers = new ArrayList<AppObserver>();
+
     }
 
 
@@ -185,13 +202,57 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Sets a picture for the game.
-     * @param image a Bitmap picture of the game.
+     * Get the string representation of the bitmap.
+     * @return a string containing the byteArray of the bitmap encoded as a string in Base64.
      */
-    public void setPicture(Bitmap image) {
-        picture = image;
-        notifyAllObservers();
+    public String getPictureJson() {
+        return pictureJsonable;
     }
+
+    /**
+     * sets the Bitmap of the game object to the json-able image given.
+     * @param jsonBitmap a string containing the byteArray of the bitmap encoded as a string in Base64.
+     * @return a Boolean: whether or not the image data could be decoded.
+     */
+    public Boolean setPictureFromJson(String jsonBitmap) {
+        //taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        byte[] decodedString = Base64.decode(jsonBitmap, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        if(decodedByte != null) {
+            picture = decodedByte.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
+            // set the json image to the current image.
+            pictureJsonable = jsonBitmap;
+        }
+        return decodedByte != null;
+    }
+
+    /**
+     * Sets a picture for the game.
+     * If image given is bigger than 128x128 it gets scaled down with longest edge becoming 128, the aspect ratio is kept same.
+     * @param image a Bitmap picture of the game.
+     * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
+     */
+    public Boolean setPicture(Bitmap image) {
+        // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
+        // 400x400 seems acceptable = below 65536 bytes when compress jpg 85% in gimp. Try 350x350 and hope its always below 65536 bytes
+        // set the volatile bitmap, when resizing: maintains aspect ratio of the image.
+
+        if( image.getWidth() <=0 || image.getHeight() <= 0) {
+            return Boolean.FALSE;
+        } else if (image.getWidth() > RESIZE_VALUE || image.getHeight() > RESIZE_VALUE) {
+            // preserve aspect ratio of image
+            // TODO: maybe make it so you can put in image and if filesize is bigger than 65kb then downscale to longest side 500px and then keep checking while loop filesize>65kb and decrease downscale 50px a time if. Can take long time... because compress method is slow tho.
+            picture = preserveAspectRatio(image);
+        } else {
+            picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
+        }
+
+        pictureJsonable = makeBitmapJsonable(picture);
+
+        notifyAllObservers();
+        return Boolean.TRUE;
+    }
+
 
     /**
      * The Game Model is observable thus anything wanting to obsserve can be added to the watch list.
@@ -205,6 +266,42 @@ public class Game implements AppObservable {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
+    }
+
+    private Long getImageJpgSize(Bitmap image) {
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        return new Long(b.length);
+    }
+
+    private String makeBitmapJsonable(Bitmap image) {
+        // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    private Bitmap preserveAspectRatio(Bitmap image) {
+        int imgW = image.getWidth();
+        int imgH = image.getHeight();
+
+        if(imgW < imgH) {
+            float aspectRatio = ((float) imgW) / imgH;
+            int newHeight = RESIZE_VALUE;
+            int newWidth = Math.round(aspectRatio * newHeight);
+            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+        } else if(imgW > imgH) {
+            float aspectRatio = ((float) imgH) / imgW;
+            int newWidth = RESIZE_VALUE;
+            int newHeight = Math.round(aspectRatio * newWidth);
+            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+        } else if(imgW == imgH) {
+            return Bitmap.createScaledBitmap(image, RESIZE_VALUE, RESIZE_VALUE, Boolean.TRUE);
+        }
+        // something went horribly wrong.
+        return null;
     }
 
 }
