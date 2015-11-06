@@ -28,7 +28,6 @@ public class GameController {
     private Game model;
 
     public GameController() {
-        model = new Game();
         //model.loadJson();//???
     }
 
@@ -45,14 +44,22 @@ public class GameController {
         return inventory.contains(game);
     }
 
-    public void editGame(Game game) {
-        // TODO: launch the activity's edit game screen??
+    public void editGame(Game game, String title, Bitmap picture, Game.Platform platform,
+                         Game.Condition condition, Boolean sharableStatus, String additionalInfo) {
+        game.setPlatform(platform);
+        game.setCondition(condition);
+        game.setTitle(title);
+        game.setShared(sharableStatus);
+        game.setAdditionalInfo(additionalInfo);
+        if(picture != null) {
+            game.setPicture(picture);
+        }
 
     }
 
-    public Boolean addPhoto(Bitmap img) {
+    public Boolean addPhoto(Game game, Bitmap img) {
         // returns false if the Bitmap supplied is invalid: has a height or width of 0.
-        return model.setPicture(img);
+        return game.setPicture(img);
     }
 
     public Bitmap manualDownloadPhoto(Game game) {
@@ -63,7 +70,7 @@ public class GameController {
     public void removeGame(Game game, User user) {
         // TODO: removeGame will remove the entry from the inventory.
         if(isOwner(game, user)) {
-            
+            user.getInventory().remove(game);
         }
     }
 

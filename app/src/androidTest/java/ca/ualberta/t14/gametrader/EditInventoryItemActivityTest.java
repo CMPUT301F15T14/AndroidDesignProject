@@ -24,9 +24,9 @@ import android.test.ActivityInstrumentationTestCase2;
 /**
  * Created by satyabra on 11/1/15.
  */
-public class GameControllerTest extends ActivityInstrumentationTestCase2 {
+public class EditInventoryItemActivityTest extends ActivityInstrumentationTestCase2 {
 
-    public GameControllerTest() { super(ca.ualberta.t14.gametrader.MainActivity.class); }
+    public EditInventoryItemActivityTest() { super(ca.ualberta.t14.gametrader.EditInventoryItemActivity.class); }
 
     private void setupGame1(Game gameObj) {
         gameObj.setPlatform(Game.Platform.PLAYSTATION1);
@@ -68,7 +68,7 @@ public class GameControllerTest extends ActivityInstrumentationTestCase2 {
         assertTrue(gc.isOwner(game1, user));
 
         // should launch the activity's edit screen. Like ur looking at the normal game item's detail and with this BAM editable.
-        gc.editGame(game1);
+        //gc.editGame(game1);
 
         // test with uri.... halp plz b0ss.
         //gc.addPhoto(imageLocation);

@@ -19,7 +19,6 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,6 +27,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Spinner;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -35,14 +37,17 @@ import java.io.InputStream;
 
 public class EditInventoryItemActivity extends Activity {
 
-    private final int REQ_IMG_UP = 465132;
+    private final int PICK_IMAGE = 465132;
     private GameController gc;
+    private Game g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_inventory_item);
         gc = new GameController();
+        addInputEvents();
+
     }
 
 
@@ -68,13 +73,39 @@ public class EditInventoryItemActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void uploadImage(View view) {
+    private void addInputEvents() {
 
-        // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
-        // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
-        Intent imgGet = new Intent(Intent.ACTION_GET_CONTENT);
-        imgGet.setType("image/*");
-        startActivityForResult(Intent.createChooser(imgGet, "Pick a photo representing the Game:"), REQ_IMG_UP);
+        // image button doesnt work, image picker never launches...
+
+        ((ImageButton) findViewById(R.id.uploadImage)).setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
+                // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
+                /*Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select photo representing the game:"), PICK_IMAGE);
+                */
+                Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, PICK_IMAGE);
+            }
+        });
+
+        ((Button) findViewById(R.id.saveInventory)).setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Spinner consoles = (Spinner) findViewById(R.id.gameConsole);
+                Spinner conditions = (Spinner) findViewById(R.id.gameCondition);
+
+                String consoleStrEnumId = consoles.getSelectedItem().toString().toUpperCase().replace(" ", "");
+                String conditionStrEnumId = conditions.getSelectedItem().toString().toUpperCase().replace(" ", "");
+
+                Game.Platform platform = Game.Platform.valueOf(consoleStrEnumId);
+                Game.Condition condition = Game.Condition.valueOf(conditionStrEnumId);
+            }
+        });
+
 
     }
 
@@ -84,13 +115,13 @@ public class EditInventoryItemActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
         switch(requestCode) {
-            case REQ_IMG_UP:
+            case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
                     try {
                         final Uri imageUri = imageReturnedIntent.getData();
                         final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                        gc.addPhoto(selectedImage);
+                        gc.addPhoto(g, selectedImage);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
