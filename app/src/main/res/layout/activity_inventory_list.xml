@@ -23,23 +23,18 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/itemsList"
+        android:id="@+id/inventoryList"
         android:layout_alignParentStart="true"
         android:background="#0e97f1"
+        android:layout_below="@+id/newInventoryItem"
         android:visibility="visible" />
 
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Item"
-        android:id="@+id/addItemButton"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
-
         android:text="Add Game"
         android:textColor="#ffffff"
-
         android:id="@+id/newInventoryItem"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
