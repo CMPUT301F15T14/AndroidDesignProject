@@ -8,7 +8,6 @@
     android:background="#0e97f1"
     android:id="@+id/editItemRelativeLayout">
 
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,6 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gameConsole"
+
         android:layout_below="@+id/uploadImage"
         android:layout_alignStart="@+id/uploadImage"
         android:spinnerMode="dropdown"
@@ -108,11 +108,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Public"
+            android:textColor="#000000"
             android:checked="true" />
         <RadioButton android:id="@+id/sharePrivate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Private"/>
+            android:text="Private"
+            android:textColor="#000000"/>
         </RadioGroup>
 
     <Button
