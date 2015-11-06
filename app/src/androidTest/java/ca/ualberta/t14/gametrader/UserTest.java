@@ -15,7 +15,6 @@
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
@@ -66,7 +65,27 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
         //assertEquals("one", "two");
     }*/
 
-    public void testStub() {
-        assertEquals("True", "True");
+    public void testUpdateProfile () {
+        User user = new User();
+
+        user.setPhoneNumber("403-340-1009");
+        assertEquals(user.getPhoneNumber(), "403-340-1009");
+
+        user.setUserName("Candy Man");
+        assertEquals(user.getUserName(), "Candy Man");
+
+        user.setAddress("103 Candy Street");
+        assertEquals(user.getAddress(), "103 Candy Street");
+
+        user.setEmail("CandyLover@gmail.com");
+        assertEquals(user.getEmail(), "CandyLover@gmail.com");
+
+        ProfileController userController = new ProfileController(user);
+        userController.SaveProfileEdits("Healthy Hater", "CandyHater@gmail.com", "103 Vegetable Street", "403-340-1010");
+
+        assertEquals(user.getEmail(), "CandyHater@gmail.com");
+        assertEquals(user.getAddress(), "103 Vegetable Street");
+        assertEquals(user.getUserName(), "Healthy Hater");
+        assertEquals(user.getPhoneNumber(), "403-340-1010");
     }
 }
