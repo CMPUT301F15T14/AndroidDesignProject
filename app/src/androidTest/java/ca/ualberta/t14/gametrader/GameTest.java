@@ -100,7 +100,7 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         // Test image that is too big and gets resized with height being longest edge
         Bitmap testImage3 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.game_goty);
         assertTrue(item.setPicture(testImage3));
-        assertEquals(resizedMaxVal, item.getPicture().getHeight());
+        assertEquals(resizedMaxVal, item.getPicture().getWidth());
         // filesize check of testImage3
         assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
