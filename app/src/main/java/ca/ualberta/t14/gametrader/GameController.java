@@ -92,15 +92,20 @@ public class GameController {
     }
 
     /**
-     *
-     * @param game
-     * @return
+     * Manually force download the image even if settings is set to don't download images.
+     * @param game The game that contains the image you want to force download.
+     * @return the bitmap from that game.
      */
     public Bitmap manualDownloadPhoto(Game game) {
         // TODO: from cache or elastisearch, find the image associated to this game and force download it (disregard the settings)
         return null;
     }
 
+    /**
+     * Removes specified game from the given user's inventory.
+     * @param game the game to be removed
+     * @param user the user who's inventory he game is to be deleted from.
+     */
     public void removeGame(Game game, User user) {
         // TODO: removeGame will remove the entry from the inventory.
         if(isOwner(game, user)) {

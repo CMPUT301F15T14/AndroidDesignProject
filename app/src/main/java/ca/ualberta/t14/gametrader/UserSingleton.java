@@ -19,7 +19,8 @@
 package ca.ualberta.t14.gametrader;
 
 /**
- * Created by kobitoko on 06/11/15.
+ * This singleton provides global access to one user object that can be manipulated.
+ * @author  Ryan Satyabrata
  */
 public class UserSingleton {
     //Lazy init taken from https://en.wikipedia.org/wiki/Singleton_pattern#Lazy_initialization
@@ -27,7 +28,10 @@ public class UserSingleton {
     private User u;
     private UserSingleton() { u = new User(); }
 
-
+    /**
+     * Gets the instance of this singleton.
+     * @return a reference to the instance of this class.
+     */
     public static UserSingleton getInstance() {
         if(instance == null) {
             synchronized (UserSingleton.class) {
@@ -39,8 +43,16 @@ public class UserSingleton {
         return instance;
     }
 
+    /**
+     * Allows to set the User to a different User in this singleton.
+     * @param user the new user to replace the old user with.
+     */
     public void setUser(User user) { u = user; }
 
+    /**
+     * Gets the user object inside the singleton.
+     * @return returns the reference of the singleton's User object.
+     */
     public User getUser() { return u; }
 
 }
