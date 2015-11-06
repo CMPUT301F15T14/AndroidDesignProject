@@ -28,6 +28,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -35,7 +36,7 @@ import java.io.InputStream;
 
 public class EditInventoryItemActivity extends Activity {
 
-    private final int REQ_IMG_UP = 465132;
+    private final int PICK_IMAGE = 465132;
     private GameController gc;
 
     @Override
@@ -43,6 +44,9 @@ public class EditInventoryItemActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_inventory_item);
         gc = new GameController();
+
+        onClickListeners();
+
     }
 
 
@@ -68,23 +72,29 @@ public class EditInventoryItemActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void uploadImage(View view) {
+    private void onClickListeners() {
+        ImageButton imageButton = (ImageButton) findViewById(R.id.uploadImage);
+        imageButton.setOnClickListener(new ImageButton.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
+                // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
+                Intent imgGet = new Intent();
+                imgGet.setType("image/*");
+                imgGet.setAction(imgGet.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(imgGet, "Pick a photo representing the Game:"), PICK_IMAGE);
 
-        // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
-        // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
-        Intent imgGet = new Intent(Intent.ACTION_GET_CONTENT);
-        imgGet.setType("image/*");
-        startActivityForResult(Intent.createChooser(imgGet, "Pick a photo representing the Game:"), REQ_IMG_UP);
-
+            }
+        });
     }
 
-    // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android
-    @Override
+                // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android
+        @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
         switch(requestCode) {
-            case REQ_IMG_UP:
+            case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
                     try {
                         final Uri imageUri = imageReturnedIntent.getData();

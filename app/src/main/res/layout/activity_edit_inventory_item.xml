@@ -4,8 +4,9 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="ca.ualberta.t14.gametrader.EditInventoryItemActivity"
-    android:background="#0e97f1">
+    tools:context=".EditInventoryItemActivity"
+    android:background="#0e97f1"
+    android:id="@+id/editInventoryItemLayout">
 
     <EditText
         android:layout_width="wrap_content"
@@ -15,7 +16,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/uploadImage"
         android:inputType="text"
-        android:textSize="28dp" />
+        android:textSize="28sp"
+        android:textIsSelectable="false" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -28,8 +30,7 @@
         android:layout_alignTop="@+id/uploadImageText"
         android:layout_toEndOf="@+id/gameConditionText"
         android:clickable="true"
-        android:onClick="uploadImage"
-        />
+        android:contentDescription="Picure of the game." />
 
 
     <!-- regarding spinners: http://developer.android.com/guide/topics/ui/controls/spinner.html -->
