@@ -23,7 +23,7 @@
             android:name=".InventoryActivity"
             android:label="My Inventory" >
         </activity>
-        <activity android:name=".recentItems" >
+        <activity
             android:name=".FriendsListActivity"
             android:label="@string/title_activity_friends_list"
             android:theme="@style/ListFont">
@@ -56,10 +56,6 @@
         <activity
             android:name=".Setting"
             android:label="@string/title_activity_setting" >
-        </activity>
-        <activity
-            android:name=".FriendsListActivity"
-            android:label="@string/title_activity_friends_list" >
         </activity>
     </application>
 
