@@ -58,6 +58,11 @@ public class Game implements AppObservable {
     private Boolean sharableStatus;
     private String additionalInfo;
 
+    // TODO: many pictures to 1 item... see eclass prof. hindle's response:
+    //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
+    //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
+    //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
+
     volatile private Bitmap picture;
     private String pictureJsonable;
 

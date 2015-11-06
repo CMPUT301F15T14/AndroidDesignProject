@@ -49,6 +49,7 @@ public class EditInventoryItemActivity extends Activity {
     private RadioButton radioShared;
     private RadioButton radioNotShared;
     private EditText additionalInfo;
+    private ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,8 @@ public class EditInventoryItemActivity extends Activity {
         radioNotShared = (RadioButton) findViewById(R.id.sharePrivate);
 
         additionalInfo = (EditText) findViewById(R.id.AddInfoText);
+
+        imageButton = (ImageButton) findViewById(R.id.uploadImage);
 
         g = (Game) ObjParseSingleton.getInstance().popObject("game");
 
@@ -99,10 +102,11 @@ public class EditInventoryItemActivity extends Activity {
 
         additionalInfo.setText(g.getAdditionalInfo());
 
+        imageButton.setImageBitmap(g.getPicture());
+
         addInputEvents();
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -159,7 +163,7 @@ public class EditInventoryItemActivity extends Activity {
                 Game.Condition condition = Game.Condition.valueOf(conditionStrEnumId);
 
                 // if sharePublic is false, that means the only other possible is not share.
-                Boolean shareStatus =  ((RadioButton) findViewById(R.id.sharePublic)).isChecked();
+                Boolean shareStatus = ((RadioButton) findViewById(R.id.sharePublic)).isChecked();
 
                 String additionalInfo = ((EditText) findViewById(R.id.AddInfoText)).getText().toString();
 
@@ -184,6 +188,7 @@ public class EditInventoryItemActivity extends Activity {
                         final InputStream imageStream = getContentResolver().openInputStream(imageUri);
                         final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
                         gc.addPhoto(g, selectedImage);
+                        imageButton.setImageBitmap(g.getPicture());
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }

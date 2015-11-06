@@ -26,34 +26,35 @@
         android:minWidth="128dp"
         android:maxWidth="128dp"
         android:maxHeight="128dp"
-        android:contentDescription="Game Image" />
+        android:contentDescription="Game Image"
+        android:scaleType="fitCenter" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Game Info"
         android:id="@+id/gameInfoText"
-        android:layout_below="@+id/inventoryItemText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignTop="@+id/inventoryItemImage"
+        android:layout_toEndOf="@+id/inventoryItemText" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Game Title"
         android:id="@+id/gameInfoTitle"
         android:layout_below="@+id/gameInfoText"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/gameInfoText" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Game Console"
         android:id="@+id/gameInfoConsole"
         android:layout_below="@+id/gameInfoTitle"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignStart="@+id/gameInfoTitle" />
 
     <TextView
         android:layout_width="wrap_content"

@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 
@@ -18,6 +19,7 @@ public class InventoryItemActivity extends Activity {
     TextView condition;
     TextView owner;
     TextView additionalInfo;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +33,15 @@ public class InventoryItemActivity extends Activity {
         condition = (TextView) findViewById(R.id.gameInfoCondition);
         owner = (TextView) findViewById(R.id.gameInfoOwner);
         additionalInfo = (TextView) findViewById(R.id.additionalInfoText);
+        imageView = (ImageView) findViewById(R.id.inventoryItemImage);
+
 
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
         owner.setText(UserSingleton.getInstance().getUser().getUserName());
         additionalInfo.setText(game.getAdditionalInfo());
+        imageView.setImageBitmap(game.getPicture());
 
         Button editGame = (Button)findViewById(R.id.buttonEditItem);
         editGame.setOnClickListener(new Button.OnClickListener() {
@@ -63,6 +68,7 @@ public class InventoryItemActivity extends Activity {
         condition.setText(game.getCondition().toString());
         owner.setText(UserSingleton.getInstance().getUser().getUserName());
         additionalInfo.setText(game.getAdditionalInfo());
+        imageView.setImageBitmap(game.getPicture());
     }
 
     @Override

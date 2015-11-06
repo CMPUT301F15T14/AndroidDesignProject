@@ -30,7 +30,8 @@
         android:layout_alignTop="@+id/uploadImageText"
         android:layout_toEndOf="@+id/gameConditionText"
         android:clickable="true"
-        android:contentDescription="Picure of the game." />
+        android:contentDescription="Picure of the game."
+        android:scaleType="fitCenter" />
 
 
     <!-- regarding spinners: http://developer.android.com/guide/topics/ui/controls/spinner.html -->
