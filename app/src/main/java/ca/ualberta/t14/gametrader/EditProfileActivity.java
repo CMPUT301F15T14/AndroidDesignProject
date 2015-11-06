@@ -58,7 +58,7 @@ public class EditProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        user = (User)getIntent().getSerializableExtra("User");
+        user = UserSingleton.getInstance().getUser();
         profileController = new ProfileController(user);
 
         profileText = (EditText) findViewById(R.id.profile);
@@ -74,10 +74,11 @@ public class EditProfileActivity extends Activity {
         saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                profileController.SaveProfileEdits(profileText.toString(),
-                        emailText.toString(),
-                        addressText.toString(),
-                        phoneText.toString());
+                profileController.SaveProfileEdits(profileText.getText().toString(),
+                        emailText.getText().toString(),
+                        addressText.getText().toString(),
+                        phoneText.getText().toString());
+                finish();
         }
         });
     }
@@ -106,9 +107,10 @@ public class EditProfileActivity extends Activity {
     }
 
     public void SaveChanges(View view) {
-        profileController.SaveProfileEdits(this.findViewById(R.id.profile).toString(),
-                                                this.findViewById(R.id.email).toString(),
-                                                this.findViewById(R.id.address).toString(),
-                                                this.findViewById(R.id.phone).toString());
+        profileController.SaveProfileEdits(((EditText) findViewById(R.id.profile)).getText().toString(),
+                ((EditText) this.findViewById(R.id.email)).getText().toString(),
+                ((EditText) this.findViewById(R.id.address)).getText().toString(),
+                ((EditText) this.findViewById(R.id.phone)).getText().toString());
+        finish();
     }
 }
