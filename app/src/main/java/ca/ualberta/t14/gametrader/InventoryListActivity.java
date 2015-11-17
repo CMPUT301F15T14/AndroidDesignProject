@@ -50,7 +50,7 @@ public class InventoryListActivity extends Activity {
         });
 
         Button AddGame= (Button)findViewById(R.id.newInventoryItem);
-        //Setting the button helps navigating to AddInventory Activity.
+        //SettingActivity the button helps navigating to AddInventory Activity.
         AddGame.setOnClickListener(new Button.OnClickListener() {
             // Navigating to another activity.
             public void onClick(View arg0) {

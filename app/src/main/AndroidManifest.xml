@@ -54,7 +54,7 @@
             android:label="@string/title_activity_search_page" >
         </activity>
         <activity
-            android:name=".Setting"
+            android:name=".SettingActivity"
             android:label="@string/title_activity_setting" >
         </activity>
         <activity
