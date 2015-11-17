@@ -23,6 +23,8 @@ import java.util.ArrayList;
  * Created by jjohnston on 10/30/15.
  *
  * Represents a user (one for each phone accessing the app) and their related information (profile).
+ * Also contains an inventory which lists the games owned by that user.
+ *
  */
 
 public class User extends FileIO implements Serializable, AppObservable {
@@ -41,7 +43,7 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     /**
-     * Get the user name.
+     * Get the user's name. Used by ProfileActivity to obtain a String for the view to render.
      * @return the User's name in string format.
      */
     public String getUserName() {
@@ -49,8 +51,8 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     /**
-     * Set the user the name.
-     * @param userName the value userName should be set to.
+     * Used by ProfileController to change the user's name
+     * @param userName the String value userName should be set to.
      */
     public void setUserName(String userName) {
         this.userName = userName;
@@ -67,7 +69,7 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     /**
-     * Set the user's email address
+     * Used by ProfileController to change the user's email address
      * @param email a string representing the new email address.
      */
     public void setEmail(String email) {
@@ -85,7 +87,7 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     /**
-     * Set the user's address.
+     * Used by ProfileController to change the user's home address
      * @param address a String representing the new address.
      */
     public void setAddress(String address) {
@@ -103,7 +105,7 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     /**
-     * Sets the user's phone number
+     * Used by ProfileController to change the user's phone number
      * @param phoneNumber a String containing the new phone number.
      */
     public void setPhoneNumber(String phoneNumber) {

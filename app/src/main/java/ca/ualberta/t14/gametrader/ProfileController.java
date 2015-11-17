@@ -46,7 +46,7 @@ public class ProfileController {
     private User model;
 
     /**
-     * Saves any changes to the profile information.
+     * Saves any changes to the profile information. Used by EditProfileActivity upon clicking save.
      * @param userName is a String containing the updated user name.
      * @param email is a String containing the updated email.
      * @param address is a String containing the updated address.
