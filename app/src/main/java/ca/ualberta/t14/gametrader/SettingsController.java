@@ -18,25 +18,44 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
+
+import java.io.IOException;
+import java.util.Set;
+
 /**
  * this is the controller connect the Setting and SettingsMode
  * it uses to change the value for enableDownloadPhoto1 via function
  * EnableDownloadPhotos and DisableDownloadPhotos.
  */
 public class SettingsController {
+    private SettingsMode model;
+    public final String settingsFile = "settings"; // name of settings file
+    private static Context context;
+
+    public SettingsController(SettingsMode model, Context context) {
+        this.context = context;
+        this.model = model;
+        try {
+            this.model = (SettingsMode) this.model.loadJson(settingsFile, this.context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * enable the photo download from online or storage, turn on the switch button
      */
     public void EnableDownloadPhotos(){
-        SettingsMode downloadPic = new SettingsMode();
-        downloadPic.setEnableDownloadPhoto1(Boolean.TRUE);
+        SettingsSingleton.getInstance().getSettings().setEnableDownloadPhoto1(Boolean.TRUE);
+        SettingsSingleton.getInstance().getSettings().saveJson(settingsFile, this.context);
     }
 
     /**
      * disable the photo download from online or storage, turn off the switch button
      */
     public void DisableDownloadPhotos(){
-        SettingsMode downloadPic = new SettingsMode();
-        downloadPic.setEnableDownloadPhoto1(Boolean.FALSE);
+        SettingsSingleton.getInstance().getSettings().setEnableDownloadPhoto1(Boolean.FALSE);
+        SettingsSingleton.getInstance().getSettings().saveJson(settingsFile, this.context);
     }
 }
