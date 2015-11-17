@@ -30,12 +30,13 @@ public class GameController {
     private Game model;
 
     /**
-     * Constructor for the GameController. Does nothing.
+     * Constructor for the GameController. Does nothing. Really.
      */
     public GameController() { }
 
     /**
      * Creates a new game with given user and adds that created game into the user's inventory.
+     * To be used when user wants to create a game.
      * @param user the user that receives the new game item.
      * @return the Game object reference that was also passed into te inventory.
      */
@@ -59,7 +60,7 @@ public class GameController {
     }
 
     /**
-     * It will update the Game's model with the new input.
+     * It will update the Game's model with the new input received from the user.
      * @param game The game that is to be updated.
      * @param title A new title for the Game.
      * @param picture A new picture for the Game.
@@ -92,7 +93,7 @@ public class GameController {
     }
 
     /**
-     * Manually force download the image even if settings is set to don't download images.
+     * Manually force download the image from the network even if settings is set to don't download images.
      * @param game The game that contains the image you want to force download.
      * @return the bitmap from that game.
      */

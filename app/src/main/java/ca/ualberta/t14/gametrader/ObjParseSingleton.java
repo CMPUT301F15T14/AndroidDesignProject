@@ -23,7 +23,7 @@ import java.util.HashMap;
 /**
  * This optimistic singleton provides global access to a object holder that can accept and hold objects,
  * and give them back at a later time given a keyword.
- * Intended to be used to get objects from one Activity to another.
+ * Intended to be used to pass along objects from one Activity to another.
  * @author  Ryan Satyabrata
  */
 public class ObjParseSingleton {

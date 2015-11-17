@@ -20,6 +20,7 @@ package ca.ualberta.t14.gametrader;
 
 /**
  * This singleton provides global access to one user object that can be manipulated.
+ * It can be used everywhere in the app to provide global access to the current user.
  * @author  Ryan Satyabrata
  */
 public class UserSingleton {
