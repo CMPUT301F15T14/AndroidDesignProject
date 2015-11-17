@@ -57,6 +57,7 @@ public class InventoryController {
     public void clearInventory(){
         stock.clear();
     }
+
     public boolean contains(Game game){
         return stock.contains(game);
     }

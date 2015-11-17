@@ -11,20 +11,8 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
     }
 
     public void testViewInventory(){
-        User mike=new User();
-        Inventory itemlist=new Inventory();
-        InventoryController itemlistControl=new InventoryController(itemlist,mike);
-        itemlistControl.clearInventory();
-        Game game1=new Game();
-        itemlistControl.addItem(game1);
-        assertTrue(itemlistControl.contains(game1));
-        itemlistControl.removeItem(game1);
-        assertFalse(itemlistControl.contains(game1));
-        assertEquals(mike, itemlistControl.identifyOwner());
+        InventoryListActivity activity= (InventoryListActivity) getActivity();
+
     }
-    public void ViewEachItem(){
-        //Item item1 = new Item();
-        //ItemList itemList = new ItemList();
-        //itemList.addItem(item1);
-    }
+
 }

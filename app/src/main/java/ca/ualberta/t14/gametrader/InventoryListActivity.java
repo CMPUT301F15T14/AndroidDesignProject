@@ -37,6 +37,19 @@ public class InventoryListActivity extends Activity {
     private ArrayList<String> mobileArray;
     private ListView GameList;
     private ArrayAdapter<String> adapter;
+    private Button AddGame;
+
+    public Button getAddGame() {
+        return AddGame;
+    }
+
+    public ArrayList<String> getMobileArray() {
+        return mobileArray;
+    }
+
+    public ListView getGameList() {
+        return GameList;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +58,7 @@ public class InventoryListActivity extends Activity {
 
         //  Array reserved for storing names of game.
         mobileArray = new ArrayList<String>();
-        //later add observer observing the inventory:
+        // later add observer observing the inventory:
         mobileArray.clear();
         for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
             mobileArray.add(each.getTitle());
@@ -68,7 +81,7 @@ public class InventoryListActivity extends Activity {
             }
         });
 
-        Button AddGame= (Button)findViewById(R.id.newInventoryItem);
+        AddGame= (Button)findViewById(R.id.newInventoryItem);
         //Setting the button helps navigating to AddInventory Activity.
         AddGame.setOnClickListener(new Button.OnClickListener() {
             // Navigating to another activity.
