@@ -67,6 +67,8 @@ public class InventoryItemActivity extends Activity {
         phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
         address.setText(UserSingleton.getInstance().getUser().getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
+        // Important, have to load bitmap from it's json first! Because bitmap is volatile.
+        game.setPictureFromJson(game.getPictureJson());
         imageView.setImageBitmap(game.getPicture());
 
         Button editGame = (Button)findViewById(R.id.buttonEditItem);
