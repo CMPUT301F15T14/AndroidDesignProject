@@ -261,7 +261,7 @@ public class Game implements AppObservable {
             return Boolean.FALSE;
         } else if (image.getWidth() > RESIZE_VALUE || image.getHeight() > RESIZE_VALUE) {
             // preserve aspect ratio of image
-            // TODO: maybe make it so you can put in image and if filesize is bigger than 65kb then downscale to longest side 500px and then keep checking while loop filesize>65kb and decrease downscale 50px a time if. Can take long time... because compress method is slow tho.
+            // TODO: maybe make it so you can put in image and if filesize is bigger than 65kb then downscale to longest side 500px and then keep checking while loop filesize>65kb and decrease downscale 100px a time if. Can take long time... because compress method is slow tho.
             picture = preserveAspectRatio(image);
         } else {
             picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);

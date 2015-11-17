@@ -128,13 +128,15 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/adressString"
         android:id="@+id/contactAddress"
-        android:layout_above="@+id/additionalInfo"
-        android:layout_alignStart="@+id/gameInfoStatus" />
+        android:layout_toEndOf="@+id/contactAddressText"
+        android:layout_toRightOf="@+id/contactAddressText"
+        android:singleLine="false"
+        android:layout_alignTop="@+id/contactAddressText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -142,8 +144,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/additionalInfo"
         android:id="@+id/additionalInfo"
-        android:layout_below="@+id/contactAddressText"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/contactAddress" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -180,13 +182,18 @@
         android:padding="0dp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="phone"
         android:ems="10"
-        android:id="@+id/editText"
-        android:layout_above="@+id/contactAddress"
-        android:layout_toEndOf="@+id/contactAddressText" />
+        android:id="@+id/phoneEditField"
+        android:layout_toEndOf="@+id/gameStatusText"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="465135"
+        android:phoneNumber="true"
+        android:textAlignment="center"
+        android:layout_alignBottom="@+id/contactPhoneText"
+        android:layout_toRightOf="@+id/contactPhoneText" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -201,10 +208,10 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
         android:id="@+id/additionalInfoText"
-        android:layout_alignTop="@+id/scrollView"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/buttonEditItem" />
+        android:layout_alignEnd="@+id/buttonEditItem"
+        android:layout_below="@+id/additionalInfo" />
 
 
 </RelativeLayout>
