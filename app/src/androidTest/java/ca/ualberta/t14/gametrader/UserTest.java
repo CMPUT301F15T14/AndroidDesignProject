@@ -24,6 +24,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.IOException;
+
 /**
  * Created by jjohnsto on 11/1/15.
  *
@@ -35,7 +37,7 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
         super(EditProfileActivity.class);
     }
 
-    /*public void testEditProfile() {
+    public void testEditProfile() {
         EditProfileActivity activity = (EditProfileActivity) getActivity();
 
         final EditText profileText = activity.getProfileText();
@@ -44,12 +46,12 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
         final EditText addressText = activity.getAddressText();
         final Button SaveButton = activity.getSaveButton();
 
-        /*User user = new User();
-        activity.setUser(user);
-
         activity.runOnUiThread(new Runnable() {
             public void run() {
                 profileText.setText("usr");
+                phoneText.setText("587-877-2072");
+                emailText.setText("snacks@food.co");
+                addressText.setText("53 Spooky Street");
             }
         });
         getInstrumentation().waitForIdleSync();
@@ -61,31 +63,9 @@ public class UserTest extends ActivityInstrumentationTestCase2 {
         });
         getInstrumentation().waitForIdleSync();
 
-        assertEquals("this is not correct", activity.getUser().getUserName());
-        //assertEquals("one", "two");
-    }*/
-
-    public void testUpdateProfile () {
-        User user = new User();
-
-        user.setPhoneNumber("403-340-1009");
-        assertEquals(user.getPhoneNumber(), "403-340-1009");
-
-        user.setUserName("Candy Man");
-        assertEquals(user.getUserName(), "Candy Man");
-
-        user.setAddress("103 Candy Street");
-        assertEquals(user.getAddress(), "103 Candy Street");
-
-        user.setEmail("CandyLover@gmail.com");
-        assertEquals(user.getEmail(), "CandyLover@gmail.com");
-
-        /*ProfileController userController = new ProfileController(user);
-        userController.SaveProfileEdits("Healthy Hater", "CandyHater@gmail.com", "103 Vegetable Street", "403-340-1010");
-
-        assertEquals(user.getEmail(), "CandyHater@gmail.com");
-        assertEquals(user.getAddress(), "103 Vegetable Street");
-        assertEquals(user.getUserName(), "Healthy Hater");
-        assertEquals(user.getPhoneNumber(), "403-340-1010");*/
+        assertEquals("usr", activity.getUser().getUserName());
+        assertEquals("587-877-2072", activity.getUser().getPhoneNumber());
+        assertEquals("snacks@food.co", activity.getUser().getEmail());
+        assertEquals("53 Spooky Street", activity.getUser().getAddress());
     }
 }

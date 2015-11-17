@@ -50,13 +50,7 @@ public class EditProfileActivity extends Activity {
 
     ProfileController profileController; // we need to instantiate this with an intent
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public User getUser() { return user; }
 
     User user;
 
@@ -66,6 +60,11 @@ public class EditProfileActivity extends Activity {
         setContentView(R.layout.activity_edit_profile);
 
         user = UserSingleton.getInstance().getUser();
+        try {
+            user = (User) user.loadJson(userProfile, getApplicationContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         profileController = new ProfileController(user, this.getApplicationContext());
 
         phoneText = (EditText) findViewById(R.id.phone);
@@ -90,19 +89,12 @@ public class EditProfileActivity extends Activity {
                         phoneText.getText().toString());
                 finish();
 
-                User mainUser = UserSingleton.getInstance().getUser();
-                try {
-                    mainUser = (User) mainUser.loadJson(userProfile, getApplicationContext());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                user.setPhoneNumber(phoneText.getText().toString());
+                user.setAddress(addressText.getText().toString());
+                user.setEmail(emailText.getText().toString());
+                user.setUserName(profileText.getText().toString());
 
-                mainUser.setPhoneNumber(phoneText.getText().toString());
-                mainUser.setAddress(addressText.getText().toString());
-                mainUser.setEmail(emailText.getText().toString());
-                mainUser.setUserName(profileText.getText().toString());
-
-                mainUser.saveJson(userProfile, getApplicationContext());
+                user.saveJson(userProfile, getApplicationContext());
 
                 Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
 
