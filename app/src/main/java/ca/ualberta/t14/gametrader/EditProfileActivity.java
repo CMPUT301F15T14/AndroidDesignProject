@@ -59,12 +59,15 @@ public class EditProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        // Load user from JSON. The user contains Inventory.
         user = UserSingleton.getInstance().getUser();
         try {
-            user = (User) user.loadJson(userProfile, getApplicationContext());
+            user = (User) user.loadJson("MainUserProfile", getApplicationContext());
+            UserSingleton.getInstance().setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         profileController = new ProfileController(user, this.getApplicationContext());
 
         phoneText = (EditText) findViewById(R.id.phone);
@@ -73,12 +76,12 @@ public class EditProfileActivity extends Activity {
         emailText = (EditText) findViewById(R.id.email);
         addressText = (EditText) findViewById(R.id.address);
 
-/*
+
         profileText.setText(user.getUserName());
         phoneText.setText(user.getPhoneNumber());
         emailText.setText(user.getEmail());
         addressText.setText(user.getAddress());
-*/
+
         saveButton = (Button) findViewById(R.id.saveProfileButton);
         saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -89,12 +92,20 @@ public class EditProfileActivity extends Activity {
                         phoneText.getText().toString());
                 finish();
 
-                user.setPhoneNumber(phoneText.getText().toString());
-                user.setAddress(addressText.getText().toString());
-                user.setEmail(emailText.getText().toString());
-                user.setUserName(profileText.getText().toString());
+                User mainUser = UserSingleton.getInstance().getUser();
+                try {
+                    mainUser = (User) mainUser.loadJson(userProfile, getApplicationContext());
+                    UserSingleton.getInstance().setUser(mainUser);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-                user.saveJson(userProfile, getApplicationContext());
+                mainUser.setPhoneNumber(phoneText.getText().toString());
+                mainUser.setAddress(addressText.getText().toString());
+                mainUser.setEmail(emailText.getText().toString());
+                mainUser.setUserName(profileText.getText().toString());
+
+                UserSingleton.getInstance().getUser().saveJson(userProfile, getApplicationContext());
 
                 Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
 

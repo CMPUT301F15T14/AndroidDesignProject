@@ -3,6 +3,7 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /*
@@ -56,6 +58,15 @@ public class InventoryListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
 
+        // Load user from JSON. The user contains Inventory.
+        User mainUser = UserSingleton.getInstance().getUser();
+        try {
+            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext());
+            UserSingleton.getInstance().setUser(mainUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //  Array reserved for storing names of game.
         mobileArray = new ArrayList<String>();
         // later add observer observing the inventory:
@@ -73,6 +84,7 @@ public class InventoryListActivity extends Activity {
 
                 // assuming the adapter view order is same as the array game list order
                 Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
+
                 ObjParseSingleton.getInstance().addObject("game", g);
 
                 Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
@@ -83,6 +95,7 @@ public class InventoryListActivity extends Activity {
 
         AddGame= (Button)findViewById(R.id.newInventoryItem);
         //Setting the button helps navigating to AddInventory Activity.
+
         AddGame.setOnClickListener(new Button.OnClickListener() {
             // Navigating to another activity.
             public void onClick(View arg0) {
