@@ -22,4 +22,8 @@ public class SettingsSingleton {
         }
         return instance;
     }
+
+    public SettingsMode getSettings() { return model; }
+
+    public void setSettings(SettingsMode settings) { model = settings; }
 }
