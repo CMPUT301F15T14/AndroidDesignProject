@@ -23,6 +23,18 @@ public class ProfileActivity extends Activity {
     TextView emailView;
     TextView addressView;
 
+    private Button editprof;
+
+    public Button getEditprofButton() {
+        return editprof;
+    }
+
+    private Button inventory;
+
+    public Button getInventoryButton() {
+        return inventory;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +58,7 @@ public class ProfileActivity extends Activity {
             e.printStackTrace();
         }
 
-        Button editprof = (Button) findViewById(R.id.editProfile);
+        editprof = (Button) findViewById(R.id.editProfile);
         editprof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +68,7 @@ public class ProfileActivity extends Activity {
             }
         });
 
-        Button inventory = (Button) findViewById(R.id.viewInventory);
+        inventory = (Button) findViewById(R.id.viewInventory);
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
