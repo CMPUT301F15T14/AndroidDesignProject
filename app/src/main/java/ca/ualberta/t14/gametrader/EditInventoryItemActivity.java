@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -171,6 +172,11 @@ public class EditInventoryItemActivity extends Activity {
                 String additionalInfo = ((EditText) findViewById(R.id.AddInfoText)).getText().toString();
 
                 gc.editGame(g, gameTitle, null, platform, condition, shareStatus, additionalInfo);
+
+                // Save user to JSON. The user contains Inventory which contains the item.
+                UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
+
+                Toast.makeText(EditInventoryItemActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
 
                 finish();
             }

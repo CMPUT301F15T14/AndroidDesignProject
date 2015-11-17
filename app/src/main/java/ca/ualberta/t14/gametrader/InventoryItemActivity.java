@@ -3,6 +3,7 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,6 +37,8 @@ public class InventoryItemActivity extends Activity {
     TextView condition;
     TextView owner;
     TextView additionalInfo;
+    TextView phone;
+    TextView address;
     ImageView imageView;
 
     @Override
@@ -54,12 +57,15 @@ public class InventoryItemActivity extends Activity {
         owner = (TextView) findViewById(R.id.gameInfoOwner);
         additionalInfo = (TextView) findViewById(R.id.additionalInfoText);
         imageView = (ImageView) findViewById(R.id.inventoryItemImage);
-
+        phone = (TextView) findViewById(R.id.phoneEditField);
+        address = (TextView) findViewById(R.id.contactAddress);
 
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
         owner.setText(UserSingleton.getInstance().getUser().getUserName());
+        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
+        address.setText(UserSingleton.getInstance().getUser().getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         imageView.setImageBitmap(game.getPicture());
 
@@ -83,10 +89,13 @@ public class InventoryItemActivity extends Activity {
     public void onResume() {
         super.onResume();
 
+        // When coming back to the activity and the data were updated.
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
         owner.setText(UserSingleton.getInstance().getUser().getUserName());
+        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
+        address.setText(UserSingleton.getInstance().getUser().getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         imageView.setImageBitmap(game.getPicture());
     }
