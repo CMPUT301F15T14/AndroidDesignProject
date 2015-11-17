@@ -29,9 +29,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
     public void testProfileButton() {
         MainActivity main = (MainActivity)getActivity();
 
-
-        getInstrumentation().waitForIdleSync();
-
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(ProfileActivity.class.getName(),
@@ -43,6 +40,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
                 profileButton.performClick();
             }
         });
+        getInstrumentation().waitForIdleSync();
 
         //Following was stolen from https://developer.android.com/training/activity-testing/activity-functional-testing.html
 
@@ -57,14 +55,13 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        receiverActivity.finish();
     }
 
     //test whether the inventory button runs properly (brings you to InventoryListActivity)
     public void testInventoryButton() {
         MainActivity main = (MainActivity)getActivity();
-
-
-        getInstrumentation().waitForIdleSync();
 
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
@@ -77,6 +74,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
                 inventoryButton.performClick();
             }
         });
+        getInstrumentation().waitForIdleSync();
 
         //Following was stolen from https://developer.android.com/training/activity-testing/activity-functional-testing.html
 
@@ -91,14 +89,13 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        receiverActivity.finish();
     }
 
     //test whether the friends button runs properly (brings you to ProfileActivity)
     public void testFriendsButton() {
         MainActivity main = (MainActivity)getActivity();
-
-
-        getInstrumentation().waitForIdleSync();
 
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
@@ -111,6 +108,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
                 friendsButton.performClick();
             }
         });
+        getInstrumentation().waitForIdleSync();
 
         //Following was stolen from https://developer.android.com/training/activity-testing/activity-functional-testing.html
 
@@ -125,6 +123,8 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        receiverActivity.finish();
     }
 
     //test whether the trades button runs properly (brings you to ...Activity)
@@ -165,9 +165,6 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
     public void testSearchButton() {
         MainActivity main = (MainActivity)getActivity();
 
-
-        getInstrumentation().waitForIdleSync();
-
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(SearchPageActivity.class.getName(),
@@ -179,6 +176,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
                 searchButton.performClick();
             }
         });
+        getInstrumentation().waitForIdleSync();
 
         //Following was stolen from https://developer.android.com/training/activity-testing/activity-functional-testing.html
 
@@ -193,14 +191,13 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        receiverActivity.finish();
     }
 
     //test whether the settings button runs properly (brings you to SettingActivity)
     public void testSettingsButton() {
         MainActivity main = (MainActivity)getActivity();
-
-
-        getInstrumentation().waitForIdleSync();
 
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
@@ -213,6 +210,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
                 settingsButton.performClick();
             }
         });
+        getInstrumentation().waitForIdleSync();
 
         //Following was stolen from https://developer.android.com/training/activity-testing/activity-functional-testing.html
 
@@ -227,5 +225,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        receiverActivity.finish();
     }
 }
