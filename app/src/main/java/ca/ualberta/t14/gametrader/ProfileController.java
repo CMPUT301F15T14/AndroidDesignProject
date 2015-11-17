@@ -17,6 +17,9 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
+
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -27,9 +30,17 @@ import java.util.ArrayList;
  */
 
 public class ProfileController {
+    public static String MainUser = "MainUserProfile";
+    private static Context context;
 
-    public ProfileController(User model) {
+    public ProfileController(User model, Context context) {
+        this.context = context;
         this.model = model;
+        try {
+            this.model = (User) this.model.loadJson(MainUser, this.context);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private User model;
@@ -46,5 +57,6 @@ public class ProfileController {
         UserSingleton.getInstance().getUser().setEmail(email);
         UserSingleton.getInstance().getUser().setAddress(address);
         UserSingleton.getInstance().getUser().setPhoneNumber(phoneNumber);
+        UserSingleton.getInstance().getUser().saveJson(MainUser, this.context);
     }
 }

@@ -8,7 +8,7 @@ public class InventoryActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.inventory_activity);
+        setContentView(R.layout.activity_inventory_list);
     }
     
 

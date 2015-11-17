@@ -10,6 +10,23 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
 public class InventoryItemActivity extends Activity {
 
@@ -19,6 +36,8 @@ public class InventoryItemActivity extends Activity {
     TextView condition;
     TextView owner;
     TextView additionalInfo;
+    TextView phone;
+    TextView address;
     ImageView imageView;
 
     @Override
@@ -37,12 +56,15 @@ public class InventoryItemActivity extends Activity {
         owner = (TextView) findViewById(R.id.gameInfoOwner);
         additionalInfo = (TextView) findViewById(R.id.additionalInfoText);
         imageView = (ImageView) findViewById(R.id.inventoryItemImage);
-
+        phone = (TextView) findViewById(R.id.phoneEditField);
+        address = (TextView) findViewById(R.id.contactAddress);
 
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
         owner.setText(UserSingleton.getInstance().getUser().getUserName());
+        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
+        address.setText(UserSingleton.getInstance().getUser().getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         imageView.setImageBitmap(game.getPicture());
 
@@ -66,10 +88,13 @@ public class InventoryItemActivity extends Activity {
     public void onResume() {
         super.onResume();
 
+        // When coming back to the activity and the data were updated.
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
         owner.setText(UserSingleton.getInstance().getUser().getUserName());
+        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
+        address.setText(UserSingleton.getInstance().getUser().getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         imageView.setImageBitmap(game.getPicture());
     }

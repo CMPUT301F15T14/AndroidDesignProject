@@ -18,15 +18,33 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.test.ActivityInstrumentationTestCase2;
+import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 /**
  * Created by satyabra on 11/1/15.
  */
 public class EditInventoryItemActivityTest extends ActivityInstrumentationTestCase2 {
 
-    public EditInventoryItemActivityTest() { super(ca.ualberta.t14.gametrader.EditInventoryItemActivity.class); }
+    GameController gc = new GameController();
+    ArrayList<Game> gameList;
+    Game freshGame;
+
+    public EditInventoryItemActivityTest() { super(ca.ualberta.t14.gametrader.EditInventoryItemActivity.class);
+
+        gameList = UserSingleton.getInstance().getUser().getInventory().getAllGames();
+        // Insert new game
+        freshGame = gc.createGame(UserSingleton.getInstance().getUser());
+        ObjParseSingleton.getInstance().addObject("game", freshGame);
+    }
 
     private void setupGame1(Game gameObj) {
         gameObj.setPlatform(Game.Platform.PLAYSTATION1);
@@ -54,29 +72,93 @@ public class EditInventoryItemActivityTest extends ActivityInstrumentationTestCa
       after test, clean up your stuff using delete that file:  (File delete() method)
       http://developer.android.com/reference/java/io/File.html#delete%28%29
     */
-        GameController gc = new GameController();
 
         // NOTICE: each method in GameController should have parameters, like here. UML has no parameters.
 
         // createGame() should return a Game type! Fix that later in UML. It will also automatically add it to user's inventory.
         // it then launches the activity's edit screen for it.
-        User user = new User();
-        Game game1 = gc.createGame(user);
-        setupGame1(game1);
 
-        // It will check for the game object in the user's inventory if it contains the object game then is owner, else not owner.
-        assertTrue(gc.isOwner(game1, user));
+        Activity activity = getActivity();
 
-        // should launch the activity's edit screen. Like ur looking at the normal game item's detail and with this BAM editable.
-        //gc.editGame(game1);
+        // Set and Check the Title
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((EditText) getActivity().findViewById(R.id.inventoryItemTitle)).setText("Test 4 Gamez!");
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+        String titleText = ((EditText) activity.findViewById(R.id.inventoryItemTitle)).getText().toString();
+        assertEquals("Test 4 Gamez!", titleText);
 
-        // test with uri.... halp plz b0ss.
+        // set and check game console to Wii U
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((Spinner) getActivity().findViewById(R.id.gameConsole)).setSelection(8);
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+        String gameConsoleStr = ((Spinner) activity.findViewById(R.id.gameConsole)).getSelectedItem().toString().toUpperCase().replace(" ", "");
+        assertEquals(Game.Platform.WIIU.toString(), gameConsoleStr);
+
+        // set and check game condition to Like New
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((Spinner) getActivity().findViewById(R.id.gameCondition)).setSelection(1);
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+        String gameConditionStr = ((Spinner) activity.findViewById(R.id.gameCondition)).getSelectedItem().toString().toUpperCase().replace(" ", "");
+        assertEquals(Game.Condition.LIKENEW.toString(), gameConditionStr);
+
+        // set and check game sharing to private
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((RadioButton) getActivity().findViewById(R.id.sharePublic)).setChecked(Boolean.TRUE);
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+        Boolean sharedIsPublic = ((RadioButton) activity.findViewById(R.id.sharePublic)).isChecked();
+        Boolean sharedIsPrivate = ((RadioButton) activity.findViewById(R.id.sharePrivate)).isChecked();
+        assertEquals(Boolean.TRUE, sharedIsPublic);
+        assertEquals(Boolean.FALSE, sharedIsPrivate);
+
+        // Set and Check additional info
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((EditText) getActivity().findViewById(R.id.AddInfoText)).setText("This game is magical.\nNo where!");
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+        String extraInfoStr = ((EditText) activity.findViewById(R.id.AddInfoText)).getText().toString();
+        assertEquals("This game is magical.\nNo where!", extraInfoStr);
+
+        // save test game to inventory
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ((Button) getActivity().findViewById(R.id.saveInventory)).performClick();
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+
+        gameList = UserSingleton.getInstance().getUser().getInventory().getAllGames();
+        assertTrue(gameList.contains(freshGame));
+        Game gameSaved = gameList.get(0);
+
+        assertEquals(titleText, gameSaved.getTitle());
+        assertEquals(gameConsoleStr, gameSaved.getPlatform().toString());
+        assertEquals(gameConditionStr, gameSaved.getCondition().toString());
+        assertEquals(sharedIsPublic, gameSaved.isShared());
+        assertEquals(extraInfoStr, gameSaved.getAdditionalInfo());
+
+        // test with image retrieving and URI. How?
         //gc.addPhoto(imageLocation);
 
-        Bitmap downloadedImage = gc.manualDownloadPhoto(game1);
-
-        // removeGame will remove the entry from the inventory.
-        gc.removeGame(game1, user);
 
     }
 

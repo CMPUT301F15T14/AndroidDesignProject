@@ -9,8 +9,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.io.IOException;
+
 public class MainActivity extends Activity {
-    User user = new User(); // the constructor automatically handles loading of saved data
 
     private Button profileButton;
 
@@ -53,15 +54,12 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ProfileController profCon = new ProfileController(user);
-        profCon.SaveProfileEdits("n00bpwnr", "pwnsnoobs@gmail.com", "603 30 Carleton Avenue", "587-877-2072");
-
         profileButton = (Button) findViewById(R.id.myProfile);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                //intent.putExtra("User", user);
+
                 startActivity(intent);
             }
         });
