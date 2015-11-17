@@ -50,13 +50,7 @@ public class EditProfileActivity extends Activity {
 
     ProfileController profileController; // we need to instantiate this with an intent
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public User getUser() { return user; }
 
     User user;
 
