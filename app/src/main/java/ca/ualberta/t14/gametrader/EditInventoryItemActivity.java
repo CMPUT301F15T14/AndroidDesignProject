@@ -51,6 +51,11 @@ public class EditInventoryItemActivity extends Activity {
     private RadioButton radioNotShared;
     private EditText additionalInfo;
     private ImageButton imageButton;
+    private Button save;
+
+    public Button getSaveButton() {
+        return save;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +156,8 @@ public class EditInventoryItemActivity extends Activity {
             }
         });
 
-        ((Button) findViewById(R.id.saveInventory)).setOnClickListener(new Button.OnClickListener() {
+        save=(Button) findViewById(R.id.saveInventory);
+        save.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
 

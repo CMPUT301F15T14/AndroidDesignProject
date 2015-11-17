@@ -41,7 +41,7 @@ public class InventoryListActivity extends Activity {
     private ArrayAdapter<String> adapter;
     private Button AddGame;
 
-    public Button getAddGame() {
+    public Button getAddGameButton() {
         return AddGame;
     }
 
