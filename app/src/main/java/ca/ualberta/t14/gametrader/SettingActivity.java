@@ -26,7 +26,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-public class Setting extends Activity {
+public class SettingActivity extends Activity {
 
     private SettingsController controller;
     /** 
