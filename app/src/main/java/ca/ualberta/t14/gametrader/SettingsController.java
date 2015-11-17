@@ -24,6 +24,7 @@ package ca.ualberta.t14.gametrader;
  * EnableDownloadPhotos and DisableDownloadPhotos.
  */
 public class SettingsController {
+
     /**
      * enable the photo download from online or storage, turn on the switch button
      */

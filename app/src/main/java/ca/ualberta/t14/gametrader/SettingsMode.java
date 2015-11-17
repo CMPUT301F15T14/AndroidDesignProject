@@ -23,7 +23,8 @@ package ca.ualberta.t14.gametrader;
  * this is a mode that get and set the value for enableDownloadPhoto1
  * which judge the switch is off or on.
  */
-public class SettingsMode {
+public class SettingsMode extends FileIO {
+    public final String fileName = "settings"; // name of settings file
 
     private Boolean enableDownloadPhoto1;
 
