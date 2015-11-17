@@ -8,9 +8,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 // Offers a set controls to change a user's information.
 public class EditProfileActivity extends Activity {
+
     public EditText getProfileText() {
         return profileText;
     }
@@ -39,7 +43,10 @@ public class EditProfileActivity extends Activity {
         return saveButton;
     }
 
+    private static String userProfile = "MainUserProfile";
+
     private Button saveButton;
+    private Button cancelEditProfileButton;
 
     ProfileController profileController; // we need to instantiate this with an intent
 
@@ -59,17 +66,20 @@ public class EditProfileActivity extends Activity {
         setContentView(R.layout.activity_edit_profile);
 
         user = UserSingleton.getInstance().getUser();
-        profileController = new ProfileController(user);
+        profileController = new ProfileController(user, this.getApplicationContext());
+
+        phoneText = (EditText) findViewById(R.id.phone);
 
         profileText = (EditText) findViewById(R.id.profile);
-        profileText.setText(user.getUserName());
-        phoneText = (EditText) findViewById(R.id.phone);
-        phoneText.setText(user.getPhoneNumber());
         emailText = (EditText) findViewById(R.id.email);
-        emailText.setText(user.getEmail());
         addressText = (EditText) findViewById(R.id.address);
-        addressText.setText(user.getAddress());
 
+/*
+        profileText.setText(user.getUserName());
+        phoneText.setText(user.getPhoneNumber());
+        emailText.setText(user.getEmail());
+        addressText.setText(user.getAddress());
+*/
         saveButton = (Button) findViewById(R.id.saveProfileButton);
         saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -79,7 +89,33 @@ public class EditProfileActivity extends Activity {
                         addressText.getText().toString(),
                         phoneText.getText().toString());
                 finish();
+
+                User mainUser = UserSingleton.getInstance().getUser();
+                try {
+                    mainUser = (User) mainUser.loadJson(userProfile, getApplicationContext());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mainUser.setPhoneNumber(phoneText.getText().toString());
+                mainUser.setAddress(addressText.getText().toString());
+                mainUser.setEmail(emailText.getText().toString());
+                mainUser.setUserName(profileText.getText().toString());
+
+                mainUser.saveJson(userProfile, getApplicationContext());
+
+                Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+
         }
+        });
+
+        cancelEditProfileButton = (Button) findViewById(R.id.cancelButton);
+        cancelEditProfileButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(EditProfileActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
@@ -106,11 +142,4 @@ public class EditProfileActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void SaveChanges(View view) {
-        profileController.SaveProfileEdits(((EditText) findViewById(R.id.profile)).getText().toString(),
-                ((EditText) this.findViewById(R.id.email)).getText().toString(),
-                ((EditText) this.findViewById(R.id.address)).getText().toString(),
-                ((EditText) this.findViewById(R.id.phone)).getText().toString());
-        finish();
-    }
 }

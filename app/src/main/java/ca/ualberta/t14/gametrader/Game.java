@@ -20,7 +20,6 @@ package ca.ualberta.t14.gametrader;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Parcel;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -62,7 +61,6 @@ public class Game implements AppObservable {
     //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
     //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
     //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
-
     volatile private Bitmap picture;
     private String pictureJsonable;
 
@@ -74,8 +72,8 @@ public class Game implements AppObservable {
     private volatile ArrayList<AppObserver> observers;
 
 
-    /**RESIZE_VALUE
-     * Constructor for the Game class.Initializes its variables.
+    /**
+     * Constructor for the Game class. Initializes variables to a default value..
      */
     public Game() {
         platform = Platform.OTHER;
@@ -92,6 +90,8 @@ public class Game implements AppObservable {
 
 
     /**
+     * The tag for the game of which platform it runs on.
+     * To be used in a View, e.g. to display what platform this game runs on.
      * Returns the platform the game was intended to run on.
      * @return the enumeration of target platform of the game.
      */
@@ -100,6 +100,8 @@ public class Game implements AppObservable {
     }
 
     /**
+     * The tag for the game of which platform it runs on.
+     * Should be used in a Controller where the user can set the Platform of the item.
      * Set the platform the game was intended to primarily run on.
      * @param platform the proper platform enumeration for the game. Use Platform.OTHER if it isn't listed.
      */
@@ -109,6 +111,8 @@ public class Game implements AppObservable {
     }
 
     /**
+     * The tag to find out what kind of condition this game is in.
+     * To be used in a View, e.g. to display the condition of the game.
      * Returns what condition the game is in.
      * @return the enumeration of the condition of the game.
      */
@@ -117,6 +121,8 @@ public class Game implements AppObservable {
     }
 
     /**
+     * The tag to find out what kind of condition this game is in.
+     * Should be used in a Controller where the user sets the condition of the item.
      * Set the condition the game is in.
      * @param condition the enumeration of the condition of the game.
      */
@@ -127,6 +133,8 @@ public class Game implements AppObservable {
 
     /**
      * Returns the title of the given game.
+     * Should be used when something wants to retrieve the title of the game item.
+     * To be used in a View, e.g. to display the title of the game.
      * @return a String containing the title.
      */
     public String getTitle() {
@@ -135,6 +143,7 @@ public class Game implements AppObservable {
 
     /**
      * Set the title of the game: the game's name.
+     * Should be used in a Controller where the user sets the title of the game.
      * @param title a String containing the game's name.
      */
     public void setTitle(String title) {
@@ -143,7 +152,8 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Returns a flag of whether or not the game is listed/shared.
+     * Returns a flag of whether or not the game is to be listed/shared.
+     * Should be used by the View or model to determine to show this or not or store it in a public list or not..
      * @return a Boolean if the game is listed/shared or not.
      */
     public Boolean isShared() {
@@ -151,7 +161,8 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Set the sharable flag of the game.
+     * Set the sharable flag of the game, whether the game will be listed/shared or not.
+     * Should be used by a Controller so the user can change the sharable flag.
      * @param sharableStatus the Boolean if TRUE then the game will be listed & shared.
      */
     public void setShared(Boolean sharableStatus) {
@@ -161,6 +172,7 @@ public class Game implements AppObservable {
 
     /**
      * Returns any additional info or description the game may have.
+     * Used by View so the additional information can be retrieved and displayed.
      * @return a String containing additional info or just an empty String if no info..
      */
     public String getAdditionalInfo() {
@@ -169,6 +181,7 @@ public class Game implements AppObservable {
 
     /**
      * Sets any additional info or description of the game.
+     * To be used in a Controller so the user can make changes to the additional information.
      * @param additionalInfo
      */
     public void setAdditionalInfo(String additionalInfo) {
@@ -178,6 +191,7 @@ public class Game implements AppObservable {
 
     /**
      * Returns the number of available copies of the game.
+     * To be used by a view to display the number of copies the owner has of this game.
      * @return the quantity available.
      */
     public int getQuantities() {
@@ -186,6 +200,7 @@ public class Game implements AppObservable {
 
     /**
      * Sets the numbner of available copies of the game.
+     * To be used in a Controller so the user can change the available copies they have of the game.
      * @param quantities the quantity available.
      */
     public void setQuantities(int quantities) {
@@ -195,6 +210,7 @@ public class Game implements AppObservable {
 
     /**
      * Get the picture of the game.
+     * To be used in a view so the picture (if any) can be displayed.
      * @return a Bitmap picture of the game.
      */
     public Bitmap getPicture() {
@@ -203,6 +219,7 @@ public class Game implements AppObservable {
 
     /**
      * Get the string representation of the bitmap.
+     * To be used by the model so this picture can be put in a JSON and put online.
      * @return a string containing the byteArray of the bitmap encoded as a string in Base64.
      */
     public String getPictureJson() {
@@ -211,6 +228,7 @@ public class Game implements AppObservable {
 
     /**
      * sets the Bitmap of the game object to the json-able image given.
+     * To be used by a view when using game items from the network to retrieve the picture (if any) from the JSON format.
      * @param jsonBitmap a string containing the byteArray of the bitmap encoded as a string in Base64.
      * @return a Boolean: whether or not the image data could be decoded.
      */
@@ -228,7 +246,9 @@ public class Game implements AppObservable {
 
     /**
      * Sets a picture for the game.
-     * If image given is bigger than 128x128 it gets scaled down with longest edge becoming 128, the aspect ratio is kept same.
+     * To be used by a Controller so the user can add an image to the game item.
+     * If image given is bigger than 200x200 it gets scaled down with longest edge becoming 200, the aspect ratio is kept same.
+     * It also compresses the Bitmap to JPG with 85% compression quality so its JSON-able and stores the JSON to the game object.
      * @param image a Bitmap picture of the game.
      * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
      */

@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
@@ -11,7 +29,22 @@ import android.widget.Toast;
 public class Setting extends Activity {
 
     private SettingsController controller;
-
+    /** 
+     * This function is switch ON or OFF the mode of the download the picture for the items 
+     * This state information includes:  * <ol>The Setting has the following features and function: 
+     * <ui> 
+     * <li>The function turn on the mode of download pictures for items 
+     * <li>The function turn off the mode of download pictures for items 
+     * <li>if user chooses to enable download the pictures for items, the switch turns ON. 
+     * <li>Else if, the switch will be off and disable download pictures for items. 
+     * <li>Once the switch turn ON or OFF, the controller will change the value of function 
+     * <li> which called EnableDownloadPhotos and DisableDownloadPhotos 
+     * </ui> 
+     * </ol> 
+     * 
+     * @author Tianyu Hu
+     * @since 2015-11-03 
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
