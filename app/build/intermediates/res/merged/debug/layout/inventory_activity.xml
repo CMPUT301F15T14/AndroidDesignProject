@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:label="@string/myItems"
+    android:background="#1c5bdb"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="16dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="ca.ualberta.t14.gametrader.myInventoryMain"
+    style="@style/AppTheme">
+
+
+    <SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="#007b6b6b" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recent"
+        android:id="@+id/recentItem"
+        android:layout_below="@+id/searchView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/nopic"
+        android:id="@+id/noPicture"
+        android:layout_below="@+id/recentItem"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/titleTooLong"
+        android:id="@+id/titleTooLong"
+        android:layout_below="@+id/noPicture"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/notListed"
+        android:id="@+id/notListed"
+        android:layout_below="@+id/titleTooLong"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/oldestItem"
+        android:id="@+id/oldest"
+        android:layout_below="@+id/notListed"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="16dp" />
+</RelativeLayout>
+<!-- From: file:/cshome/satyabra/Cmput%20301/GroupProject/AndroidDesignProject/app/src/main/res/layout/inventory_activity.xml -->

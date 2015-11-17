@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="ca.ualberta.t14.gametrader"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="18"
+        android:targetSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="ca.ualberta.t14.gametrader.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.FriendsListActivity"
+            android:label="@string/title_activity_friends_list"
+            android:theme="@style/ListFont" >
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.InventoryListActivity"
+            android:label="@string/title_activity_inventory_list"
+            android:theme="@style/ListFont" >
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.ProfileActivity"
+            android:label="@string/title_activity_profile" >
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.EditProfileActivity"
+            android:label="@string/title_activity_edit_profile" >
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.InventoryItemActivity"
+            android:label="@string/title_activity_inventory_item" >
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.EditInventoryItemActivity"
+            android:label="@string/title_activity_edit_inventory_item" >
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.SearchPageActivity"
+            android:label="@string/title_activity_search_page" >
+        </activity>
+        <activity
+            android:name="ca.ualberta.t14.gametrader.SettingActivity"
+            android:label="@string/title_activity_setting" >
+        </activity>
+    </application>
+
+</manifest>
