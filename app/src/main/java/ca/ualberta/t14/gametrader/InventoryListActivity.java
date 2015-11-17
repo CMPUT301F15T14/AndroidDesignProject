@@ -53,6 +53,10 @@ public class InventoryListActivity extends Activity {
         return GameList;
     }
 
+    public boolean containGameTitle (String Title){
+        return mobileArray.contains(Title);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

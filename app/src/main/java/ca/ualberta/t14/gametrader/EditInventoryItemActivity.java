@@ -57,6 +57,10 @@ public class EditInventoryItemActivity extends Activity {
         return save;
     }
 
+    public EditText getGameTitle() {
+        return gameTitle;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
