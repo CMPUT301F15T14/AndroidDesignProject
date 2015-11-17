@@ -52,9 +52,12 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         });
         getInstrumentation().waitForIdleSync();
         assertTrue(listActivity.containGameTitle("GTA V"));
-        
+
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        listActivity.getMobileArray().clear();
+        addItemActivity.finish();
 
     }
 
