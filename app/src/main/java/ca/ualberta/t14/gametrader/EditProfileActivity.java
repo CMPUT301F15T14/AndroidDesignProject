@@ -51,7 +51,14 @@ public class EditProfileActivity extends Activity {
     ProfileController profileController; // we need to instantiate this with an intent
 
     public User getUser() {
-        return user;
+        User retUser = UserSingleton.getInstance().getUser();
+        try {
+            retUser = (User) retUser.loadJson(userProfile, getApplicationContext());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return retUser;
     }
 
     public void setUser(User user) {
