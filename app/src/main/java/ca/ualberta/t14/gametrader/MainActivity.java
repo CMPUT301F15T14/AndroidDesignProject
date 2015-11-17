@@ -13,13 +13,49 @@ import java.io.IOException;
 
 public class MainActivity extends Activity {
 
+    private Button profileButton;
+
+    public Button getProfileButton() {
+        return profileButton;
+    }
+
+    private Button inventoryButton;
+
+    public Button getInventoryButton() {
+        return inventoryButton;
+    }
+
+    private Button friendsButton;
+
+    public Button getFriendsButton() {
+        return friendsButton;
+    }
+
+    private Button tradesButton;
+
+    public Button getTradesButton() {
+        return tradesButton;
+    }
+
+    private Button searchButton;
+
+    public Button getSearchButton() {
+        return searchButton;
+    }
+
+    private Button settingsButton;
+
+    public Button getSettingsButton() {
+        return settingsButton;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button profile = (Button) findViewById(R.id.myProfile);
-        profile.setOnClickListener(new View.OnClickListener() {
+        profileButton = (Button) findViewById(R.id.myProfile);
+        profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
@@ -28,8 +64,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button inventory = (Button) findViewById(R.id.myInventory);
-        inventory.setOnClickListener(new View.OnClickListener() {
+        inventoryButton = (Button) findViewById(R.id.myInventory);
+        inventoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
@@ -37,8 +73,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button friends = (Button) findViewById(R.id.friends);
-        friends.setOnClickListener(new View.OnClickListener() {
+        friendsButton = (Button) findViewById(R.id.friends);
+        friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, FriendsListActivity.class);
@@ -46,8 +82,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button pendTrades = (Button) findViewById(R.id.pendingTrades);
-        pendTrades.setOnClickListener(new View.OnClickListener() {
+        tradesButton = (Button) findViewById(R.id.pendingTrades);
+        tradesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
@@ -55,8 +91,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button search = (Button) findViewById(R.id.search);
-        search.setOnClickListener(new View.OnClickListener() {
+        searchButton = (Button) findViewById(R.id.search);
+        searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SearchPageActivity.class);
@@ -64,11 +100,11 @@ public class MainActivity extends Activity {
             }
         });
 
-        Button settings = (Button) findViewById(R.id.setting);
-        settings.setOnClickListener(new View.OnClickListener() {
+        settingsButton = (Button) findViewById(R.id.setting);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Setting.class);
+                Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
             }
         });
@@ -95,4 +131,5 @@ public class MainActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
