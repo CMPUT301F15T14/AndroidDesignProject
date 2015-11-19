@@ -35,4 +35,12 @@
         android:id="@+id/searchButton"
         android:layout_below="@+id/searchKey"
         android:layout_centerHorizontal="true" />
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchList"
+        android:layout_alignParentStart="true"
+        android:background="#0e97f1"
+        android:layout_below="@+id/searchKey"
+        android:visibility="visible" />
 </RelativeLayout>

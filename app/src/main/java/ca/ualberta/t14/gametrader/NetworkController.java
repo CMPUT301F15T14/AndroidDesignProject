@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
 /**
  * Created by jjohnsto on 11/19/15.
@@ -72,7 +73,8 @@ public class NetworkController {
         // don't seem to exist in our http libraries
     }
 
-    public void SearchGames(String qry) {
+    public ArrayList<Game> SearchGames(String qry) {
+        ArrayList<Game> results = new ArrayList<Game>();
         try { // TODO: get rid of this giant try/catch block
             HttpGet searchRequest = new HttpGet("http://cmput301.softwareprocess.es:8080/t14/_search?pretty=1&q=" +
                     java.net.URLEncoder.encode(qry, "UTF-8"));
@@ -90,13 +92,15 @@ public class NetworkController {
             System.err.println(esResponse);
             for (ElasticSearchResponse<Game> r : esResponse.getHits()) {
                 Game game = r.getSource();
-                System.err.println(game);
+                results.add(game);
             }
             //searchRequest.releaseConnection();
         }
         catch(IOException e){
             e.printStackTrace();
         }
+
+        return results;
     }
 
     String getEntityContent(HttpResponse response) throws IOException {
