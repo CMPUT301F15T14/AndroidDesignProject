@@ -42,9 +42,9 @@ public class SearchPageActivity extends Activity {
                 String qry = searchText.getText().toString();
                 ArrayList<Game> results = net.SearchGames(qry);
 
-                for(Game result: results){
+                /*for(Game result: results){
                     mobileArray.add(result.getTitle());
-                }
+                }*/
             }
         });
     }
