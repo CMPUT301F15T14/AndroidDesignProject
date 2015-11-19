@@ -92,21 +92,6 @@ public class EditProfileActivity extends Activity {
                         phoneText.getText().toString());
                 finish();
 
-                User mainUser = UserSingleton.getInstance().getUser();
-                try {
-                    mainUser = (User) mainUser.loadJson(userProfile, getApplicationContext());
-                    UserSingleton.getInstance().setUser(mainUser);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                mainUser.setPhoneNumber(phoneText.getText().toString());
-                mainUser.setAddress(addressText.getText().toString());
-                mainUser.setEmail(emailText.getText().toString());
-                mainUser.setUserName(profileText.getText().toString());
-
-                UserSingleton.getInstance().getUser().saveJson(userProfile, getApplicationContext());
-
                 Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
 
         }
