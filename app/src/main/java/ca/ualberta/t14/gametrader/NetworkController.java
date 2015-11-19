@@ -1,6 +1,7 @@
 package ca.ualberta.t14.gametrader;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -83,18 +84,32 @@ public class NetworkController {
 
             String json = getEntityContent(response);
 
-            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<Recipe>>() {
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<Game>>() {
             }.getType();
             ElasticSearchSearchResponse<Game> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
             System.err.println(esResponse);
             for (ElasticSearchResponse<Game> r : esResponse.getHits()) {
                 Game game = r.getSource();
-                System.err.println(recipe);
+                System.err.println(game);
             }
-            searchRequest.releaseConnection();
+            //searchRequest.releaseConnection();
         }
         catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    String getEntityContent(HttpResponse response) throws IOException {
+        BufferedReader br = new BufferedReader(
+                new InputStreamReader((response.getEntity().getContent())));
+        String output;
+        System.err.println("Output from Server -> ");
+        String json = "";
+        while ((output = br.readLine()) != null) {
+            System.err.println(output);
+            json += output;
+        }
+        System.err.println("JSON:"+json);
+        return json;
     }
 }

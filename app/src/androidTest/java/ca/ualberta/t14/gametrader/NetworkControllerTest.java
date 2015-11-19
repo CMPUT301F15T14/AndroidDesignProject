@@ -21,5 +21,7 @@ public class NetworkControllerTest extends ActivityInstrumentationTestCase2 {
 
         NetworkController net = new NetworkController();
         net.InsertGame(game);
+
+        net.SearchGames("Testgame");
     }
 }
