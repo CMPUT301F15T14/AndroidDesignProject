@@ -130,7 +130,8 @@ public class InventoryItemActivity extends Activity {
     }
 
     public void ViewProfile(View v) {
-        Intent intent = new Intent(InventoryItemActivity.this, InventoryListActivity.class);
+        Intent intent = new Intent(InventoryItemActivity.this, ProfileActivity.class);
+        ObjParseSingleton.getInstance().addObject("userProfile", ownerProfile);
         startActivity(intent);
     }
 }
