@@ -32,6 +32,7 @@ import android.widget.TextView;
 public class InventoryItemActivity extends Activity {
 
     Game game;
+    User ownerProfile;
     TextView gameTitle;
     TextView platform;
     TextView condition;
@@ -51,6 +52,11 @@ public class InventoryItemActivity extends Activity {
             game = new Game();
         }
 
+        ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
+        if(ownerProfile == null) {
+            throw new RuntimeException("Received null User for game owner.");
+        }
+
         gameTitle = (TextView) findViewById(R.id.gameInfoTitle);
         platform = (TextView) findViewById(R.id.gameInfoConsole);
         condition = (TextView) findViewById(R.id.gameInfoCondition);
@@ -63,9 +69,9 @@ public class InventoryItemActivity extends Activity {
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
-        owner.setText(UserSingleton.getInstance().getUser().getUserName());
-        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
-        address.setText(UserSingleton.getInstance().getUser().getAddress());
+        owner.setText(ownerProfile.getUserName());
+        phone.setText(ownerProfile.getPhoneNumber());
+        address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         // Important, have to load bitmap from it's json first! Because bitmap is volatile.
         game.setPictureFromJson(game.getPictureJson());
@@ -84,7 +90,6 @@ public class InventoryItemActivity extends Activity {
             }
         });
 
-
     }
 
     @Override
@@ -95,9 +100,9 @@ public class InventoryItemActivity extends Activity {
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
-        owner.setText(UserSingleton.getInstance().getUser().getUserName());
-        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
-        address.setText(UserSingleton.getInstance().getUser().getAddress());
+        owner.setText(ownerProfile.getUserName());
+        phone.setText(ownerProfile.getPhoneNumber());
+        address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         imageView.setImageBitmap(game.getPicture());
     }
@@ -122,5 +127,9 @@ public class InventoryItemActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void ViewProfile(View v) {
+
     }
 }

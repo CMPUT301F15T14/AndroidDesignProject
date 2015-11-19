@@ -43,7 +43,6 @@ public class EditProfileActivity extends Activity {
         return saveButton;
     }
 
-    private static String userProfile = "MainUserProfile";
 
     private Button saveButton;
     private Button cancelEditProfileButton;
@@ -61,12 +60,6 @@ public class EditProfileActivity extends Activity {
 
         // Load user from JSON. The user contains Inventory.
         user = UserSingleton.getInstance().getUser();
-        try {
-            user = (User) user.loadJson("MainUserProfile", getApplicationContext());
-            UserSingleton.getInstance().setUser(user);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         profileController = new ProfileController(user, this.getApplicationContext());
 
@@ -91,21 +84,6 @@ public class EditProfileActivity extends Activity {
                         addressText.getText().toString(),
                         phoneText.getText().toString());
                 finish();
-
-                User mainUser = UserSingleton.getInstance().getUser();
-                try {
-                    mainUser = (User) mainUser.loadJson(userProfile, getApplicationContext());
-                    UserSingleton.getInstance().setUser(mainUser);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                mainUser.setPhoneNumber(phoneText.getText().toString());
-                mainUser.setAddress(addressText.getText().toString());
-                mainUser.setEmail(emailText.getText().toString());
-                mainUser.setUserName(profileText.getText().toString());
-
-                UserSingleton.getInstance().getUser().saveJson(userProfile, getApplicationContext());
 
                 Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
 
