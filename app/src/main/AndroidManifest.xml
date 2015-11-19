@@ -26,12 +26,12 @@
         <activity
             android:name=".FriendsListActivity"
             android:label="@string/title_activity_friends_list"
-            android:theme="@style/ListFont">
+            android:theme="@style/ListFont" >
         </activity>
         <activity
             android:name=".InventoryListActivity"
             android:label="@string/title_activity_inventory_list"
-            android:theme="@style/ListFont">
+            android:theme="@style/ListFont" >
         </activity>
         <activity
             android:name=".ProfileActivity"
@@ -56,6 +56,14 @@
         <activity
             android:name=".SettingActivity"
             android:label="@string/title_activity_setting" >
+        </activity>
+        <activity
+            android:name=".TradeHistoryActivity"
+            android:label="@string/title_activity_trade_history" >
+        </activity>
+        <activity
+            android:name=".TradeActivity"
+            android:label="@string/title_activity_trade" >
         </activity>
     </application>
 

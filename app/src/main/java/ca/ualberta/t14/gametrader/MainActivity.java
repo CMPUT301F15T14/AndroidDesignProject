@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
         tradesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
+                Intent intent = new Intent(MainActivity.this, TradeHistoryActivity.class);
                 startActivity(intent);
             }
         });
