@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -183,6 +184,8 @@ public class EditInventoryItemActivity extends Activity {
 
                 gc.editGame(g, gameTitle, null, platform, condition, shareStatus, additionalInfo);
 
+                Toast.makeText(EditInventoryItemActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
+
                 // Save user to JSON. The user contains Inventory which contains the item.
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
 
@@ -204,11 +207,32 @@ public class EditInventoryItemActivity extends Activity {
                 if(resultCode == RESULT_OK){
                     try {
                         final Uri imageUri = imageReturnedIntent.getData();
-                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                        InputStream imageStream = getContentResolver().openInputStream(imageUri);
+
+                        // getting just image bounds taken from http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
+                        BitmapFactory.Options o = new BitmapFactory.Options();
+                        o.inJustDecodeBounds = true;
+                        BitmapFactory.decodeStream(imageStream, null, o);
+                        int approxSample = (int) Math.ceil((o.outHeight * o.outWidth)/(500.0f * 500.0f));
+
+                        // Bitmap options taken from http://stackoverflow.com/questions/11944182/android-out-of-memory-exception-how-does-decoderesource-add-to-the-vm-budget
+                        o.inJustDecodeBounds = false;
+                        o.inSampleSize = approxSample;
+                        o.inDither = false;
+
+                        // taken from http://stackoverflow.com/questions/12006785/android-skimagedecoder-factory-returned-null
+                        if(imageStream.markSupported()) {
+                            // will only throw if markSupported is false.
+                            imageStream.reset();
+                        } else {
+                            // reload it again just to reset reader position...
+                            imageStream = getContentResolver().openInputStream(imageUri);
+                        }
+                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
+                        imageStream.close();
                         gc.addPhoto(g, selectedImage);
                         imageButton.setImageBitmap(g.getPicture());
-                    } catch (FileNotFoundException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -218,5 +242,3 @@ public class EditInventoryItemActivity extends Activity {
 
 }
 
-//here is the link on how to radio buttons: http://developer.android.com/guide/topics/ui/controls/radiobutton.html
-//by default I have checked the Public radio button

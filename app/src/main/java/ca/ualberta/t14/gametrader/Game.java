@@ -66,7 +66,7 @@ public class Game implements AppObservable {
 
     private int quantities;
     private final int COMPRESSION_QUALITY = 85;
-    private final int RESIZE_VALUE = 200;
+    private final Long MAXSIZE = new Long(65536);
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
@@ -237,7 +237,7 @@ public class Game implements AppObservable {
         byte[] decodedString = Base64.decode(jsonBitmap, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         if(decodedByte != null) {
-            picture = decodedByte.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
+            picture = decodedByte;
             // set the json image to the current image.
             pictureJsonable = jsonBitmap;
         }
@@ -259,12 +259,9 @@ public class Game implements AppObservable {
 
         if( image.getWidth() <=0 || image.getHeight() <= 0) {
             return Boolean.FALSE;
-        } else if (image.getWidth() > RESIZE_VALUE || image.getHeight() > RESIZE_VALUE) {
-            // preserve aspect ratio of image
-            // TODO: maybe make it so you can put in image and if filesize is bigger than 65kb then downscale to longest side 500px and then keep checking while loop filesize>65kb and decrease downscale 100px a time if. Can take long time... because compress method is slow tho.
-            picture = preserveAspectRatio(image);
         } else {
-            picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
+            // preserve aspect ratio of image and make it smaller if its bigger than 65.536KB
+            picture = makeSmaller(image);
         }
 
         pictureJsonable = makeBitmapJsonable(picture);
@@ -292,7 +289,9 @@ public class Game implements AppObservable {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
-        return new Long(b.length);
+        Long size = new Long(b.length);
+        try{byteArrayBitmapStream.close();} catch(Exception e){}
+        return size;
     }
 
     private String makeBitmapJsonable(Bitmap image) {
@@ -300,25 +299,47 @@ public class Game implements AppObservable {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
+        String base64Encoded = Base64.encodeToString(b, Base64.DEFAULT);
+        try{byteArrayBitmapStream.close();} catch(Exception e){}
+        return base64Encoded;
     }
 
-    private Bitmap preserveAspectRatio(Bitmap image) {
+    private Bitmap makeSmaller(Bitmap image) {
+        Bitmap img = image;
+        if(getImageJpgSize(img) < MAXSIZE) {
+            return img;
+        } else {
+            Integer longestEdge = 500;
+            while(getImageJpgSize(img) >= MAXSIZE) {
+                img = preserveAspectRatio(img, longestEdge, Boolean.TRUE);
+                longestEdge -= 25;
+            }
+        }
+        return img;
+    }
+
+    private Bitmap preserveAspectRatio(Bitmap image, Integer resize_value, Boolean recycleArgumentImage) {
         int imgW = image.getWidth();
         int imgH = image.getHeight();
 
         if(imgW < imgH) {
             float aspectRatio = ((float) imgW) / imgH;
-            int newHeight = RESIZE_VALUE;
+            int newHeight = resize_value;
             int newWidth = Math.round(aspectRatio * newHeight);
+            if(recycleArgumentImage)
+                image.recycle();
             return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
         } else if(imgW > imgH) {
             float aspectRatio = ((float) imgH) / imgW;
-            int newWidth = RESIZE_VALUE;
+            int newWidth = resize_value;
             int newHeight = Math.round(aspectRatio * newWidth);
+            if(recycleArgumentImage)
+                image.recycle();
             return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
         } else if(imgW == imgH) {
-            return Bitmap.createScaledBitmap(image, RESIZE_VALUE, RESIZE_VALUE, Boolean.TRUE);
+            if(recycleArgumentImage)
+                image.recycle();
+            return Bitmap.createScaledBitmap(image, resize_value, resize_value, Boolean.TRUE);
         }
         // something went horribly wrong.
         return null;
