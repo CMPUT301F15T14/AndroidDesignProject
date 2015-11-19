@@ -76,7 +76,9 @@
         android:text="@string/ownerString"
         android:id="@+id/gameInfoOwner"
         android:layout_below="@+id/gameInfoCondition"
-        android:layout_toEndOf="@+id/inventoryItemImage" />
+        android:layout_toEndOf="@+id/inventoryItemImage"
+        android:clickable="true"
+        android:onClick="ViewProfile"/>
 
     <TextView
         android:layout_width="wrap_content"
