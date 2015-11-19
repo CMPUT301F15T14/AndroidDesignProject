@@ -56,6 +56,8 @@
     <string name="tradeHistory">Trade History</string>
     <string name="tradeAsk">Add Another Game</string>
     <string name="myGames">My Offered Games</string>
+    <string name="makeTrade">Offer Trade</string>
+    <string name="cancelTrade">Cancel</string>
 
     <string-array name="platforms_array">
         <item>PlayStation 1</item>

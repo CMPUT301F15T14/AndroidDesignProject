@@ -128,38 +128,38 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
     }
 
     //test whether the trades button runs properly (brings you to ...Activity)
-/*    public void testTradesButton() {
+    public void testTradesButton() {
         MainActivity main = (MainActivity)getActivity();
-
-
-        getInstrumentation().waitForIdleSync();
 
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
-                getInstrumentation().addMonitor(ProfileActivity.class.getName(),
+                getInstrumentation().addMonitor(TradeHistoryActivity.class.getName(),
                         null, false);
 
-        inventoryButton = main.getInventoryButton();
+        tradesButton = main.getTradesButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
-                inventoryButton.performClick();
+                tradesButton.performClick();
             }
         });
+        getInstrumentation().waitForIdleSync();
 
         //Following was stolen from https://developer.android.com/training/activity-testing/activity-functional-testing.html
 
         // Validate that ReceiverActivity is started
-        final InventoryActivity receiverActivity = (InventoryActivity)
+        final TradeHistoryActivity receiverActivity = (TradeHistoryActivity)
                 receiverActivityMonitor.waitForActivityWithTimeout(1000);
         assertNotNull("ReceiverActivity is null", receiverActivity);
         assertEquals("Monitor for ReceiverActivity has not been called",
                 1, receiverActivityMonitor.getHits());
         assertEquals("Activity is of wrong type",
-                InventoryActivity.class, receiverActivity.getClass());
+                TradeHistoryActivity.class, receiverActivity.getClass());
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
-    } */
+
+        receiverActivity.finish();
+    }
 
     //test whether the search button runs properly (brings you to SearchPageActivity)
     public void testSearchButton() {
