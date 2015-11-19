@@ -65,7 +65,7 @@ public class InventoryListActivity extends Activity {
         // Load user from JSON. The user contains Inventory.
         User mainUser = UserSingleton.getInstance().getUser();
         try {
-            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext());
+            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext()); // TODO: We are not necessarily looking at our own inventory!
             UserSingleton.getInstance().setUser(mainUser);
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,6 +90,7 @@ public class InventoryListActivity extends Activity {
                 Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
 
                 ObjParseSingleton.getInstance().addObject("game", g);
+                ObjParseSingleton.getInstance().addObject("gameOwner", UserSingleton.getInstance().getUser()); // TODO: pass the right user, not just phone owner!
 
                 Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
 

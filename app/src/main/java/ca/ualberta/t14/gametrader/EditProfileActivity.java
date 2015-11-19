@@ -43,7 +43,6 @@ public class EditProfileActivity extends Activity {
         return saveButton;
     }
 
-    private static String userProfile = "MainUserProfile";
 
     private Button saveButton;
     private Button cancelEditProfileButton;
@@ -61,12 +60,6 @@ public class EditProfileActivity extends Activity {
 
         // Load user from JSON. The user contains Inventory.
         user = UserSingleton.getInstance().getUser();
-        try {
-            user = (User) user.loadJson("MainUserProfile", getApplicationContext());
-            UserSingleton.getInstance().setUser(user);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         profileController = new ProfileController(user, this.getApplicationContext());
 
