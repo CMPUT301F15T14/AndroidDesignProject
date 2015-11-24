@@ -66,8 +66,8 @@ public class MainActivity extends Activity {
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ObjParseSingleton.getInstance().addObject("userProfile", UserSingleton.getInstance().getUser());
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-
                 startActivity(intent);
             }
         });
@@ -76,6 +76,7 @@ public class MainActivity extends Activity {
         inventoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //ObjParseSingleton.getInstance().addObject("userProfile", UserSingleton.getInstance().getUser());
                 Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
                 startActivity(intent);
             }

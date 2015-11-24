@@ -14,10 +14,6 @@ import java.io.IOException;
 
 
 public class ProfileActivity extends Activity {
-    public static String userProfile = "MainUserProfile";
-
-    ProfileController profileController;
-
     TextView userNameView;
     TextView phoneView;
     TextView emailView;
@@ -45,18 +41,18 @@ public class ProfileActivity extends Activity {
         phoneView = (TextView) findViewById(R.id.phoneDisplay);
         userNameView = (TextView) findViewById(R.id.userNameDisplay);
 
-        User mainUser = UserSingleton.getInstance().getUser();
-        try {
-            mainUser = (User) mainUser.loadJson(userProfile, getApplicationContext());
-            addressView.setText(mainUser.getAddress());
-            emailView.setText(mainUser.getEmail());
-            phoneView.setText(mainUser.getPhoneNumber());
-            userNameView.setText(mainUser.getUserName());
-
-            //Toast.makeText(this, mainUser.getAddress(), Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
+        User user = (User)ObjParseSingleton.getInstance().popObject("userProfile");
+        if(user == null){
+            throw new RuntimeException("ProfileActivity received null user.");
         }
+
+        addressView.setText(user.getAddress());
+        emailView.setText(user.getEmail());
+        phoneView.setText(user.getPhoneNumber());
+        userNameView.setText(user.getUserName());
+
+        //Toast.makeText(this, mainUser.getAddress(), Toast.LENGTH_SHORT).show();
+
 
         editprof = (Button) findViewById(R.id.editProfile);
         editprof.setOnClickListener(new View.OnClickListener() {

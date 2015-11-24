@@ -126,6 +126,15 @@ public class Trade extends FileIO implements AppObservable{
     }
 
     /**
+     * Removes a game from the list of games the borrower is offering.
+     *
+     * @param game
+     */
+    public void removeBorrowerGame(Game game) {
+        borrowerOffers.remove(game);
+    }
+
+    /**
      * A getter of the receiver of the trade offer
      *
      * @return the User who gets offered the trade (owner)
@@ -162,6 +171,15 @@ public class Trade extends FileIO implements AppObservable{
     public void addOwnerGame(Game game) {
         ownerOffers.add(game);
         notifyAllObservers();
+    }
+
+    /**
+     * Removes a game from the list of games the owner is offering.
+     *
+     * @param game
+     */
+    public void removeOwnerGame(Game game) {
+        ownerOffers.remove(game);
     }
 
     /**
