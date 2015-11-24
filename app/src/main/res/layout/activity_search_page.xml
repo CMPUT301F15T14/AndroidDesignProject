@@ -31,7 +31,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search By Game Console"
+        android:text="@string/searchConsoleText"
         android:textColor="#ffffff"
         android:id="@+id/searchButton"
         android:layout_below="@+id/gameConsole"
@@ -48,7 +48,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search By Name"
+        android:text="@string/searchNameText"
         android:textColor="#ffffff"
         android:id="@+id/button"
         android:layout_below="@+id/searchKey"
