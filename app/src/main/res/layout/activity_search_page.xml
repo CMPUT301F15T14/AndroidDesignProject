@@ -11,28 +11,58 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Search"
+        android:text="@string/searchTitle"
         android:textColor="#ffffff"
         android:id="@+id/searchText"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="16dp" />
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/searchKey"
-        android:layout_below="@+id/searchText"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
         android:text="\@search"
-        android:textColor="#ffffff"/>
+        android:textColor="#ffffff"
+        android:layout_below="@+id/searchName"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="16dp" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search"
+        android:text="@string/searchTitle"
         android:textColor="#ffffff"
         android:id="@+id/searchButton"
-        android:layout_below="@+id/searchKey"
+        android:layout_below="@+id/gameConsole"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/searchName"
+        android:id="@+id/searchName"
+        android:layout_below="@+id/searchText"
+        android:layout_alignParentStart="true"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/searchConsole"
+        android:id="@+id/searchConsole"
+        android:textColor="#ffffff"
+        android:layout_below="@+id/searchKey"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/gameConsole"
+        android:layout_below="@+id/searchConsole"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Spinner;
 
 
 public class SearchPageActivity extends Activity {
+
+    private Spinner gameConsole;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
