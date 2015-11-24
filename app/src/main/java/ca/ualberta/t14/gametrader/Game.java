@@ -22,7 +22,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -65,8 +64,6 @@ public class Game implements AppObservable {
     private String pictureJsonable;
 
     private int quantities;
-    private final int COMPRESSION_QUALITY = 85;
-    private final Long MAXSIZE = new Long(65536);
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
@@ -226,6 +223,7 @@ public class Game implements AppObservable {
         return pictureJsonable;
     }
 
+
     /**
      * sets the Bitmap of the game object to the json-able image given.
      * To be used by a view when using game items from the network to retrieve the picture (if any) from the JSON format.
@@ -247,7 +245,8 @@ public class Game implements AppObservable {
     /**
      * Sets a picture for the game.
      * To be used by a Controller so the user can add an image to the game item.
-     * If image given is bigger than 200x200 it gets scaled down with longest edge becoming 200, the aspect ratio is kept same.
+     * If image given is bigger than 65536 bytes it will be scaled down to with longest edge becoming 500, the aspect ratio is kept same.
+     * If image still is bigger than 65536 bytes, it will keep scaling it down by 25 pixels with longest edge, until the file size is strictly less than 65536 bytes.
      * It also compresses the Bitmap to JPG with 85% compression quality so its JSON-able and stores the JSON to the game object.
      * @param image a Bitmap picture of the game.
      * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
@@ -261,10 +260,10 @@ public class Game implements AppObservable {
             return Boolean.FALSE;
         } else {
             // preserve aspect ratio of image and make it smaller if its bigger than 65.536KB
-            picture = makeSmaller(image);
+            picture = PictureManager.makeImageSmaller(image);
         }
 
-        pictureJsonable = makeBitmapJsonable(picture);
+        pictureJsonable = PictureManager.getStringFromBitmap(picture);
 
         notifyAllObservers();
         return Boolean.TRUE;
@@ -285,64 +284,5 @@ public class Game implements AppObservable {
         }
     }
 
-    private Long getImageJpgSize(Bitmap image) {
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        Long size = new Long(b.length);
-        try{byteArrayBitmapStream.close();} catch(Exception e){}
-        return size;
-    }
-
-    private String makeBitmapJsonable(Bitmap image) {
-        // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        String base64Encoded = Base64.encodeToString(b, Base64.DEFAULT);
-        try{byteArrayBitmapStream.close();} catch(Exception e){}
-        return base64Encoded;
-    }
-
-    private Bitmap makeSmaller(Bitmap image) {
-        Bitmap img = image;
-        if(getImageJpgSize(img) < MAXSIZE) {
-            return img;
-        } else {
-            Integer longestEdge = 500;
-            while(getImageJpgSize(img) >= MAXSIZE) {
-                img = preserveAspectRatio(img, longestEdge, Boolean.TRUE);
-                longestEdge -= 25;
-            }
-        }
-        return img;
-    }
-
-    private Bitmap preserveAspectRatio(Bitmap image, Integer resize_value, Boolean recycleArgumentImage) {
-        int imgW = image.getWidth();
-        int imgH = image.getHeight();
-
-        if(imgW < imgH) {
-            float aspectRatio = ((float) imgW) / imgH;
-            int newHeight = resize_value;
-            int newWidth = Math.round(aspectRatio * newHeight);
-            if(recycleArgumentImage)
-                image.recycle();
-            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
-        } else if(imgW > imgH) {
-            float aspectRatio = ((float) imgH) / imgW;
-            int newWidth = resize_value;
-            int newHeight = Math.round(aspectRatio * newWidth);
-            if(recycleArgumentImage)
-                image.recycle();
-            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
-        } else if(imgW == imgH) {
-            if(recycleArgumentImage)
-                image.recycle();
-            return Bitmap.createScaledBitmap(image, resize_value, resize_value, Boolean.TRUE);
-        }
-        // something went horribly wrong.
-        return null;
-    }
 
 }

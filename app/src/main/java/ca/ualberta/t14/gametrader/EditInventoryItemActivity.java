@@ -20,9 +20,6 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,9 +32,6 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 
 public class EditInventoryItemActivity extends Activity {
@@ -197,44 +191,19 @@ public class EditInventoryItemActivity extends Activity {
 
     }
 
-                // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android
-        @Override
+    // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
         switch(requestCode) {
             case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
-                    try {
-                        final Uri imageUri = imageReturnedIntent.getData();
-                        InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                    final Uri imageUri = imageReturnedIntent.getData();
+                    gc.addPhoto(g, imageUri, getContentResolver());
 
-                        // getting just image bounds taken from http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
-                        BitmapFactory.Options o = new BitmapFactory.Options();
-                        o.inJustDecodeBounds = true;
-                        BitmapFactory.decodeStream(imageStream, null, o);
-                        int approxSample = (int) Math.ceil((o.outHeight * o.outWidth)/(500.0f * 500.0f));
+                    imageButton.setImageBitmap(g.getPicture()); //<-- should be called on observer update
 
-                        // Bitmap options taken from http://stackoverflow.com/questions/11944182/android-out-of-memory-exception-how-does-decoderesource-add-to-the-vm-budget
-                        o.inJustDecodeBounds = false;
-                        o.inSampleSize = approxSample;
-                        o.inDither = false;
-
-                        // taken from http://stackoverflow.com/questions/12006785/android-skimagedecoder-factory-returned-null
-                        if(imageStream.markSupported()) {
-                            // will only throw if markSupported is false.
-                            imageStream.reset();
-                        } else {
-                            // reload it again just to reset reader position...
-                            imageStream = getContentResolver().openInputStream(imageUri);
-                        }
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
-                        imageStream.close();
-                        gc.addPhoto(g, selectedImage);
-                        imageButton.setImageBitmap(g.getPicture());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
                 break;
         }

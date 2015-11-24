@@ -18,6 +18,12 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 /**
  * This is a manager for photos, the images will actually be stored in the elastic search online.
  * This Model will store the local JSON string of the images and downloaded JSON strings of images online.
@@ -25,4 +31,73 @@ package ca.ualberta.t14.gametrader;
  * @author  Ryan Satyabrata
  */
 public class PictureManager {
+
+    public static final int COMPRESSION_QUALITY = 85;
+
+    private static final Long MAXSIZE = new Long(65536);
+
+    public static String getStringFromBitmap(Bitmap image) {
+        // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        ByteArrayOutputStream byteArrayBitmapStream = null;
+        String base64Encoded = "";
+
+        byteArrayBitmapStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, PictureManager.COMPRESSION_QUALITY, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        base64Encoded = Base64.encodeToString(b, Base64.DEFAULT);
+        try {
+            if (byteArrayBitmapStream != null)
+                byteArrayBitmapStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return base64Encoded;
+    }
+
+    public static Long getImageFileSize(Bitmap image) {
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, PictureManager.COMPRESSION_QUALITY, byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        Long size = new Long(b.length);
+        try{byteArrayBitmapStream.close();} catch(Exception e){}
+        return size;
+    }
+
+    public static Bitmap makeImageSmaller(Bitmap image) {
+        Bitmap img = image;
+        if(getImageFileSize(img) < MAXSIZE) {
+            return img;
+        } else {
+            Integer longestEdge = 500;
+            while(getImageFileSize(img) >= MAXSIZE) {
+                img = preserveAspectRatio(image, longestEdge);
+                longestEdge -= 25;
+            }
+        }
+        return img;
+    }
+
+    public static Bitmap preserveAspectRatio(Bitmap image, Integer resize_value) {
+        int imgW = image.getWidth();
+        int imgH = image.getHeight();
+
+        if(imgW < imgH) {
+            float aspectRatio = ((float) imgW) / imgH;
+            int newHeight = resize_value;
+            int newWidth = Math.round(aspectRatio * newHeight);
+            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+        } else if(imgW > imgH) {
+            float aspectRatio = ((float) imgH) / imgW;
+            int newWidth = resize_value;
+            int newHeight = Math.round(aspectRatio * newWidth);
+            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
+        } else if(imgW == imgH) {
+            return Bitmap.createScaledBitmap(image, resize_value, resize_value, Boolean.TRUE);
+        }
+        // something went horribly wrong.
+        return null;
+    }
+
+
+
 }

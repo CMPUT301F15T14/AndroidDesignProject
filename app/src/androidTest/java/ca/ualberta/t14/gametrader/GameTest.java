@@ -110,6 +110,7 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         String json = item.getPictureJson();
         Bitmap origImage = getBitmapFromJson(json);
 
+
         // make sure the pictures are not same initially
         item.setPicture(testImage3);
         assertFalse(origImage.sameAs(item.getPicture()));
