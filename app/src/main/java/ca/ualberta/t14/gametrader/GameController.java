@@ -95,7 +95,7 @@ public class GameController {
      * @return returns false if the Bitmap supplied is invalid: has a height or width of 0;
      */
     public Boolean addPhoto(Game game, Uri uri, ContentResolver contentResolver) {
-        Bitmap selectedImage = null;
+        Boolean success = Boolean.FALSE;
         try {
             InputStream imageStream = contentResolver.openInputStream(uri);
 
@@ -119,15 +119,16 @@ public class GameController {
                 // reload it again just to reset reader position...
                 imageStream = contentResolver.openInputStream(uri);
             }
-            selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
+            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
+            success = game.setPicture(selectedImage);
             imageStream.close();
-            selectedImage.recycle();
+            //selectedImage.recycle();
             selectedImage = null;
         } catch(Exception e) {
             e.printStackTrace();
         }
 
-        return game.setPicture(selectedImage);
+        return success;
     }
 
     /**
