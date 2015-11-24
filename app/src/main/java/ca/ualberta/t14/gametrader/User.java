@@ -114,7 +114,16 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     private String phoneNumber;
 
-    private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+    public String getInstallationId() {
+        return installationId;
+    }
+
+    public void setInstallationId(String installationId) {
+        this.installationId = installationId;
+    }
+
+    // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+    private String installationId;
 
     public Inventory getInventory() {
         return inventory;

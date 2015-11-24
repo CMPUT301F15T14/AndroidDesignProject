@@ -185,6 +185,8 @@ public class EditInventoryItemActivity extends Activity {
 
                 Toast.makeText(EditInventoryItemActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
 
+                Log.d("aaaAAA>>>>>", UserSingleton.getInstance().getUser().getInstallationId());
+
                 finish();
             }
         });
