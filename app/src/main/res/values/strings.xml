@@ -63,6 +63,7 @@
     <string name="searchConsole">By Game Console</string>
 
     <string-array name="platforms_array">
+        <item>PC</item>
         <item>PlayStation 1</item>
         <item>PlayStation 2</item>
         <item>PlayStation 3</item>

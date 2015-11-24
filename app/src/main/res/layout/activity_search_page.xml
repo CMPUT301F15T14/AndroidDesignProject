@@ -63,6 +63,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/gameConsole"
         android:layout_below="@+id/searchConsole"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:entries="@array/platforms_array" />
 
 </RelativeLayout>
