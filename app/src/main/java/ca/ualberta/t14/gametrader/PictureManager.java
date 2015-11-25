@@ -18,6 +18,7 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Base64;
 
@@ -30,11 +31,24 @@ import java.io.IOException;
  *
  * @author  Ryan Satyabrata
  */
-public class PictureManager {
+public class PictureManager extends FileIO {
 
     public static final int COMPRESSION_QUALITY = 85;
 
     private static final Long MAXSIZE = new Long(65536);
+
+    private Manager imgMng;
+
+    public PictureManager() {
+        imgMng = new Manager();
+    }
+
+    public String addImage(User userToGetInstallationId, Context context) {
+        String id = imgMng.addItemToTrack(userToGetInstallationId, "img");
+        // Save file here as IO.
+
+        return id;
+    }
 
     public static String getStringFromBitmap(Bitmap image) {
         // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/

@@ -56,6 +56,7 @@ public class Game implements AppObservable {
     private Boolean sharableStatus;
     private String additionalInfo;
 
+
     // TODO: many pictures to 1 item... see eclass prof. hindle's response:
     //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
     //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
@@ -64,6 +65,9 @@ public class Game implements AppObservable {
     private String pictureJsonable;
 
     private int quantities;
+
+    private String owner;
+    private String fileIdentity;
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
@@ -203,6 +207,22 @@ public class Game implements AppObservable {
     public void setQuantities(int quantities) {
         this.quantities = quantities;
         notifyAllObservers();
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public String getFileIdentity() {
+        return fileIdentity;
+    }
+
+    public void setFileIdentity(String fileIdentity) {
+        this.fileIdentity = fileIdentity;
     }
 
     /**
