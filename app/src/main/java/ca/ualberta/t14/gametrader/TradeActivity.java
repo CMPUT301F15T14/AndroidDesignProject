@@ -18,6 +18,7 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,26 @@ public class TradeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade);
+        /*
+        // get this from Ryan's part Inventory item load, guess it should be loaded from Json
+        // all info should be save in Json before and get it here.
+        //-------------------------------------------------------
+        User mainUser = UserSingleton.getInstance().getUser();
+        try {
+            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext());
+            UserSingleton.getInstance().setUser(mainUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //  Array reserved for storing names of game.
+        mobileArray = new ArrayList<String>();
+        // later add observer observing the inventory:
+        mobileArray.clear();
+        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+            mobileArray.add(each.getTitle());
+        }
+        */
     }
 
     @Override
@@ -46,7 +67,8 @@ public class TradeActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(TradeActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
