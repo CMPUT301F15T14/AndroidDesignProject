@@ -41,7 +41,7 @@ public class Game implements AppObservable {
     /**
      * An enumeration of all the different video game consoles a game can be in this app.
      */
-    public enum Platform { PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
+    public enum Platform { PC, PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
         XBOX, XBOX360, XBOXONE, WII, WIIU, OTHER }
 
     /**

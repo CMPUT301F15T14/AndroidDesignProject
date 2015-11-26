@@ -20,7 +20,7 @@
     <string name="title_activity_edit_inventory_item">EditInventoryItem</string>
     <string name="title_activity_trade_history">TradeHistoryActivity</string>
     <string name="title_activity_trade">Trade</string>
-    <string name="title_activity_search_page">SearchPage</string>
+    <string name="title_activity_search_page">Search</string>
     <string name="title_activity_setting">Setting</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -56,8 +56,16 @@
     <string name="tradeHistory">Trade History</string>
     <string name="tradeAsk">Add Another Game</string>
     <string name="myGames">My Offered Games</string>
+    <string name="makeTrade">Offer Trade</string>
+    <string name="cancelTrade">Cancel</string>
+    <string name="searchTitle">Search</string>
+    <string name="searchName">By Name</string>
+    <string name="searchConsole">By Game Console</string>
+    <string name="searchConsoleText">Search By Game Console</string>
+    <string name="searchNameText">Search By Name</string>
 
     <string-array name="platforms_array">
+        <item>PC</item>
         <item>PlayStation 1</item>
         <item>PlayStation 2</item>
         <item>PlayStation 3</item>
