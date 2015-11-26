@@ -12,7 +12,7 @@ public class SearchTest extends ActivityInstrumentationTestCase2 {
 
     public void testSearch(){
         SearchController sc = new SearchController();
-        Games gs = sc.searchGames("*", null);
+        Games gs = sc.searchGames("GTA V", null);
 
         assertNotNull(gs);
         assertTrue(gs.size() != 0);

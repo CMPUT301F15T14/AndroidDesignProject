@@ -19,6 +19,8 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -200,11 +202,29 @@ public class EditInventoryItemActivity extends Activity {
         delete.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v){
-                gc.removeGame(g,UserSingleton.getInstance().getUser());
-                UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
-                Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
-                finish();
+                AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
+                SinglePrompt.setTitle("Warning");
+                SinglePrompt.setMessage("Are you sure you want to delete this item?");
+                SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                gc.removeGame(g, UserSingleton.getInstance().getUser());
+                                UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
+                                Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_OK);
+                                finish();
+                                dialog.dismiss();
+                            }
+                        }
+                );
+
+                SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }
+                );
+
+                SinglePrompt.show();
             }
         });
     }
