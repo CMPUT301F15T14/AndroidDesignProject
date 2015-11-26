@@ -71,6 +71,8 @@ public class Game implements AppObservable {
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
 
+    private static final String SEARCH_URL = "http://cmput301.softwareprocess.es:8080/cmput301f15t14/game/_search";
+
 
     /**
      * Constructor for the Game class. Initializes variables to a default value..
@@ -300,7 +302,13 @@ public class Game implements AppObservable {
         observers.add(observer);
     }
 
-    private void notifyAllObservers() {
+    @Override
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
+    public void notifyAllObservers() {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
@@ -340,6 +348,10 @@ public class Game implements AppObservable {
         }
         // something went horribly wrong.
         return null;
+    }
+
+    public String getSearchUrl() {
+        return SEARCH_URL;
     }
 
 }

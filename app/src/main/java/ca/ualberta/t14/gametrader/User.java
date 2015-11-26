@@ -133,10 +133,16 @@ public class User extends FileIO implements Serializable, AppObservable {
         observers.add(observer);
     }
 
+    @Override
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
     /**
      * Called to notify all observers that the model has been updated.
      */
-    private void notifyAllObservers() {
+    public void notifyAllObservers() {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
