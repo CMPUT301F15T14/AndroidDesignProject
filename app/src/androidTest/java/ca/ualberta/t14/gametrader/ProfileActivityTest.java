@@ -25,6 +25,13 @@ public class ProfileActivityTest extends ActivityInstrumentationTestCase2 {
     public void testEditprofButton() {
         ProfileActivity profile = (ProfileActivity)getActivity();
 
+        profile.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ObjParseSingleton.getInstance().addObject("userProfile", UserSingleton.getInstance().getUser());
+            }
+        });
+
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(EditProfileActivity.class.getName(),

@@ -95,7 +95,7 @@ public class EditInventoryItemActivityTest extends ActivityInstrumentationTestCa
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ((Spinner) getActivity().findViewById(R.id.gameConsole)).setSelection(8);
+                ((Spinner) getActivity().findViewById(R.id.gameConsole)).setSelection(9);
             }
         });
         getInstrumentation().waitForIdleSync();
