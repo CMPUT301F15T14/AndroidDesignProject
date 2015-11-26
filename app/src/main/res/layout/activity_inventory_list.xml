@@ -17,33 +17,36 @@
 
         android:layout_alignParentTop="true"
 
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="16dp" />
 
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/inventoryList"
-        android:layout_alignParentStart="true"
         android:background="#0e97f1"
+        android:visibility="visible"
         android:layout_below="@+id/searchInventoryButton"
-        android:visibility="visible" />
+        android:layout_alignParentEnd="true" />
 
     <EditText
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/searchInventory"
-        android:layout_below="@id/inventoryListText" />
+        android:layout_below="@id/inventoryListText"
+        android:layout_toEndOf="@+id/inventoryListText"
+        android:layout_alignParentStart="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Search"
         android:textColor="#ffffff"
         android:id="@+id/searchInventoryButton"
         android:textSize="16sp"
-        android:layout_below="@+id/searchInventory"
-        android:layout_alignParentEnd="true" />
+        android:layout_below="@+id/gameConsoleInv"
+        android:layout_centerHorizontal="true" />
 
     <Spinner
         android:layout_width="match_parent"
@@ -51,7 +54,7 @@
         android:id="@+id/gameConsoleInv"
         android:entries="@array/platforms_array_inv"
         android:layout_below="@+id/searchInventory"
-        android:layout_toStartOf="@+id/newInventoryItem" />
+        android:layout_alignParentStart="true" />
 
 
     <Button

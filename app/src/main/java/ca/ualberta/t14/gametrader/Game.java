@@ -104,7 +104,6 @@ public class Game implements AppObservable {
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;
-        pictureJsonable = "";
         quantities = 0;
         observers = new ArrayList<AppObserver>();
 
@@ -262,6 +261,10 @@ public class Game implements AppObservable {
      */
     public String getPictureId() {
         return pictureId;
+    }
+
+    public Boolean hasPictureId(){
+        return pictureId.isEmpty();
     }
 
     public Boolean removePictureId(Context context) {
