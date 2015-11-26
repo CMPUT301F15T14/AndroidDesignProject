@@ -92,6 +92,24 @@ public class Game implements AppObservable {
 
     }
 
+    /**
+     * Overridden constructor to set the title upon instantiation. Useful for testing inventory search
+     * without too much bloat.
+     * @param title the String used to instantiate the game's title
+     */
+    public Game(String title) {
+        platform = Platform.OTHER;
+        condition = Condition.NEW;
+        this.title = title;
+        sharableStatus = Boolean.FALSE;
+        additionalInfo = "";
+        picture = null;
+        pictureJsonable = "";
+        quantities = 0;
+        observers = new ArrayList<AppObserver>();
+
+    }
+
 
     /**
      * The tag for the game of which platform it runs on.
