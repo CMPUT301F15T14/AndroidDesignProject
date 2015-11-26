@@ -80,4 +80,22 @@ public class InventoryController {
 
         return result;
     }
+
+    /**
+     * Search the inventory by String and Platform
+     * @param query the String to search
+     * @param platform only results for this platform will be returned
+     * @return an array list of Games containing the search results
+     */
+    public ArrayList<Game> Search(String query, Game.Platform platform) {
+        ArrayList<Game> result = new ArrayList<Game>();
+
+        for(Game game : stock.getAllGames()) {
+            if(game.getTitle().contains(query) && game.getPlatform() == platform){
+                result.add(game);
+            }
+        }
+
+        return result;
+    }
 }

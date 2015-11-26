@@ -68,9 +68,13 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         InventoryController testInvCnt = new InventoryController(testInv, new User());
 
         Game g1 = new Game("Halo: Combat Evolved");
+        g1.setPlatform(Game.Platform.PC);
         Game g2 = new Game("Halo 2");
+        g2.setPlatform(Game.Platform.XBOX);
         Game g3 = new Game("Halo 3");
+        g3.setPlatform(Game.Platform.XBOX360);
         Game g4 = new Game("Teletubies Invade Earth");
+        g3.setPlatform(Game.Platform.PLAYSTATION1);
 
         ArrayList<Game> result = testInvCnt.Search("Halo");
         assertTrue(result.isEmpty());
@@ -88,6 +92,12 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         result = testInvCnt.Search("Halo");
 
         assertTrue(result.containsAll(expectedResult));
+        assertFalse(result.contains(g4));
+
+        result = testInvCnt.Search("Halo", Game.Platform.PC);
+        assertTrue(result.contains(g1));
+        assertFalse(result.contains(g2));
+        assertFalse(result.contains(g3));
         assertFalse(result.contains(g4));
     }
 }
