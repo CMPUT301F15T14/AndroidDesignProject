@@ -41,7 +41,7 @@ public class Game implements AppObservable {
     /**
      * An enumeration of all the different video game consoles a game can be in this app.
      */
-    public enum Platform { PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
+    public enum Platform { PC, PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
         XBOX, XBOX360, XBOXONE, WII, WIIU, OTHER }
 
     /**
@@ -79,6 +79,24 @@ public class Game implements AppObservable {
         platform = Platform.OTHER;
         condition = Condition.NEW;
         title = "";
+        sharableStatus = Boolean.FALSE;
+        additionalInfo = "";
+        picture = null;
+        pictureJsonable = "";
+        quantities = 0;
+        observers = new ArrayList<AppObserver>();
+
+    }
+
+    /**
+     * Overridden constructor to set the title upon instantiation. Useful for testing inventory search
+     * without too much bloat.
+     * @param title the String used to instantiate the game's title
+     */
+    public Game(String title) {
+        platform = Platform.OTHER;
+        condition = Condition.NEW;
+        this.title = title;
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;
