@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,6 +41,10 @@ public class InventoryListActivity extends Activity {
     private ListView GameList;
     private ArrayAdapter<String> adapter;
     private Button AddGame;
+    private Button Search;
+    private EditText SearchString;
+
+    private InventoryController invtC;
 
     public Button getAddGameButton() {
         return AddGame;
@@ -70,6 +75,8 @@ public class InventoryListActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        invtC = new InventoryController(mainUser.getInventory(), mainUser);
 
         //  Array reserved for storing names of game.
         mobileArray = new ArrayList<String>();
@@ -116,7 +123,18 @@ public class InventoryListActivity extends Activity {
             }
         });
 
+        SearchString = (EditText)findViewById(R.id.searchInventory);
+        Search = (Button)findViewById(R.id.searchInventoryButton);
 
+        Search.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View view) {
+                adapter.clear();
+
+                for(Game game : invtC.Search(SearchString.getText().toString())){
+                    adapter.add(game.getTitle());
+                }
+            }
+        });
     }
 
     @Override
