@@ -40,7 +40,7 @@ public class Game implements AppObservable {
     /**
      * An enumeration of all the different video game consoles a game can be in this app.
      */
-    public enum Platform { PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
+    public enum Platform { PC, PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
         XBOX, XBOX360, XBOXONE, WII, WIIU, OTHER }
 
     /**
@@ -71,6 +71,8 @@ public class Game implements AppObservable {
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
+
+    private static final String SEARCH_URL = "http://cmput301.softwareprocess.es:8080/cmput301f15t14/game/_search";
 
 
     /**
@@ -298,11 +300,21 @@ public class Game implements AppObservable {
         observers.add(observer);
     }
 
-    private void notifyAllObservers() {
+    @Override
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
+    public void notifyAllObservers() {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
     }
 
+
+    public String getSearchUrl() {
+        return SEARCH_URL;
+    }
 
 }
