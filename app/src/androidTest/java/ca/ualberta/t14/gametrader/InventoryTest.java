@@ -5,6 +5,8 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 /**
  * Created by michaelximac on 2015-11-01.
  */
@@ -61,4 +63,31 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
 
     }
 
+    public void testSearch() {
+        Inventory testInv = new Inventory();
+        InventoryController testInvCnt = new InventoryController(testInv, new User());
+
+        Game g1 = new Game("Halo: Combat Evolved");
+        Game g2 = new Game("Halo 2");
+        Game g3 = new Game("Halo 3");
+        Game g4 = new Game("Teletubies Invade Earth");
+
+        ArrayList<Game> result = testInvCnt.Search("Halo");
+        assertTrue(result.isEmpty());
+
+        testInvCnt.addItem(g1);
+        testInvCnt.addItem(g2);
+        testInvCnt.addItem(g3);
+        testInvCnt.addItem(g4);
+
+        ArrayList<Game> expectedResult = new ArrayList<Game>();
+        expectedResult.add(g1);
+        expectedResult.add(g2);
+        expectedResult.add(g3);
+
+        result = testInvCnt.Search("Halo");
+
+        assertTrue(result.containsAll(expectedResult));
+        assertFalse(result.contains(g4));
+    }
 }

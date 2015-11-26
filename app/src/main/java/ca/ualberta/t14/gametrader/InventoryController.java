@@ -35,6 +35,8 @@ package ca.ualberta.t14.gametrader;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import java.util.ArrayList;
+
 // Controller class of Inventory Class.
 public class InventoryController {
     private Inventory stock;
@@ -60,6 +62,18 @@ public class InventoryController {
 
     public boolean contains(Game game){
         return stock.contains(game);
+    }
+
+    /**
+     * Returns the games in the inventory whose title contains the given search query
+     * @param query the String to search for
+     * @return a list of games containing the given string
+     */
+    public ArrayList<Game> Search(String query) {
+        ArrayList<Game> result = new ArrayList<Game>();
+        result.add(new Game("Implement this function you dork"));
+
+        return result;
     }
 
 }
