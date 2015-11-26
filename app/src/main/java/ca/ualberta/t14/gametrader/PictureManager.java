@@ -43,11 +43,26 @@ public class PictureManager extends FileIO {
         imgMng = new Manager();
     }
 
-    public String addImage(User userToGetInstallationId, Context context) {
+    public String addImageToJsonFile(String imageJsonString, User userToGetInstallationId, Context context) {
         String id = imgMng.addItemToTrack(userToGetInstallationId, "img");
         // Save file here as IO.
+        // TODO: put in the elastic search to-be-updated.
+        saveJsonWithObject(imageJsonString, id, context);
 
         return id;
+    }
+
+    // @return a string containing the byteArray of the bitmap encoded as a string in Base64.
+    public String loadImageJsonFromJsonFile(String fileName, Context context) {
+        String imageJson = "";
+        // Load file here as IO.
+        // TODO: check if it exists locally, and if not pull the image from elastic search.
+        try {
+            imageJson = (String) loadJsonGivenObject(fileName, context, new String());
+        } catch(IOException e){
+            e.printStackTrace();
+        }
+        return imageJson;
     }
 
     public static String getStringFromBitmap(Bitmap image) {

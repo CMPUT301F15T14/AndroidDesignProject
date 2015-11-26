@@ -31,6 +31,7 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     private volatile ArrayList<AppObserver> observers;
     private Inventory inventory;
+    private PictureManager pm;
 
     ArrayList<User> friendList;
     ArrayList<User> pendingFriendList;
@@ -40,6 +41,11 @@ public class User extends FileIO implements Serializable, AppObservable {
         // otherwise, create a new user file and prompt the user to create a user name
         observers = new ArrayList<AppObserver>();
         inventory = new Inventory();
+        pm = new PictureManager();
+    }
+
+    public PictureManager getPictureManager() {
+        return pm;
     }
 
     /**

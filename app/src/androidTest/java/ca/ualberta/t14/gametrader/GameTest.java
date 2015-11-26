@@ -75,6 +75,7 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
     }
 
     public void testGameImages() {
+        PictureManager pm = new PictureManager();
         // Including attaching a photo (4.1 AttachPhotographToItem)
         Game item = new Game();
 
@@ -84,41 +85,42 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
         // Test an image that is too big and gets resized with width being longest edge
         Bitmap testImage1 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.big_game);
-        assertTrue(item.setPicture(testImage1));
+        assertTrue(item.setPicture(testImage1, activity.getApplicationContext()));
         // filesize check of testImage1
         assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
         // Test an image that has no resizing issue.
         Bitmap testImage2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.best_game_ok);
-        assertTrue(item.setPicture(testImage2));
+        assertTrue(item.setPicture(testImage2, activity.getApplicationContext()));
         testImage2 = item.getPicture();
         // filesize check of testImage2
         assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
         // Test image that is too big and gets resized with height being longest edge
         Bitmap testImage3 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.game_goty);
-        assertTrue(item.setPicture(testImage3));
+        assertTrue(item.setPicture(testImage3, activity.getApplicationContext()));
         // filesize check of testImage3
         assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
 
         // Images being actually changed
         assertFalse(testImage2.sameAs(item.getPicture()));
-        assertTrue(item.setPicture(testImage2));
+        assertTrue(item.setPicture(testImage2, activity.getApplicationContext()));
         assertTrue(testImage2.sameAs(item.getPicture()));
 
+
         // Test for JSON-able bitmap.
-        String json = item.getPictureJson();
+        String json = pm.loadImageJsonFromJsonFile(item.getPictureId(), activity.getApplicationContext());
         Bitmap origImage = getBitmapFromJson(json);
 
 
         // make sure the pictures are not same initially
-        item.setPicture(testImage3);
+        item.setPicture(testImage3, activity.getApplicationContext());
         assertFalse(origImage.sameAs(item.getPicture()));
 
         assertTrue(item.setPictureFromJson(json));
 
         // json and resulting image are same.
-        assertSame(json, item.getPictureJson());
+        assertSame(json, pm.loadImageJsonFromJsonFile(item.getPictureId(), activity.getApplicationContext()));
         assertTrue(origImage.sameAs(item.getPicture()));
     }
 

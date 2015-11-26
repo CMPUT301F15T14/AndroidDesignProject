@@ -15,7 +15,6 @@ public class Manager {
 
     String addItemToTrack(User userToGetInstallationId, String prefixName) {
         // Name Format: <prefix>_<InstId>_<itemId>
-        // TODO: add the item to elastic search and/or to the stack that will push to elastic search when able to connect to the internet.
         String id = prefixName + "_" + userToGetInstallationId.getInstallationId() + "_" + managerAdderIdCount.toString();
         managerAdderIdCount += 1;
         return id;
@@ -27,7 +26,6 @@ public class Manager {
      * @return True if the key and item was removed. False if that key entry didn't exist in the first place.
      */
     Boolean removeItemToTrack(String id) {
-        // TODO: remove the item from elastic search and/or from the stack that will push to elastic search when able to connect to the internet.
         return Boolean.FALSE;
     }
 

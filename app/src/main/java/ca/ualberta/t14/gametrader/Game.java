@@ -18,6 +18,7 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -62,7 +63,7 @@ public class Game implements AppObservable {
     //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
     //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
     volatile private Bitmap picture;
-    private String pictureJsonable;
+    private String pictureId;
 
     private int quantities;
 
@@ -85,7 +86,7 @@ public class Game implements AppObservable {
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;
-        pictureJsonable = "";
+        pictureId = "";
         quantities = 0;
         observers = new ArrayList<AppObserver>();
 
@@ -237,14 +238,25 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Get the string representation of the bitmap.
-     * To be used by the model so this picture can be put in a JSON and put online.
-     * @return a string containing the byteArray of the bitmap encoded as a string in Base64.
+     * Get the picture identity that is the filename of the image json on elastic search.
+     * To be used by the model so this picture can be identified and put in a JSON and put online.
+     * @return a string containing the picture identity that the filename is named as, or empty if no such image is set for this game.
      */
-    public String getPictureJson() {
-        return pictureJsonable;
+    public String getPictureId() {
+        return pictureId;
     }
 
+    public Boolean removePictureId(Context context) {
+        Boolean success = Boolean.FALSE;
+        if(!pictureId.isEmpty()) {
+            // TODO get current picture id and remove it from the elastic search, (add to quene into network option that pushes pulls/updates the elastic search).
+            // remove from local files
+            success = UserSingleton.getInstance().getUser().getPictureManager().removeFile(pictureId, context);
+            pictureId = "";
+            picture = null;
+        }
+        return success;
+    }
 
     /**
      * sets the Bitmap of the game object to the json-able image given.
@@ -258,8 +270,6 @@ public class Game implements AppObservable {
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         if(decodedByte != null) {
             picture = decodedByte;
-            // set the json image to the current image.
-            pictureJsonable = jsonBitmap;
         }
         return decodedByte != null;
     }
@@ -273,7 +283,7 @@ public class Game implements AppObservable {
      * @param image a Bitmap picture of the game.
      * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
      */
-    public Boolean setPicture(Bitmap image) {
+    public Boolean setPicture(Bitmap image, Context context) {
         // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
         // 400x400 seems acceptable = below 65536 bytes when compress jpg 85% in gimp. Try 350x350 and hope its always below 65536 bytes
         // set the volatile bitmap, when resizing: maintains aspect ratio of the image.
@@ -285,7 +295,15 @@ public class Game implements AppObservable {
             picture = PictureManager.makeImageSmaller(image);
         }
 
-        pictureJsonable = PictureManager.getStringFromBitmap(picture);
+        String pictureJsonable = PictureManager.getStringFromBitmap(picture);
+        if(!pictureId.isEmpty()){
+            // remove from local
+            removePictureId(context);
+            pictureId = UserSingleton.getInstance().getUser().getPictureManager().addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
+        } else {
+            pictureId = UserSingleton.getInstance().getUser().getPictureManager().addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
+            setPictureFromJson(UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(pictureId, context));
+        }
 
         notifyAllObservers();
         return Boolean.TRUE;

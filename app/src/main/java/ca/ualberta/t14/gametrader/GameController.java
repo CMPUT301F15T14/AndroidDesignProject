@@ -19,6 +19,7 @@
 package ca.ualberta.t14.gametrader;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -68,22 +69,18 @@ public class GameController {
      * It will update the Game's model with the new input received from the user.
      * @param game The game that is to be updated.
      * @param title A new title for the Game.
-     * @param picture A new picture for the Game.
      * @param platform A new platform for the Game.
      * @param condition A new condition for the Game.
      * @param sharableStatus Change sharable status to either Public or Private
      * @param additionalInfo New additional information for the game.
      */
-    public void editGame(Game game, String title, Bitmap picture, Game.Platform platform,
+    public void editGame(Game game, String title, Game.Platform platform,
                          Game.Condition condition, Boolean sharableStatus, String additionalInfo) {
         game.setPlatform(platform);
         game.setCondition(condition);
         game.setTitle(title);
         game.setShared(sharableStatus);
         game.setAdditionalInfo(additionalInfo);
-        if(picture != null) {
-            game.setPicture(picture);
-        }
 
     }
 
@@ -94,8 +91,20 @@ public class GameController {
      * @param contentResolver is the contentResolver from the activitie's getContentResolver();
      * @return returns false if the Bitmap supplied is invalid: has a height or width of 0;
      */
-    public Boolean addPhoto(Game game, Uri uri, ContentResolver contentResolver) {
+    public Boolean addPhoto(Game game, Uri uri, ContentResolver contentResolver, Context context) {
         Boolean success = Boolean.FALSE;
+
+        Bitmap selectedImage = resolveUri(uri, contentResolver);
+        if(selectedImage != null) {
+            success = game.setPicture(selectedImage, context);
+            selectedImage = null;
+            success = Boolean.TRUE;
+        }
+        return success;
+    }
+
+    public Bitmap resolveUri(Uri uri, ContentResolver contentResolver){
+        Bitmap selectedImage = null;
         try {
             InputStream imageStream = contentResolver.openInputStream(uri);
 
@@ -119,16 +128,12 @@ public class GameController {
                 // reload it again just to reset reader position...
                 imageStream = contentResolver.openInputStream(uri);
             }
-            Bitmap selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
-            success = game.setPicture(selectedImage);
+            selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
             imageStream.close();
-            //selectedImage.recycle();
-            selectedImage = null;
         } catch(Exception e) {
             e.printStackTrace();
         }
-
-        return success;
+        return selectedImage;
     }
 
     /**

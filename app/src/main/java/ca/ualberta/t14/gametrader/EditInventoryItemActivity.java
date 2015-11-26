@@ -38,6 +38,7 @@ public class EditInventoryItemActivity extends Activity {
 
     private final int PICK_IMAGE = 465132;
     private GameController gc;
+    private Uri imageUri;
     private Game g;
     private EditText gameTitle;
     private Spinner spinConsole;
@@ -177,7 +178,11 @@ public class EditInventoryItemActivity extends Activity {
 
                 String additionalInfo = ((EditText) findViewById(R.id.AddInfoText)).getText().toString();
 
-                gc.editGame(g, gameTitle, null, platform, condition, shareStatus, additionalInfo);
+                // Save game data
+                gc.editGame(g, gameTitle, platform, condition, shareStatus, additionalInfo);
+
+                // Save picture of game
+                gc.addPhoto(g, imageUri, getContentResolver(), getApplicationContext());
 
                 Toast.makeText(EditInventoryItemActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
 
@@ -213,11 +218,8 @@ public class EditInventoryItemActivity extends Activity {
         switch(requestCode) {
             case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
-                    final Uri imageUri = imageReturnedIntent.getData();
-                    gc.addPhoto(g, imageUri, getContentResolver());
-
-                    imageButton.setImageBitmap(g.getPicture()); //<-- should be called on observer update
-
+                    imageUri = imageReturnedIntent.getData();
+                    imageButton.setImageBitmap( gc.resolveUri(imageUri, getContentResolver()) );
                 }
                 break;
         }
