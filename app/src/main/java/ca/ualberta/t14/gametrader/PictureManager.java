@@ -83,11 +83,12 @@ public class PictureManager extends FileIO {
         return base64Encoded;
     }
 
-    public static Long getImageFileSize(Bitmap image) {
+    public static Integer getImageFileSize(Bitmap image) {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, PictureManager.COMPRESSION_QUALITY, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
-        Long size = new Long(b.length);
+        String base64Encoded = Base64.encodeToString(b, Base64.DEFAULT);
+        Integer size = base64Encoded.length()*3;
         try{byteArrayBitmapStream.close();} catch(Exception e){}
         return size;
     }
