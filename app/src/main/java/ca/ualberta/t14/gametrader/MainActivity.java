@@ -59,6 +59,16 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
+        // Check if the unique installation identity exists, and add one if there is none.
+        if (UserSingleton.getInstance().getUser().getInstallationId() == null) {
+            // Retrieve/Create unique installation identity.
+            InstallationIdGenerator iIdG = new InstallationIdGenerator();
+            String installationIdStr = iIdG.id(getApplicationContext());
+
+            // Set the unique installation identity if user has none.
+            UserSingleton.getInstance().getUser().setInstallationId(installationIdStr);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
