@@ -41,6 +41,7 @@ public class InventoryItemActivity extends Activity {
     TextView phone;
     TextView address;
     ImageView imageView;
+    private Button tradeItemButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,14 @@ public class InventoryItemActivity extends Activity {
 
                 startActivity(myIntent);
 
+            }
+        });
+        tradeItemButton = (Button) findViewById(R.id.tradeButton);
+        tradeItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+                startActivity(intent);
             }
         });
 
