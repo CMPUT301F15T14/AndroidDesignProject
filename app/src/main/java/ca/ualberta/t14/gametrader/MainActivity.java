@@ -4,6 +4,7 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,14 +51,20 @@ public class MainActivity extends Activity {
         return settingsButton;
     }
 
+    NetworkController net;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
             user = (User) user.loadJson("MainUserProfile", getApplicationContext());
+            user.setAndroidID(Settings.Secure.getString(getContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID));
             UserSingleton.getInstance().setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        UserSingleton.getInstance().getUser().addObserver(net);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

@@ -17,6 +17,8 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.provider.Settings;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 /**
@@ -113,6 +115,14 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     private String phoneNumber;
+
+    public String getAndroidID() {
+        return androidID;
+    }
+
+    public void setAndroidID(String androidID) {
+        this.androidID = androidID;
+    }
 
     private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
 
