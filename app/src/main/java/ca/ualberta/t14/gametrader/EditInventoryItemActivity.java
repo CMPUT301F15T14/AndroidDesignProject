@@ -201,6 +201,7 @@ public class EditInventoryItemActivity extends Activity {
             @Override
             public void onClick(View v){
                 gc.removeGame(g,UserSingleton.getInstance().getUser());
+                UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
                 Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
                 finish();
