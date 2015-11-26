@@ -45,6 +45,14 @@
         android:layout_below="@+id/searchInventory"
         android:layout_alignParentEnd="true" />
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/gameConsoleInv"
+        android:entries="@array/platforms_array_inv"
+        android:layout_below="@+id/searchInventory"
+        android:layout_toStartOf="@+id/newInventoryItem" />
+
 
     <Button
         android:layout_width="wrap_content"

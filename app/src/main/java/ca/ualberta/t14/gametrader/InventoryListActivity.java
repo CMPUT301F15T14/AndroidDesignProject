@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -43,6 +44,7 @@ public class InventoryListActivity extends Activity {
     private Button AddGame;
     private Button Search;
     private EditText SearchString;
+    private Spinner gameConsole;
 
     private InventoryController invtC;
 
@@ -123,15 +125,39 @@ public class InventoryListActivity extends Activity {
             }
         });
 
+        gameConsole = (Spinner)findViewById(R.id.gameConsoleInv);
+
         SearchString = (EditText)findViewById(R.id.searchInventory);
         Search = (Button)findViewById(R.id.searchInventoryButton);
 
         Search.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View view) {
                 adapter.clear();
+                if(gameConsole.getSelectedItemPosition() == 0) {
+                    for (Game game : invtC.Search(SearchString.getText().toString())) {
+                        adapter.add(game.getTitle());
+                    }
+                }
+                else {
+                    int i = gameConsole.getSelectedItemPosition();
+                    Game.Platform selectedPlatform = null;
 
-                for(Game game : invtC.Search(SearchString.getText().toString())){
-                    adapter.add(game.getTitle());
+                    for(Game.Platform platform : Game.Platform.values()){
+                        if(i == 1){
+                            selectedPlatform = platform;
+                            break;
+                        }
+                        i--;
+                    }
+
+                    if(selectedPlatform == null) {
+                        throw new RuntimeException("Platform selection was null");
+                    }
+
+
+                    for (Game game : invtC.Search(SearchString.getText().toString(), selectedPlatform)) {
+                        adapter.add(game.getTitle());
+                    }
                 }
             }
         });
