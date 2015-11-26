@@ -96,7 +96,7 @@ public class Game implements AppObservable {
     public Game(String title) {
         platform = Platform.OTHER;
         condition = Condition.NEW;
-        title = title;
+        this.title = title;
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;

@@ -71,9 +71,13 @@ public class InventoryController {
      */
     public ArrayList<Game> Search(String query) {
         ArrayList<Game> result = new ArrayList<Game>();
-        result.add(new Game("Implement this function you dork"));
+
+        for(Game game : stock.getAllGames()) {
+            if(game.getTitle().contains(query)){
+                result.add(game);
+            }
+        }
 
         return result;
     }
-
 }
