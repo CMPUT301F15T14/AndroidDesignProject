@@ -85,10 +85,19 @@ public class InventoryItemActivity extends Activity {
 
                 Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
 
-                startActivity(myIntent);
+                startActivityForResult(myIntent, 1);
 
             }
         });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == RESULT_OK){
+            finish();
+        }
 
     }
 

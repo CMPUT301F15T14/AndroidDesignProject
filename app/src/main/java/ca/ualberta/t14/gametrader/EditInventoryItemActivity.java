@@ -52,6 +52,7 @@ public class EditInventoryItemActivity extends Activity {
     private EditText additionalInfo;
     private ImageButton imageButton;
     private Button save;
+    private Button delete;
 
     public Button getSaveButton() {
         return save;
@@ -118,7 +119,7 @@ public class EditInventoryItemActivity extends Activity {
         imageButton.setImageBitmap(g.getPicture());
 
         addInputEvents();
-
+        deleteItem();
     }
 
     @Override
@@ -187,11 +188,24 @@ public class EditInventoryItemActivity extends Activity {
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
 
                 Toast.makeText(EditInventoryItemActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
-
+                //setResult(RESULT_CANCELED);
                 finish();
             }
         });
 
+    }
+
+    private void deleteItem(){
+        delete=(Button) findViewById(R.id.deleteInventory);
+        delete.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                gc.removeGame(g,UserSingleton.getInstance().getUser());
+                Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
+            }
+        });
     }
 
                 // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android

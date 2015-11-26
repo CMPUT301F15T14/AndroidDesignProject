@@ -63,6 +63,7 @@
     <string name="searchConsole">By Game Console</string>
     <string name="searchConsoleText">Search By Game Console</string>
     <string name="searchNameText">Search By Name</string>
+    <string name="delete">Delete</string>
 
     <string-array name="platforms_array">
         <item>PC</item>
