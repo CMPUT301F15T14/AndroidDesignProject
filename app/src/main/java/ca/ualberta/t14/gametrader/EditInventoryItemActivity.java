@@ -19,6 +19,8 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -147,13 +149,29 @@ public class EditInventoryItemActivity extends Activity {
         ((ImageButton) findViewById(R.id.uploadImage)).setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
-                // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select photo representing the game:"), PICK_IMAGE);
-
+                if (g.hasPictureId()){
+                    selectPicture();
+                }else{
+                    AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
+                    SinglePrompt.setTitle("Warning");
+                    SinglePrompt.setMessage("Do you want to delete or reselect the picture?");
+                    SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deletePicture();
+                                    Toast.makeText(EditInventoryItemActivity.this, "Picture Deleted!", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+                    SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "Reselect", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    selectPicture();
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+                    SinglePrompt.show();
+                }
             }
         });
 
@@ -197,17 +215,50 @@ public class EditInventoryItemActivity extends Activity {
 
     }
 
+    private void selectPicture(){
+        // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
+        // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select photo representing the game:"), PICK_IMAGE);
+    }
+
     private void deleteItem(){
         delete=(Button) findViewById(R.id.deleteInventory);
         delete.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v){
-                gc.removeGame(g,UserSingleton.getInstance().getUser());
-                Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
-                finish();
+                AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
+                SinglePrompt.setTitle("Warning");
+                SinglePrompt.setMessage("Are you sure you want to delete this item?");
+                SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                gc.removeGame(g, UserSingleton.getInstance().getUser());
+                                UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
+                                Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_OK);
+                                finish();
+                                dialog.dismiss();
+                            }
+                        }
+                );
+
+                SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }
+                );
+
+                SinglePrompt.show();
             }
         });
+    }
+
+    private void deletePicture(){
+        g.removePictureId(getApplicationContext());
+        imageButton.setImageResource(android.R.color.transparent);
     }
 
     // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android

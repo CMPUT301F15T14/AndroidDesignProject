@@ -41,7 +41,6 @@ import java.util.ArrayList;
 
 public class Inventory {
     private ArrayList<Game> gameCollections;
-    private User owner;
 
     /**
      * Default constructor
@@ -86,17 +85,6 @@ public class Inventory {
      * Set Owner as User.
      * @param owner
      */
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    /**
-     * Getter of owner.
-     * @return owner the current owner of Game object.
-     */
-    public User getOwner() {
-        return owner;
-    }
 
     /**
      * Getter of gameCollections.
