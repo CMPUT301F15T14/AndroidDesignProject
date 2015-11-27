@@ -30,14 +30,14 @@ import java.util.Set;
  */
 public class SettingsController {
     private SettingsMode model;
-    public final String settingsFile = "settings"; // name of settings file
     private static Context context;
 
     public SettingsController(SettingsMode model, Context context) {
         this.context = context;
         this.model = model;
         try {
-            this.model = (SettingsMode) this.model.loadJson(settingsFile, this.context);
+            this.model = (SettingsMode) this.model.loadJson(SettingsMode.SETTINGS_FILE, this.context);
+            SettingsSingleton.getInstance().setSettings(this.model);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,7 +48,7 @@ public class SettingsController {
      */
     public void EnableDownloadPhotos(){
         SettingsSingleton.getInstance().getSettings().setEnableDownloadPhoto1(Boolean.TRUE);
-        SettingsSingleton.getInstance().getSettings().saveJson(settingsFile, this.context);
+        SettingsSingleton.getInstance().getSettings().saveJson(SettingsMode.SETTINGS_FILE, this.context);
     }
 
     /**
@@ -56,6 +56,6 @@ public class SettingsController {
      */
     public void DisableDownloadPhotos(){
         SettingsSingleton.getInstance().getSettings().setEnableDownloadPhoto1(Boolean.FALSE);
-        SettingsSingleton.getInstance().getSettings().saveJson(settingsFile, this.context);
+        SettingsSingleton.getInstance().getSettings().saveJson(SettingsMode.SETTINGS_FILE, this.context);
     }
 }
