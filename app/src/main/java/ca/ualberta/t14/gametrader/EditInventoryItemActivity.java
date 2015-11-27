@@ -22,8 +22,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,14 +35,12 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 
 public class EditInventoryItemActivity extends Activity {
 
     private final int PICK_IMAGE = 465132;
     private GameController gc;
+    private Uri imageUri;
     private Game g;
     private EditText gameTitle;
     private Spinner spinConsole;
@@ -153,13 +149,29 @@ public class EditInventoryItemActivity extends Activity {
         ((ImageButton) findViewById(R.id.uploadImage)).setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
-                // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select photo representing the game:"), PICK_IMAGE);
-
+                if (g.hasPictureId()){
+                    selectPicture();
+                }else{
+                    AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
+                    SinglePrompt.setTitle("Warning");
+                    SinglePrompt.setMessage("Do you want to delete or reselect the picture?");
+                    SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    deletePicture();
+                                    Toast.makeText(EditInventoryItemActivity.this, "Picture Deleted!", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+                    SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "Reselect", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    selectPicture();
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+                    SinglePrompt.show();
+                }
             }
         });
 
@@ -167,6 +179,8 @@ public class EditInventoryItemActivity extends Activity {
         save.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Toast.makeText(EditInventoryItemActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
 
                 String gameTitle = ((EditText) findViewById(R.id.inventoryItemTitle)).getText().toString();
 
@@ -184,7 +198,11 @@ public class EditInventoryItemActivity extends Activity {
 
                 String additionalInfo = ((EditText) findViewById(R.id.AddInfoText)).getText().toString();
 
-                gc.editGame(g, gameTitle, null, platform, condition, shareStatus, additionalInfo);
+                // Save game data
+                gc.editGame(g, gameTitle, platform, condition, shareStatus, additionalInfo);
+
+                // Save picture of game
+                gc.addPhoto(g, imageUri, getContentResolver(), getApplicationContext());
 
                 // Save user to JSON. The user contains Inventory which contains the item.
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
@@ -195,6 +213,15 @@ public class EditInventoryItemActivity extends Activity {
             }
         });
 
+    }
+
+    private void selectPicture(){
+        // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
+        // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select photo representing the game:"), PICK_IMAGE);
     }
 
     private void deleteItem(){
@@ -229,23 +256,21 @@ public class EditInventoryItemActivity extends Activity {
         });
     }
 
-                // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android
-        @Override
+    private void deletePicture(){
+        g.removePictureId(getApplicationContext());
+        imageButton.setImageResource(android.R.color.transparent);
+    }
+
+    // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
         switch(requestCode) {
             case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
-                    try {
-                        final Uri imageUri = imageReturnedIntent.getData();
-                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                        gc.addPhoto(g, selectedImage);
-                        imageButton.setImageBitmap(g.getPicture());
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    imageUri = imageReturnedIntent.getData();
+                    imageButton.setImageBitmap( gc.resolveUri(imageUri, getContentResolver()) );
                 }
                 break;
         }
@@ -253,5 +278,3 @@ public class EditInventoryItemActivity extends Activity {
 
 }
 
-//here is the link on how to radio buttons: http://developer.android.com/guide/topics/ui/controls/radiobutton.html
-//by default I have checked the Public radio button

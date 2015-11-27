@@ -33,6 +33,7 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     private volatile ArrayList<AppObserver> observers;
     private Inventory inventory;
+    private PictureManager pm;
 
     ArrayList<User> friendList;
     ArrayList<User> pendingFriendList;
@@ -42,6 +43,11 @@ public class User extends FileIO implements Serializable, AppObservable {
         // otherwise, create a new user file and prompt the user to create a user name
         observers = new ArrayList<AppObserver>();
         inventory = new Inventory();
+        pm = new PictureManager();
+    }
+
+    public PictureManager getPictureManager() {
+        return pm;
     }
 
     /**
@@ -116,6 +122,7 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     private String phoneNumber;
 
+<<<<<<< HEAD
     public String getAndroidID() {
         return androidID;
     }
@@ -125,6 +132,18 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+=======
+    public String getInstallationId() {
+        return installationId;
+    }
+
+    public void setInstallationId(String installationId) {
+        this.installationId = installationId;
+    }
+
+    // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+    private String installationId;
+>>>>>>> 6a41bf6bdad2cdbae9534fde8a618511b592f6df
 
     public Inventory getInventory() {
         return inventory;

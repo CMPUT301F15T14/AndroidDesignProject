@@ -13,7 +13,8 @@ import android.widget.Button;
 import java.io.IOException;
 
 public class MainActivity extends Activity {
-    User user = new User();
+
+    MainMenuController mainMenuController = new MainMenuController();
 
     private Button profileButton;
 
@@ -63,6 +64,9 @@ public class MainActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        mainMenuController.preLoadAllSingletons(getApplicationContext());
+
 
         UserSingleton.getInstance().getUser().addObserver(net);
 
