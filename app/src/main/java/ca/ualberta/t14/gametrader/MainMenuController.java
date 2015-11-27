@@ -2,6 +2,7 @@ package ca.ualberta.t14.gametrader;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.provider.Settings;
 
 import java.io.IOException;
 
@@ -9,10 +10,12 @@ import java.io.IOException;
  * Created by satyabra on 11/27/15.
  */
 public class MainMenuController {
-    User user = new User();
+    User user;
     SettingsMode settingsMode = new SettingsMode();
+    NetworkController netCtrl = new NetworkController();
 
     void preLoadAllSingletons(Context context) {
+        User user = new User();
 
         // Try setting the user singleton to the loaded user.
         try {
@@ -21,6 +24,9 @@ public class MainMenuController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        UserSingleton.getInstance().getUser().setAndroidID(Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID));
+        UserSingleton.getInstance().getUser().addObserver(netCtrl);
 
         // Try to load the user's settings.
         try {

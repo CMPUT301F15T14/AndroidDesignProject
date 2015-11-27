@@ -17,6 +17,7 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.ContentResolver;
 import android.provider.Settings;
 
 import java.io.Serializable;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 
 public class User extends FileIO implements Serializable, AppObservable {
 
-    private volatile ArrayList<AppObserver> observers;
+    private volatile transient ArrayList<AppObserver> observers;
     private Inventory inventory;
     private PictureManager pm;
 
