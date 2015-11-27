@@ -31,6 +31,12 @@ public class ProfileActivity extends Activity {
         return inventory;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +47,8 @@ public class ProfileActivity extends Activity {
         phoneView = (TextView) findViewById(R.id.phoneDisplay);
         userNameView = (TextView) findViewById(R.id.userNameDisplay);
 
-        User user = (User)ObjParseSingleton.getInstance().popObject("userProfile");
+        user = (User) ObjParseSingleton.getInstance().popObject("userProfile");
+
         if(user == null){
             throw new RuntimeException("ProfileActivity received null user.");
         }

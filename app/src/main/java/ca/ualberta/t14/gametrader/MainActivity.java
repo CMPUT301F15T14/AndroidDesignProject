@@ -15,6 +15,7 @@ public class MainActivity extends Activity {
 
     MainMenuController mainMenuController = new MainMenuController();
 
+
     private Button profileButton;
 
     public Button getProfileButton() {
