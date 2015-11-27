@@ -25,6 +25,7 @@ package ca.ualberta.t14.gametrader;
  */
 public class SettingsMode extends FileIO {
     private Boolean enableDownloadPhoto1 = Boolean.FALSE;
+    public static final String SETTINGS_FILE = "settings"; // name of settings file
 
     /**
      * this is getting the value of enableDownloadPhoto1 from controller changed

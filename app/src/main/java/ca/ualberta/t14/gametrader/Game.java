@@ -67,9 +67,6 @@ public class Game implements AppObservable {
 
     private int quantities;
 
-    private String owner;
-    private String fileIdentity;
-
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
 
@@ -227,22 +224,6 @@ public class Game implements AppObservable {
     public void setQuantities(int quantities) {
         this.quantities = quantities;
         notifyAllObservers();
-    }
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getFileIdentity() {
-        return fileIdentity;
-    }
-
-    public void setFileIdentity(String fileIdentity) {
-        this.fileIdentity = fileIdentity;
     }
 
     /**

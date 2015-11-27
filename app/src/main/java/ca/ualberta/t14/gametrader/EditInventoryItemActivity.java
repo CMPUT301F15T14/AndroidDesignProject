@@ -180,6 +180,8 @@ public class EditInventoryItemActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+                Toast.makeText(EditInventoryItemActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
+
                 String gameTitle = ((EditText) findViewById(R.id.inventoryItemTitle)).getText().toString();
 
                 Spinner consoles = (Spinner) findViewById(R.id.gameConsole);
@@ -201,8 +203,6 @@ public class EditInventoryItemActivity extends Activity {
 
                 // Save picture of game
                 gc.addPhoto(g, imageUri, getContentResolver(), getApplicationContext());
-
-                Toast.makeText(EditInventoryItemActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
 
                 // Save user to JSON. The user contains Inventory which contains the item.
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());

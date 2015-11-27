@@ -57,6 +57,7 @@ public class PictureManager extends FileIO {
         String imageJson = "";
         // Load file here as IO.
         // TODO: check if it exists locally, and if not pull the image from elastic search.
+        // TODO: BUT check here if allowDownloadPhoto setting is true, and if not ask if manually want to download this photo.
         try {
             imageJson = (String) loadJsonGivenObject(fileName, context, new String());
         } catch(IOException e){
@@ -81,6 +82,17 @@ public class PictureManager extends FileIO {
             e.printStackTrace();
         }
         return base64Encoded;
+    }
+
+    /**
+     * Manually force download the image from the network even if settings is set to don't download images.
+     * @param game The game that contains the image you want to force download.
+     * @return the bitmap from that game.
+     */
+    public Bitmap manualDownloadPhoto(Game game) {
+        // TODO: from cache or elastisearch, find the image associated to this game and force download it (disregard the settings)
+        // perhaps this method is redundant due to loadImageJsonFromJsonFile();
+        return null;
     }
 
     public static Long getImageFileSize(Bitmap image) {
@@ -108,7 +120,7 @@ public class PictureManager extends FileIO {
         return img;
     }
 
-    public static Bitmap preserveAspectRatio(Bitmap image, Integer resize_value) {
+    private static Bitmap preserveAspectRatio(Bitmap image, Integer resize_value) {
         int imgW = image.getWidth();
         int imgH = image.getHeight();
 
