@@ -59,6 +59,6 @@ public class ProfileController {
         UserSingleton.getInstance().getUser().setPhoneNumber(phoneNumber);
         UserSingleton.getInstance().getUser().saveJson(MainUser, this.context);
 
-        //UserSingleton.getInstance().getUser().notifyAllObservers();
+        UserSingleton.getInstance().getUser().notifyAllObservers();
     }
 }

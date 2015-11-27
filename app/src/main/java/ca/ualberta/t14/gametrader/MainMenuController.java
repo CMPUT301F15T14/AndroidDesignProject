@@ -26,6 +26,9 @@ public class MainMenuController {
         }
         UserSingleton.getInstance().getUser().setAndroidID(Settings.Secure.getString(context.getContentResolver(),
                 Settings.Secure.ANDROID_ID));
+        System.out.println(Settings.Secure.getString(context.getContentResolver(),
+                Settings.Secure.ANDROID_ID));
+        System.out.println("Does this print?");
         UserSingleton.getInstance().getUser().addObserver(netCtrl);
 
         // Try to load the user's settings.
