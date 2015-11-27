@@ -87,7 +87,9 @@ public class PictureManager extends FileIO {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, PictureManager.COMPRESSION_QUALITY, byteArrayBitmapStream);
         byte[] b = byteArrayBitmapStream.toByteArray();
-        Long size = new Long(b.length);
+        // taken from http://stackoverflow.com/questions/13378815/base64-length-calculation
+        // Output file will be ceil(4*(n/3)) bytes long because Base64
+        Long size =  Math.round( Math.ceil( 4.0f * (b.length / 3.0f) ) );
         try{byteArrayBitmapStream.close();} catch(Exception e){}
         return size;
     }
