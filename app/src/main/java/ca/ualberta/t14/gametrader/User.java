@@ -122,7 +122,7 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     private String phoneNumber;
 
-<<<<<<< HEAD
+
     public String getAndroidID() {
         return androidID;
     }
@@ -132,7 +132,7 @@ public class User extends FileIO implements Serializable, AppObservable {
     }
 
     private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
-=======
+
     public String getInstallationId() {
         return installationId;
     }
@@ -143,7 +143,7 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
     private String installationId;
->>>>>>> 6a41bf6bdad2cdbae9534fde8a618511b592f6df
+
 
     public Inventory getInventory() {
         return inventory;
