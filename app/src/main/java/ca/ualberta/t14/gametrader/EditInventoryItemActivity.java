@@ -208,7 +208,6 @@ public class EditInventoryItemActivity extends Activity {
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
 
                 Toast.makeText(EditInventoryItemActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
-                //setResult(RESULT_CANCELED);
                 finish();
             }
         });
