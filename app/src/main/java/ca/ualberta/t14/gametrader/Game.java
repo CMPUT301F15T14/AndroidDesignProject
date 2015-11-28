@@ -86,7 +86,6 @@ public class Game implements AppObservable {
         pictureId = "";
         quantities = 0;
         observers = new ArrayList<AppObserver>();
-
     }
 
     /**

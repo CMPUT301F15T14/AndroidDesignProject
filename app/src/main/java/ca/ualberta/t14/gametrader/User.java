@@ -182,6 +182,11 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         }
     }
 
+    /**
+     * Called by objects we are observing. This means our data has changed and we must notify our
+     * own observers.
+     * @param observable contains the object that is being observed by this class.
+     */
     public void appNotify(AppObservable observable) {
         this.notifyAllObservers();
     }

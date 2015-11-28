@@ -40,7 +40,7 @@ import java.util.ArrayList;
 // Controller class of Inventory Class.
 public class InventoryController {
     private Inventory stock;
-    public InventoryController(Inventory inventory,User owner){
+    public InventoryController(Inventory inventory){
         this.stock=inventory;
     }
     public void addItem(Game game){
