@@ -14,6 +14,10 @@ public class MainMenuController {
     SettingsMode settingsMode = new SettingsMode();
     NetworkController netCtrl = new NetworkController();
 
+    /**
+     * Initializes all singletons upon program start so that they are accessible by all activities
+     * @param context is the context of the caller necessary for certain API calls
+     */
     void preLoadAllSingletons(Context context) {
         // Try setting the user singleton to the loaded user.
         try {

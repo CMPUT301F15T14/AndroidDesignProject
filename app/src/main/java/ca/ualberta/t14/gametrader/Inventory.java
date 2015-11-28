@@ -67,6 +67,7 @@ public class Inventory implements AppObservable {
      */
     public void remove(Game game){
         gameCollections.remove(game);
+        this.notifyAllObservers();
     }
 
     /**
