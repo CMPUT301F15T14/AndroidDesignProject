@@ -17,8 +17,13 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.ContentResolver;
+import android.provider.Settings;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Observable;
+
 /**
  * Created by jjohnston on 10/30/15.
  *
@@ -27,9 +32,9 @@ import java.util.ArrayList;
  *
  */
 
-public class User extends FileIO implements Serializable, AppObservable {
+public class User extends FileIO implements Serializable, AppObservable, AppObserver {
 
-    private volatile ArrayList<AppObserver> observers;
+    private transient ArrayList<AppObserver> observers;
     private Inventory inventory;
     private PictureManager pm;
 
@@ -41,6 +46,7 @@ public class User extends FileIO implements Serializable, AppObservable {
         // otherwise, create a new user file and prompt the user to create a user name
         observers = new ArrayList<AppObserver>();
         inventory = new Inventory();
+        inventory.addObserver(this);
         pm = new PictureManager();
     }
 
@@ -120,6 +126,17 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     private String phoneNumber;
 
+
+    public String getAndroidID() {
+        return androidID;
+    }
+
+    public void setAndroidID(String androidID) {
+        this.androidID = androidID;
+    }
+
+    private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
+
     public String getInstallationId() {
         return installationId;
     }
@@ -130,6 +147,7 @@ public class User extends FileIO implements Serializable, AppObservable {
 
     // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
     private String installationId;
+
 
     public Inventory getInventory() {
         return inventory;
@@ -158,8 +176,18 @@ public class User extends FileIO implements Serializable, AppObservable {
      * Called to notify all observers that the model has been updated.
      */
     public void notifyAllObservers() {
+        System.out.println("Notifying my " + observers.size() + " observers.");
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
+    }
+
+    /**
+     * Called by objects we are observing. This means our data has changed and we must notify our
+     * own observers.
+     * @param observable contains the object that is being observed by this class.
+     */
+    public void appNotify(AppObservable observable) {
+        this.notifyAllObservers();
     }
 }

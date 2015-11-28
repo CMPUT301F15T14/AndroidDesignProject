@@ -100,5 +100,6 @@
         <item>Mint</item>
         <item>Acceptable</item>
     </string-array>
+    <string name="title_activity_item_picture_viewer">Photos</string>
 
 </resources>

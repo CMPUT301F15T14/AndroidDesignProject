@@ -39,13 +39,16 @@ import java.util.ArrayList;
 
 // class Inventory is designed to store a collection (list) of Game objects and associate them with users.
 
-public class Inventory {
+public class Inventory implements AppObservable {
+    private volatile transient ArrayList<AppObserver> observers;
+
     private ArrayList<Game> gameCollections;
 
     /**
      * Default constructor
      */
     public Inventory(){
+        observers = new ArrayList<AppObserver>();
         this.gameCollections=new ArrayList<Game>();
     }
 
@@ -54,7 +57,8 @@ public class Inventory {
      * @param game
      */
     public void add(Game game){
-        gameCollections.add(game);;
+        gameCollections.add(game);
+        this.notifyAllObservers();
     }
 
     /**
@@ -63,6 +67,7 @@ public class Inventory {
      */
     public void remove(Game game){
         gameCollections.remove(game);
+        this.notifyAllObservers();
     }
 
     /**
@@ -92,5 +97,23 @@ public class Inventory {
      */
     public ArrayList<Game> getAllGames() {
         return gameCollections;
+    }
+
+    public void addObserver(AppObserver observer) {
+        observers.add(observer);
+    }
+
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
+    /**
+     * Called to notify all observers that the model has been updated.
+     */
+    public void notifyAllObservers() {
+        for(AppObserver obs : observers) {
+            obs.appNotify(this);
+        }
     }
 }

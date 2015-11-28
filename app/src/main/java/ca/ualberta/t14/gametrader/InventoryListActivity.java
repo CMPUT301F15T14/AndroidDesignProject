@@ -71,14 +71,8 @@ public class InventoryListActivity extends Activity {
 
         // Load user from JSON. The user contains Inventory.
         User mainUser = UserSingleton.getInstance().getUser();
-        try {
-            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext()); // TODO: We are not necessarily looking at our own inventory!
-            UserSingleton.getInstance().setUser(mainUser);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        invtC = new InventoryController(mainUser.getInventory(), mainUser);
+        invtC = new InventoryController(mainUser.getInventory());
 
         //  Array reserved for storing names of game.
         mobileArray = new ArrayList<String>();

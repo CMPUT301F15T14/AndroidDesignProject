@@ -206,6 +206,7 @@ public class EditInventoryItemActivity extends Activity {
 
                 // Save user to JSON. The user contains Inventory which contains the item.
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
+                UserSingleton.getInstance().getUser().notifyAllObservers();
 
                 Toast.makeText(EditInventoryItemActivity.this, "Game Saved!", Toast.LENGTH_SHORT).show();
                 finish();
@@ -233,8 +234,10 @@ public class EditInventoryItemActivity extends Activity {
                 SinglePrompt.setMessage("Are you sure you want to delete this item?");
                 SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                gc.removeGame(g, UserSingleton.getInstance().getUser());
+                                InventoryController ic = new InventoryController(UserSingleton.getInstance().getUser().getInventory());
+                                ic.removeItem(g);
                                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
+                                UserSingleton.getInstance().getUser().notifyAllObservers();
                                 Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
                                 setResult(RESULT_OK);
                                 finish();

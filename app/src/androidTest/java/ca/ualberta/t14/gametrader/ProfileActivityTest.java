@@ -2,6 +2,7 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.os.RecoverySystem;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
@@ -24,13 +25,6 @@ public class ProfileActivityTest extends ActivityInstrumentationTestCase2 {
 
     public void testEditprofButton() {
         ProfileActivity profile = (ProfileActivity)getActivity();
-
-        profile.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ObjParseSingleton.getInstance().addObject("userProfile", UserSingleton.getInstance().getUser());
-            }
-        });
 
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =

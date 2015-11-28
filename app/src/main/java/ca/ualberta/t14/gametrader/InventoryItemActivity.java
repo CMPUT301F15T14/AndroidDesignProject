@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -40,7 +41,7 @@ public class InventoryItemActivity extends Activity {
     TextView additionalInfo;
     TextView phone;
     TextView address;
-    ImageView imageView;
+    ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class InventoryItemActivity extends Activity {
         condition = (TextView) findViewById(R.id.gameInfoCondition);
         owner = (TextView) findViewById(R.id.gameInfoOwner);
         additionalInfo = (TextView) findViewById(R.id.additionalInfoText);
-        imageView = (ImageView) findViewById(R.id.inventoryItemImage);
+        imageButton = (ImageButton) findViewById(R.id.inventoryItemImage);
         phone = (TextView) findViewById(R.id.phoneEditField);
         address = (TextView) findViewById(R.id.contactAddress);
 
@@ -77,19 +78,23 @@ public class InventoryItemActivity extends Activity {
         String imageJson = UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(game.getPictureId(), getApplicationContext());
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
-            imageView.setImageBitmap(game.getPicture());
+            imageButton.setImageBitmap(game.getPicture());
         }
 
         Button editGame = (Button)findViewById(R.id.buttonEditItem);
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-
                 ObjParseSingleton.getInstance().addObject("game", game);
-
                 Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
-
                 startActivityForResult(myIntent, 1);
+            }
+        });
 
+        imageButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                ObjParseSingleton.getInstance().addObject("game", game);
+                Intent myIntent = new Intent(InventoryItemActivity.this, InventoryItemPictureViewer.class);
+                startActivityForResult(myIntent, 1);
             }
         });
 
@@ -108,6 +113,8 @@ public class InventoryItemActivity extends Activity {
     public void onResume() {
         super.onResume();
 
+        // todo: these should be observers shouldnt they?
+
         // When coming back to the activity and the data were updated.
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
@@ -116,7 +123,7 @@ public class InventoryItemActivity extends Activity {
         phone.setText(ownerProfile.getPhoneNumber());
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
-        imageView.setImageBitmap(game.getPicture());
+        imageButton.setImageBitmap(game.getPicture());
     }
 
     @Override
