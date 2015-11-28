@@ -61,6 +61,10 @@
             android:name=".TradeActivity"
             android:label="@string/title_activity_trade" >
         </activity>
+        <activity
+            android:name=".InventoryItemPictureViewer"
+            android:label="@string/title_activity_item_picture_viewer" >
+        </activity>
     </application>
 
 </manifest>

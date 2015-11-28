@@ -19,8 +19,8 @@
         android:layout_alignStart="@+id/uploadImage" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:id="@+id/uploadImage"
         android:minHeight="128dp"
         android:minWidth="128dp"
@@ -30,7 +30,8 @@
         android:layout_toEndOf="@+id/gameConditionText"
         android:clickable="true"
         android:contentDescription="Picure of the game."
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="false" />
 
 
     <!-- regarding spinners: http://developer.android.com/guide/topics/ui/controls/spinner.html -->
