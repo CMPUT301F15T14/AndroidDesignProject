@@ -22,6 +22,8 @@ import android.provider.Settings;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Observable;
+
 /**
  * Created by jjohnston on 10/30/15.
  *
@@ -30,9 +32,9 @@ import java.util.ArrayList;
  *
  */
 
-public class User extends FileIO implements Serializable, AppObservable {
+public class User extends FileIO implements Serializable, AppObservable, AppObserver {
 
-    private volatile transient ArrayList<AppObserver> observers;
+    private transient ArrayList<AppObserver> observers;
     private Inventory inventory;
     private PictureManager pm;
 
@@ -44,6 +46,7 @@ public class User extends FileIO implements Serializable, AppObservable {
         // otherwise, create a new user file and prompt the user to create a user name
         observers = new ArrayList<AppObserver>();
         inventory = new Inventory();
+        inventory.addObserver(this);
         pm = new PictureManager();
     }
 
@@ -173,8 +176,13 @@ public class User extends FileIO implements Serializable, AppObservable {
      * Called to notify all observers that the model has been updated.
      */
     public void notifyAllObservers() {
+        System.out.println("Notifying my " + observers.size() + " observers.");
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
+    }
+
+    public void appNotify(AppObservable observable) {
+        this.notifyAllObservers();
     }
 }
