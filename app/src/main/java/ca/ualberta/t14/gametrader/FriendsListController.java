@@ -7,6 +7,8 @@ import android.text.InputFilter;
 import android.text.LoginFilter;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -48,14 +50,16 @@ public class FriendsListController {
                 if(!addFriendButtonState) {
                     inputFriend = new EditText(c);
                     inputFriend.setId(EDIT_TEXT_ID);
-                    inputFriend.setText("Enter username here!");
                     inputFriend.setSelectAllOnFocus(Boolean.TRUE);
                     inputFriend.requestFocus();
+                    inputFriend.dispatchWindowFocusChanged(Boolean.TRUE);
+
                     // #3399FF
                     inputFriend.setBackgroundColor(Color.rgb(255, 255, 255));
                     inputFriend.setTextColor(Color.rgb(0, 0, 0));
                     inputFriend.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                     inputFriend.setMaxLines(1);
+                    inputFriend.setMinWidth(150);
                     inputFriend.setLines(1);
                     InputFilter[] a = { new InputFilter.LengthFilter(14), new LoginFilter.UsernameFilterGeneric()};
                     inputFriend.setFilters(a);
@@ -66,7 +70,7 @@ public class FriendsListController {
                     addFriendButtonState = Boolean.TRUE;
                 } else if (addFriendButtonState) {
                     userToAdd = inputFriend.getText().toString();
-                    if(userToAdd.compareTo("Enter username here!") == 0 || userToAdd.isEmpty()) {
+                    if(userToAdd.isEmpty()) {
                         userToAdd = "";
                     } else {
                         // TODO: make it so it checks if user exist and request a pending friend request then.
@@ -75,7 +79,6 @@ public class FriendsListController {
 
                     addFriend.setText(FRIEND_TEXT_DEFAULT);
                     addFriendButtonState = Boolean.FALSE;
-                    Log.d("aaaaAA>>>", userToAdd);
                 }
             }
         });
