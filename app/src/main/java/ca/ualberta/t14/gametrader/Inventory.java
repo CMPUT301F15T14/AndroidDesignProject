@@ -57,7 +57,8 @@ public class Inventory implements AppObservable {
      * @param game
      */
     public void add(Game game){
-        gameCollections.add(game);;
+        gameCollections.add(game);
+        this.notifyAllObservers();
     }
 
     /**

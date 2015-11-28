@@ -82,6 +82,7 @@ public class GameController {
         game.setShared(sharableStatus);
         game.setAdditionalInfo(additionalInfo);
 
+        //model.notifyAllObservers();
     }
 
     /**
