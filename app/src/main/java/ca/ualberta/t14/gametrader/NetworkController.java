@@ -19,6 +19,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+
+import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
+import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
 
 /**
  * Talks to the elastic search user. Supports adding, loading, and updating users.
@@ -30,6 +34,32 @@ public class NetworkController implements AppObserver {
 
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();
+
+    public ArrayList<User> SearchByUserName(String str) throws IOException {
+        HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
+        String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";
+        StringEntity stringentity = new StringEntity(query);
+
+        searchRequest.setHeader("Accept","application/json");
+        searchRequest.setEntity(stringentity);
+
+        HttpResponse response = httpclient.execute(searchRequest);
+        String status = response.getStatusLine().toString();
+        System.out.println(status);
+
+        String json = getEntityContent(response);
+
+        Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<User>>(){}.getType();
+        ElasticSearchSearchResponse<User> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
+        System.err.println(esResponse);
+
+        ArrayList<User> returnValue = new ArrayList<User>();
+        for (ElasticSearchResponse<User> r : esResponse.getHits()) {
+            returnValue.add(r.getSource());
+        }
+
+        return returnValue;
+    }
 
     /**
      * Uploads user data to the elastic search server. If the user has already been added, their data

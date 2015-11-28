@@ -38,6 +38,8 @@ public class FriendsListController {
     }
 
     void initButonOnClickListeners(Activity activity, Context context) {
+        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+
         final Context c = context;
         final Activity a = activity;
         addFriend = (Button) activity.findViewById(R.id.addFriendButton);
@@ -73,7 +75,8 @@ public class FriendsListController {
                     if(userToAdd.isEmpty()) {
                         userToAdd = "";
                     } else {
-                        // TODO: make it so it checks if user exist and request a pending friend request then.
+                        // query the server for a friend with the given user name
+                        // add that user to the friends list
                     }
                     friendListLayout.removeView(inputFriend);
 
