@@ -36,11 +36,6 @@ public class ProfileController {
     public ProfileController(User model, Context context) {
         this.context = context;
         this.model = model;
-        try {
-            this.model = (User) this.model.loadJson(MainUser, this.context);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private User model;
