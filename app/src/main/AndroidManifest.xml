@@ -21,13 +21,11 @@
         </activity>
         <activity
             android:name=".FriendsListActivity"
-            android:label="@string/title_activity_friends_list"
-            android:theme="@style/ListFont" >
+            android:label="@string/title_activity_friends_list">
         </activity>
         <activity
             android:name=".InventoryListActivity"
-            android:label="@string/title_activity_inventory_list"
-            android:theme="@style/ListFont" >
+            android:label="@string/title_activity_inventory_list">
         </activity>
         <activity
             android:name=".ProfileActivity"
