@@ -5,8 +5,8 @@ import java.util.ArrayList;
 /**
  * Created by jjohnsto on 11/28/15.
  */
-public class Friends {
-    ArrayList<User> friendList;
+public class Friends implements Cloneable {
+    ArrayList<User> friendList = new ArrayList<User>();
 
     public void AddFriend(User friend) {
         friendList.add(friend);
@@ -17,4 +17,8 @@ public class Friends {
     }
 
     public ArrayList<User> GetFriends() { return friendList; }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

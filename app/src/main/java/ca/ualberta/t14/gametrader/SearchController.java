@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Iterator;
 
+import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.SearchHit;
 import ca.ualberta.t14.gametrader.es.data.SearchResponse;
 import ca.ualberta.t14.gametrader.es.data.SimpleSearchCommand;
@@ -136,7 +137,7 @@ public class SearchController {
         }
 
 
-        for (SearchHit<Game> hit : esResponse.getHits().getHits()) {
+        for (ElasticSearchResponse<Game> hit : esResponse.getHits().getHits()) {
             result.add(hit.getSource());
         }
 
