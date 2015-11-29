@@ -55,17 +55,19 @@ public class NetworkController implements AppObserver {
         System.err.println(esResponse);
 
         ArrayList<User> returnValue = new ArrayList<User>();
-        for (ElasticSearchResponse<User> r : esResponse.getHits()) {
-            User result = r.getSource();
-            User ret = new User();
-            ret.setAddress(result.getAddress());
-            ret.setPhoneNumber(result.getPhoneNumber());
-            ret.setAndroidID(result.getAndroidID());
-            ret.setUserName(result.getUserName());
-            ret.setEmail(result.getEmail());
-            ret.setInventory(result.getInventory());
+        if(esResponse.getHits()!=null) {
+            for (ElasticSearchResponse<User> r : esResponse.getHits()) {
+                User result = r.getSource();
+                User ret = new User();
+                ret.setAddress(result.getAddress());
+                ret.setPhoneNumber(result.getPhoneNumber());
+                ret.setAndroidID(result.getAndroidID());
+                ret.setUserName(result.getUserName());
+                ret.setEmail(result.getEmail());
+                ret.setInventory(result.getInventory());
 
-            returnValue.add(ret);
+                returnValue.add(ret);
+            }
         }
 
         return returnValue;
