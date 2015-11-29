@@ -22,6 +22,8 @@ public class InventoryItemPictureViewer extends Activity implements AppObserver 
 
         getActionBar().setTitle(game.getTitle() + " Photos");
 
+        (findViewById(R.id.horizontalScrollView)).setVerticalFadingEdgeEnabled(Boolean.TRUE);
+
         pictureViewerController = new PictureViewerController(getApplicationContext(), this);
 
 

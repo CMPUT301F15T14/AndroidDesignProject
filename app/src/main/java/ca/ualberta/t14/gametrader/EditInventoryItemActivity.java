@@ -118,7 +118,8 @@ public class EditInventoryItemActivity extends Activity {
 
         additionalInfo.setText(g.getAdditionalInfo());
 
-        imageButton.setImageBitmap(g.getPicture());
+        String jsonStr = PictureManager.loadImageJsonFromJsonFile(g.getFirstPictureId(), getApplicationContext());
+        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
 
         addInputEvents();
         deleteItem();
@@ -206,7 +207,7 @@ public class EditInventoryItemActivity extends Activity {
                 gc.editGame(g, gameTitle, platform, condition, shareStatus, additionalInfo);
 
                 // Save picture of game
-                if(!uriList.isEmpty()) {
+                if (!uriList.isEmpty()) {
                     imageButton.setImageBitmap(gc.resolveUri(uriList.get(0), getContentResolver()));
                     for (Uri each : uriList) {
                         gc.addPhoto(g, each, getContentResolver(), getApplicationContext());
@@ -234,7 +235,7 @@ public class EditInventoryItemActivity extends Activity {
         delete=(Button) findViewById(R.id.deleteInventory);
         delete.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
                 SinglePrompt.setTitle("Warning");
                 SinglePrompt.setMessage("Are you sure you want to delete this item?");
@@ -277,7 +278,11 @@ public class EditInventoryItemActivity extends Activity {
         switch(requestCode) {
             case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
-                   uriList = imageReturnedIntent.getParcelableArrayListExtra("result");
+                    ArrayList<Uri> toAdd = imageReturnedIntent.getParcelableArrayListExtra("result");
+                    uriList.addAll(toAdd);
+                    if(!uriList.isEmpty()) {
+                        imageButton.setImageBitmap(gc.setPreviewImage(uriList.get(0), getContentResolver()));
+                    }
                 }
                 break;
         }

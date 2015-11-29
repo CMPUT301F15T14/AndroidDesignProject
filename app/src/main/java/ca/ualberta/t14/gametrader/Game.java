@@ -69,7 +69,7 @@ public class Game implements AppObservable {
     private int quantities;
 
     // volatile because GSON shouldn't store this.
-    private volatile ArrayList<AppObserver> observers;
+    private transient volatile ArrayList<AppObserver> observers;
 
     private static final String SEARCH_URL = "http://cmput301.softwareprocess.es:8080/cmput301f15t14/game/_search";
 
@@ -261,7 +261,7 @@ public class Game implements AppObservable {
         if(!pictureId.isEmpty() && pictureId.contains(idToRemove)) {
             // TODO get current picture id and remove it from the elastic search, (add to quene into network option that pushes pulls/updates the elastic search).
             // remove from local files
-            success = UserSingleton.getInstance().getUser().getPictureManager().removeFile(idToRemove, context);
+            success = PictureManager.removeFile(idToRemove, context);
             pictureId.remove(idToRemove);
             picture = null;
         }
@@ -300,7 +300,7 @@ public class Game implements AppObservable {
         PictureManager pm = UserSingleton.getInstance().getUser().getPictureManager();
         String newIdImage = pm.addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
         pictureId.add(newIdImage);
-        setPictureFromJson(UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(getFirstPictureId(), context));
+        setPictureFromJson(PictureManager.loadImageJsonFromJsonFile(getFirstPictureId(), context));
 
         notifyAllObservers();
         return Boolean.TRUE;

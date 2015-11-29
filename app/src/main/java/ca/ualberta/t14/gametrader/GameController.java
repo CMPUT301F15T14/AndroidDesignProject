@@ -85,6 +85,10 @@ public class GameController {
         //model.notifyAllObservers();
     }
 
+    public Bitmap setPreviewImage(Uri uri, ContentResolver contentResolver) {
+        return resolveUri(uri, contentResolver);
+    }
+
     /**
      * Given game, it will add the bitmap given to the game.
      * @param game the game to receive the image.
