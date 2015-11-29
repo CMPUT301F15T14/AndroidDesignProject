@@ -10,6 +10,7 @@ public class InventoryActivityTest extends ActivityInstrumentationTestCase2{
     public InventoryActivityTest(){
         super(ca.ualberta.t14.gametrader.MainActivity.class);
     }
+
     public void testStart() throws Exception{
         Activity InventoryActivity=getActivity();
     }
