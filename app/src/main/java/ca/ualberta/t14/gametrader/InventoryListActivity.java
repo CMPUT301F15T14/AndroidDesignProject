@@ -37,6 +37,7 @@ import java.util.ArrayList;
  */
 
 public class InventoryListActivity extends Activity {
+    User mainUser;
 
     private ArrayList<String> mobileArray;
     private ListView GameList;
@@ -70,7 +71,10 @@ public class InventoryListActivity extends Activity {
         setContentView(R.layout.activity_inventory_list);
 
         // Load user from JSON. The user contains Inventory.
-        User mainUser = UserSingleton.getInstance().getUser();
+        mainUser = (User)ObjParseSingleton.getInstance().getObject("User");
+        if(mainUser == null) {
+            throw new RuntimeException("InventoryListActivity was not passed a user");
+        }
 
         invtC = new InventoryController(mainUser.getInventory());
 
@@ -78,7 +82,7 @@ public class InventoryListActivity extends Activity {
         mobileArray = new ArrayList<String>();
         // later add observer observing the inventory:
         mobileArray.clear();
-        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+        for(Game each : mainUser.getInventory().getAllGames()) {
             mobileArray.add(each.getTitle());
         }
 
@@ -90,10 +94,10 @@ public class InventoryListActivity extends Activity {
             public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
 
                 // assuming the adapter view order is same as the array game list order
-                Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
+                Game g = mainUser.getInventory().getAllGames().get(position);
 
                 ObjParseSingleton.getInstance().addObject("game", g);
-                ObjParseSingleton.getInstance().addObject("gameOwner", UserSingleton.getInstance().getUser()); // TODO: pass the right user, not just phone owner!
+                ObjParseSingleton.getInstance().addObject("gameOwner", mainUser);
 
                 Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
 
@@ -168,7 +172,7 @@ public class InventoryListActivity extends Activity {
     public void onResume() {
         super.onResume();
         mobileArray.clear();
-        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+        for(Game each : mainUser.getInventory().getAllGames()) {
             mobileArray.add(each.getTitle());
         }
     }

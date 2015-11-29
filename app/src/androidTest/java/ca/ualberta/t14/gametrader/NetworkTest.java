@@ -15,9 +15,9 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
         NetworkController nc = new NetworkController();
 
         try {
-            ArrayList<User> searchUsers = nc.SearchByUserName("TheManBehindTheCurtain");
+            ArrayList<User> searchUsers = nc.SearchByUserName("testusr");
             assertFalse(searchUsers.isEmpty());
-            assertEquals(searchUsers.get(0).getUserName(), "TheManBehindTheCurtain");
+            assertEquals(searchUsers.get(0).getUserName(), "testusr");
             searchUsers = nc.SearchByUserName("DoesNotExist");
             assertTrue(searchUsers.isEmpty());
 
@@ -35,8 +35,8 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
         testUser.setAddress("The Land of Oz2");
         testUser.setPhoneNumber("555-555-5555");
         testUser.setEmail("PotionMaster@oz.com");
-        testUser.setUserName("TheManBehindTheCurtain");
-        testUser.setAndroidID("TheManBehindTheCurtain");
+        testUser.setUserName("testusr");
+        testUser.setAndroidID("testusr");
 
         testUser.addObserver(netCtrl);
 
@@ -56,7 +56,7 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
             e.printStackTrace();
         }
 
-        User testLoadUser = netCtrl.LoadUser("TheManBehindTheCurtain");
+        User testLoadUser = netCtrl.LoadUser("testusr");
 
         assertFalse(testLoadUser == null);
         assertEquals(testLoadUser.getAddress(), "The Land of Oz2");
@@ -64,6 +64,4 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
         assertEquals(testLoadUser.getEmail(), "PotionMaster@oz.com");
         assertEquals(testLoadUser.getUserName(), "TheManBehindTheCurtain");
     }
-
-
 }

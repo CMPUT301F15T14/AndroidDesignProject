@@ -63,6 +63,7 @@ public class NetworkController implements AppObserver {
             ret.setAndroidID(result.getAndroidID());
             ret.setUserName(result.getUserName());
             ret.setEmail(result.getEmail());
+            ret.setInventory(result.getInventory());
 
             returnValue.add(ret);
         }

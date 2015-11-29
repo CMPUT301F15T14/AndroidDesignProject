@@ -3,18 +3,24 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 
 public class MainActivity extends Activity {
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> updatesList = new ArrayList<String>();
 
     MainMenuController mainMenuController = new MainMenuController();
-
 
     private Button profileButton;
 
@@ -52,6 +58,9 @@ public class MainActivity extends Activity {
         return settingsButton;
     }
 
+
+    private ListView updates;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -59,6 +68,7 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         profileButton = (Button) findViewById(R.id.myProfile);
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +84,7 @@ public class MainActivity extends Activity {
         inventoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ObjParseSingleton.getInstance().addObject("userProfile", UserSingleton.getInstance().getUser());
+                ObjParseSingleton.getInstance().addObject("User", UserSingleton.getInstance().getUser());
                 Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
                 startActivity(intent);
             }
@@ -115,6 +125,18 @@ public class MainActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        updates = (ListView) findViewById(R.id.friendUpdates);
+
+        //PostUpdates();
+    }
+
+    @Override
+    protected void onStart() {
+        // TODO Auto-generated method stub
+        super.onStart();
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item, updatesList);
+        updates.setAdapter(adapter);
     }
 
     @Override
@@ -139,4 +161,15 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void PostUpdates() {
+        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+        fc.UpdateFriends();
+
+        String newUpdate = fc.getMostRecentUpdates().poll();
+        while(newUpdate != null) {
+            updatesList.add(newUpdate);
+            adapter.notifyDataSetChanged();
+            newUpdate = fc.getMostRecentUpdates().poll();
+        }
+    }
 }
