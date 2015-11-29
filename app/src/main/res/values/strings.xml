@@ -25,11 +25,11 @@
     <string name="title_activity_settings">Settings</string>
 
     <string name="AddInventory">Add Game to Inventory</string>
-    <string name="invetoryList">Inventory List</string>
+    <string name="inventoryList">Inventory List</string>
     <string name="title_activity_add_inventory">AddInventory</string>
     <string name="additionalInfo">Additional Info:</string>
     <string name="Address">Address:</string>
-    <string name="adressString">Address</string>
+    <string name="addressString">Address</string>
     <string name="phone">Phone:</string>
     <string name="contactInfo">Contact Information:</string>
     <string name="condition">Condition:</string>
@@ -64,6 +64,7 @@
     <string name="searchConsoleText">Search By Game Console</string>
     <string name="searchNameText">Search By Name</string>
     <string name="delete">Delete</string>
+    <string name="gameoffer">Offer Game</string>
 
     <string-array name="platforms_array">
         <item>PC</item>

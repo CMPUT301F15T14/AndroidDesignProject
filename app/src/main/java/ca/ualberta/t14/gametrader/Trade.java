@@ -18,6 +18,9 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 import java.util.ArrayList;
 
 /**

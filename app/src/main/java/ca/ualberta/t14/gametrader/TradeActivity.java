@@ -18,16 +18,64 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TradeActivity extends Activity {
+    private ArrayList<String> mobileArray;
+    private ArrayAdapter<String> adapter;
+    private ListView GameList;
+    Game g1;
+    private Spinner offerGameforTrade;
+    ArrayList<String> getAll =  new ArrayList<String>();
+    spinnerArray.add();
+
+    private ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
+    //private Button offerGameButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade);
+        g1 = (Game) ObjParseSingleton.getInstance().popObject("game");
+        if( g1 == null) {
+            g1 = new Game();
+        }
+
+        //  Array reserved for storing names of game.
+        mobileArray = new ArrayList<String>();
+        // later add observer observing the inventory:
+        mobileArray.clear();
+        mobileArray.add(g1.getTitle());
+        GameList=(ListView)findViewById(R.id.tradeFor);
+        /*
+        // get this from Ryan's part Inventory item load, guess it should be loaded from Json
+        // all info should be save in Json before and get it here.
+        //-------------------------------------------------------*/
+
+        /*offerGameButton = (Button) findViewById(R.id.offerGame);
+        offerGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TradeActivity.this, InventoryItemActivity.class);
+                startActivity(intent);
+            }
+        });*/
+        offerGameforTrade = (Spinner)findViewById(R.id.offerGame);
+
+
+
+
     }
 
     @Override
@@ -51,4 +99,18 @@ public class TradeActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        adapter=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray);
+        GameList.setAdapter(adapter);
+    }
+    /*
+    @Override
+    public void onResume() {
+        super.onResume();
+        mobileArray.clear();
+        mobileArray.add(g1.getTitle());
+    }
+    */
 }

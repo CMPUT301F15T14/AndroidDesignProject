@@ -12,7 +12,7 @@ import java.io.IOException;
 public class MainMenuController {
     User user = new User();
     SettingsMode settingsMode = new SettingsMode();
-    NetworkController netCtrl = new NetworkController();
+    //NetworkController netCtrl = new NetworkController();
 
     /**
      * Initializes all singletons upon program start so that they are accessible by all activities
@@ -66,7 +66,7 @@ public class MainMenuController {
                     e.printStackTrace();
                 }
 
-                UserSingleton.getInstance().getUser().addObserver(netCtrl);
+                //UserSingleton.getInstance().getUser().addObserver(netCtrl);
 
                 // Try to load the user's settings.
                 try {

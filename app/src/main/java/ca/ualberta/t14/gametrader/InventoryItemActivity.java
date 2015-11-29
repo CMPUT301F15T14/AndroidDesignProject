@@ -79,6 +79,18 @@ public class InventoryItemActivity extends Activity {
             game.setPictureFromJson(imageJson);
             imageView.setImageBitmap(game.getPicture());
         }
+        Button tradeItem  = (Button)findViewById(R.id.tradeButton);
+        tradeItem.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+                ObjParseSingleton.getInstance().addObject("game", game);
+
+                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+
+                startActivityForResult(myIntent, 1);
+
+            }
+        });
 
         Button editGame = (Button)findViewById(R.id.buttonEditItem);
         editGame.setOnClickListener(new Button.OnClickListener() {
@@ -92,6 +104,7 @@ public class InventoryItemActivity extends Activity {
 
             }
         });
+
 
     }
 
@@ -135,8 +148,8 @@ public class InventoryItemActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
-        }
+            Intent intent = new Intent(InventoryItemActivity.this, SettingActivity.class);
+            startActivity(intent);        }
 
         return super.onOptionsItemSelected(item);
     }

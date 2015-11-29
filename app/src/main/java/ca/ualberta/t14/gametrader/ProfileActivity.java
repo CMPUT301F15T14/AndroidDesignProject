@@ -101,8 +101,8 @@ public class ProfileActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
-        }
+            Intent intent = new Intent(ProfileActivity.this, SettingActivity.class);
+            startActivity(intent);        }
 
         return super.onOptionsItemSelected(item);
     }
