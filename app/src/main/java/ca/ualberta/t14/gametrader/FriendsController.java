@@ -1,5 +1,8 @@
 package ca.ualberta.t14.gametrader;
 
+import android.os.AsyncTask;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -23,14 +26,38 @@ public class FriendsController {
      * to browse their publicly listed items.
      * @param friend is the User we wish to add.
      */
-    void AddFriend(User friend) {
-        String id = friend.getAndroidID();
-        for(User existingFriend : model.GetFriends()) {
-            if( existingFriend.getAndroidID() == id ) {
-                throw new RuntimeException("Tried to add a friend already on our list. The UI should not allow this.");
+    private class AddFriendThread extends AsyncTask<String, Integer, User> {
+        protected User doInBackground(String... params) {
+            NetworkController nc = new NetworkController();
+            nc.ShitFuckingNothing();
+
+            String userName = params[0];
+
+            try{
+                ArrayList<User> results = nc.SearchByUserName(userName);
+
+                if(!results.isEmpty()) {
+                    return results.get(0);
+                }
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(User result) {
+            super.onPostExecute(result);
+            if(result != null) {
+                System.out.println(result.getUserName());
+                model.AddFriend(result);
             }
         }
-        model.AddFriend(friend);
+    }
+
+    public void AddFriend(String name) {
+        new AddFriendThread().execute(name);
     }
 
     /**
@@ -79,8 +106,8 @@ public class FriendsController {
                     return;
                 }
                 // update the our copy
-                RemoveFriend(friend);
-                AddFriend(serverFriend);
+                model.RemoveFriend(friend);
+                model.AddFriend(serverFriend);
             }
         }
     }

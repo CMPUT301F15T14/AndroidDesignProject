@@ -38,7 +38,11 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
     private Inventory inventory;
     private PictureManager pm;
 
-    Friends friends;
+    public Friends getFriends() {
+        return friends;
+    }
+
+    Friends friends = new Friends();
 
     public User() {
         // if a user file already exists simply load it from the file
