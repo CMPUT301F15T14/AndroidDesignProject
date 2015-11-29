@@ -38,47 +38,82 @@ import java.util.ArrayList;
  */
 
 // class Inventory is designed to store a collection (list) of Game objects and associate them with users.
-public class Inventory {
-    private ArrayList<Game> gameCollections;
-    private User owner;
 
-    // Default constructor
+public class Inventory implements AppObservable {
+    private volatile transient ArrayList<AppObserver> observers;
+
+    private ArrayList<Game> gameCollections;
+
+    /**
+     * Default constructor
+     */
     public Inventory(){
+        observers = new ArrayList<AppObserver>();
         this.gameCollections=new ArrayList<Game>();
     }
 
-    // Function implemented to be able to add Games to gameCollections. Must be called from InventoryController.
+    /**
+     * Add Games to gameCollections. Must be called from InventoryController.
+     * @param game
+     */
     public void add(Game game){
-        gameCollections.add(game);;
+        gameCollections.add(game);
+        this.notifyAllObservers();
     }
 
-    // Function implemented to be able to remove Games to gameCollections. Must be called from InventoryController.
+    /**
+     * Remove Games to gameCollections. Must be called from InventoryController.
+     * @param game
+     */
     public void remove(Game game){
         gameCollections.remove(game);
+        this.notifyAllObservers();
     }
 
-    // Function implemented to be able to clear all the objects stored in gameCollections. Must be called from InventoryController.
+    /**
+     * Clear all the objects stored in gameCollections. Must be called from InventoryController.
+     */
     public void clear(){
         gameCollections.clear();
     }
 
-    // Function implemented to be able to determine if the object is in gameCollection.
+    /**
+     * Determine if the object is in gameCollection.
+     * @param game
+     * @return true if gameCollections contain the input Game object.
+     */
     public boolean contains(Game game){
         return gameCollections.contains(game);
     }
 
-    // Function implemented to set Owner as User.
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
+    /**
+     * Set Owner as User.
+     * @param owner
+     */
 
-    // Function implemented to return the current owner of Game object.
-    public User getOwner() {
-        return owner;
-    }
-
-    // Getter of gameCollections.
+    /**
+     * Getter of gameCollections.
+     * @return gameCollections.
+     */
     public ArrayList<Game> getAllGames() {
         return gameCollections;
+    }
+
+    public void addObserver(AppObserver observer) {
+        observers.add(observer);
+    }
+
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
+    /**
+     * Called to notify all observers that the model has been updated.
+     */
+    public void notifyAllObservers() {
+        for(AppObserver obs : observers) {
+            obs.appNotify(this);
+        }
     }
 }

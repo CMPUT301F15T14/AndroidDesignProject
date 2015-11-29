@@ -3,10 +3,12 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +33,8 @@ import android.widget.TextView;
 public class InventoryItemActivity extends Activity {
 
     Game game;
+    InventoryController inventorycontroller;
+    User ownerProfile;
     TextView gameTitle;
     TextView platform;
     TextView condition;
@@ -38,7 +42,7 @@ public class InventoryItemActivity extends Activity {
     TextView additionalInfo;
     TextView phone;
     TextView address;
-    ImageView imageView;
+    ImageButton imageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,37 +54,68 @@ public class InventoryItemActivity extends Activity {
             game = new Game();
         }
 
+        ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
+        if(ownerProfile == null) {
+            throw new RuntimeException("Received null User for game owner.");
+        }
+
         gameTitle = (TextView) findViewById(R.id.gameInfoTitle);
         platform = (TextView) findViewById(R.id.gameInfoConsole);
         condition = (TextView) findViewById(R.id.gameInfoCondition);
         owner = (TextView) findViewById(R.id.gameInfoOwner);
         additionalInfo = (TextView) findViewById(R.id.additionalInfoText);
-        imageView = (ImageView) findViewById(R.id.inventoryItemImage);
+        imageButton = (ImageButton) findViewById(R.id.inventoryItemImage);
         phone = (TextView) findViewById(R.id.phoneEditField);
         address = (TextView) findViewById(R.id.contactAddress);
 
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
-        owner.setText(UserSingleton.getInstance().getUser().getUserName());
-        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
-        address.setText(UserSingleton.getInstance().getUser().getAddress());
+        owner.setText(ownerProfile.getUserName());
+        phone.setText(ownerProfile.getPhoneNumber());
+        address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
-        imageView.setImageBitmap(game.getPicture());
+        // Important, have to load bitmap from it's json first! Because bitmap is volatile.
+        String imageJson = UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(game.getPictureId(), getApplicationContext());
+        if(!imageJson.isEmpty()) {
+            game.setPictureFromJson(imageJson);
+            imageButton.setImageBitmap(game.getPicture());
+        }
 
-        Button editGame = (Button)findViewById(R.id.buttonEditItem);
+        final Button editGame = (Button)findViewById(R.id.buttonEditItem);
+        if (!inventorycontroller.clonable(ownerProfile)){
+            editGame.setText("Edit Game");
+        }else{
+            editGame.setText("Clone Game");
+        };
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-
-                ObjParseSingleton.getInstance().addObject("game", game);
-
-                Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
-
-                startActivity(myIntent);
-
+                if (!inventorycontroller.clonable(ownerProfile)){
+                    ObjParseSingleton.getInstance().addObject("game", game);
+                    Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
+                    startActivityForResult(myIntent, 1);
+                }else{
+                    inventorycontroller.clone(game);
+                };
             }
         });
 
+        imageButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                ObjParseSingleton.getInstance().addObject("game", game);
+                Intent myIntent = new Intent(InventoryItemActivity.this, InventoryItemPictureViewer.class);
+                startActivityForResult(myIntent, 1);
+            }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(resultCode == RESULT_OK){
+            finish();
+        }
 
     }
 
@@ -88,15 +123,17 @@ public class InventoryItemActivity extends Activity {
     public void onResume() {
         super.onResume();
 
+        // todo: these should be observers shouldnt they?
+
         // When coming back to the activity and the data were updated.
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());
-        owner.setText(UserSingleton.getInstance().getUser().getUserName());
-        phone.setText(UserSingleton.getInstance().getUser().getPhoneNumber());
-        address.setText(UserSingleton.getInstance().getUser().getAddress());
+        owner.setText(ownerProfile.getUserName());
+        phone.setText(ownerProfile.getPhoneNumber());
+        address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
-        imageView.setImageBitmap(game.getPicture());
+        imageButton.setImageBitmap(game.getPicture());
     }
 
     @Override
@@ -120,4 +157,12 @@ public class InventoryItemActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void ViewProfile(View v) {
+        Intent intent = new Intent(InventoryItemActivity.this, ProfileActivity.class);
+        ObjParseSingleton.getInstance().addObject("userProfile", ownerProfile);
+        startActivity(intent);
+    }
+
+
 }

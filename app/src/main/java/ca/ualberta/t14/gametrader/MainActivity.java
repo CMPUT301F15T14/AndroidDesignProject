@@ -9,9 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import java.io.IOException;
-
 public class MainActivity extends Activity {
+
+    MainMenuController mainMenuController = new MainMenuController();
+
 
     private Button profileButton;
 
@@ -51,15 +52,30 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        mainMenuController.preLoadAllSingletons(getApplicationContext());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /**
+         * Check Internet status
+         * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
+         * */
+        NetworkConnectivity networkConnectivity;
+        Boolean isInternetPresent = false;
+        // creating network connection detector instance
+        networkConnectivity = new NetworkConnectivity(getApplicationContext());
+
+        // get Internet status
+        isInternetPresent = networkConnectivity.isConnectingToInternet();
 
         profileButton = (Button) findViewById(R.id.myProfile);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ObjParseSingleton.getInstance().addObject("userProfile", UserSingleton.getInstance().getUser());
                 Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-
                 startActivity(intent);
             }
         });
@@ -68,6 +84,7 @@ public class MainActivity extends Activity {
         inventoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //ObjParseSingleton.getInstance().addObject("userProfile", UserSingleton.getInstance().getUser());
                 Intent intent = new Intent(MainActivity.this, InventoryListActivity.class);
                 startActivity(intent);
             }

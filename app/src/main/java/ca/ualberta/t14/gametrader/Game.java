@@ -18,11 +18,11 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
@@ -41,7 +41,7 @@ public class Game implements AppObservable {
     /**
      * An enumeration of all the different video game consoles a game can be in this app.
      */
-    public enum Platform { PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
+    public enum Platform { PC, PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
         XBOX, XBOX360, XBOXONE, WII, WIIU, OTHER }
 
     /**
@@ -57,19 +57,20 @@ public class Game implements AppObservable {
     private Boolean sharableStatus;
     private String additionalInfo;
 
+
     // TODO: many pictures to 1 item... see eclass prof. hindle's response:
     //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
     //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
     //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
-    volatile private Bitmap picture;
-    private String pictureJsonable;
+    volatile transient private Bitmap picture;
+    private String pictureId;
 
     private int quantities;
-    private final int COMPRESSION_QUALITY = 85;
-    private final int RESIZE_VALUE = 200;
 
     // volatile because GSON shouldn't store this.
     private volatile ArrayList<AppObserver> observers;
+
+    private static final String SEARCH_URL = "http://cmput301.softwareprocess.es:8080/cmput301f15t14/game/_search";
 
 
     /**
@@ -82,7 +83,23 @@ public class Game implements AppObservable {
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;
-        pictureJsonable = "";
+        pictureId = "";
+        quantities = 0;
+        observers = new ArrayList<AppObserver>();
+    }
+
+    /**
+     * Overridden constructor to set the title upon instantiation. Useful for testing inventory search
+     * without too much bloat.
+     * @param title the String used to instantiate the game's title
+     */
+    public Game(String title) {
+        platform = Platform.OTHER;
+        condition = Condition.NEW;
+        this.title = title;
+        sharableStatus = Boolean.FALSE;
+        additionalInfo = "";
+        picture = null;
         quantities = 0;
         observers = new ArrayList<AppObserver>();
 
@@ -218,12 +235,28 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Get the string representation of the bitmap.
-     * To be used by the model so this picture can be put in a JSON and put online.
-     * @return a string containing the byteArray of the bitmap encoded as a string in Base64.
+     * Get the picture identity that is the filename of the image json on elastic search.
+     * To be used by the model so this picture can be identified and put in a JSON and put online.
+     * @return a string containing the picture identity that the filename is named as, or empty if no such image is set for this game.
      */
-    public String getPictureJson() {
-        return pictureJsonable;
+    public String getPictureId() {
+        return pictureId;
+    }
+
+    public Boolean hasPictureId(){
+        return pictureId.isEmpty();
+    }
+
+    public Boolean removePictureId(Context context) {
+        Boolean success = Boolean.FALSE;
+        if(!pictureId.isEmpty()) {
+            // TODO get current picture id and remove it from the elastic search, (add to quene into network option that pushes pulls/updates the elastic search).
+            // remove from local files
+            success = UserSingleton.getInstance().getUser().getPictureManager().removeFile(pictureId, context);
+            pictureId = "";
+            picture = null;
+        }
+        return success;
     }
 
     /**
@@ -237,9 +270,7 @@ public class Game implements AppObservable {
         byte[] decodedString = Base64.decode(jsonBitmap, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         if(decodedByte != null) {
-            picture = decodedByte.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
-            // set the json image to the current image.
-            pictureJsonable = jsonBitmap;
+            picture = decodedByte;
         }
         return decodedByte != null;
     }
@@ -247,27 +278,33 @@ public class Game implements AppObservable {
     /**
      * Sets a picture for the game.
      * To be used by a Controller so the user can add an image to the game item.
-     * If image given is bigger than 200x200 it gets scaled down with longest edge becoming 200, the aspect ratio is kept same.
+     * If image given is bigger than 65536 bytes it will be scaled down to with longest edge becoming 500, the aspect ratio is kept same.
+     * If image still is bigger than 65536 bytes, it will keep scaling it down by 25 pixels with longest edge, until the file size is strictly less than 65536 bytes.
      * It also compresses the Bitmap to JPG with 85% compression quality so its JSON-able and stores the JSON to the game object.
      * @param image a Bitmap picture of the game.
      * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
      */
-    public Boolean setPicture(Bitmap image) {
+    public Boolean setPicture(Bitmap image, Context context) {
         // TODO: store these images json separately with ID that belongs to this game, since stored it with the model makes no sense: no bandwidth saved if downloadImages is off!
         // 400x400 seems acceptable = below 65536 bytes when compress jpg 85% in gimp. Try 350x350 and hope its always below 65536 bytes
         // set the volatile bitmap, when resizing: maintains aspect ratio of the image.
 
         if( image.getWidth() <=0 || image.getHeight() <= 0) {
             return Boolean.FALSE;
-        } else if (image.getWidth() > RESIZE_VALUE || image.getHeight() > RESIZE_VALUE) {
-            // preserve aspect ratio of image
-            // TODO: maybe make it so you can put in image and if filesize is bigger than 65kb then downscale to longest side 500px and then keep checking while loop filesize>65kb and decrease downscale 100px a time if. Can take long time... because compress method is slow tho.
-            picture = preserveAspectRatio(image);
         } else {
-            picture = image.copy(Bitmap.Config.ARGB_8888, Boolean.FALSE);
+            // preserve aspect ratio of image and make it smaller if its bigger than 65.536KB
+            picture = PictureManager.makeImageSmaller(image);
         }
 
-        pictureJsonable = makeBitmapJsonable(picture);
+        String pictureJsonable = PictureManager.getStringFromBitmap(picture);
+        if(!pictureId.isEmpty()){
+            // remove from local
+            removePictureId(context);
+            pictureId = UserSingleton.getInstance().getUser().getPictureManager().addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
+        } else {
+            pictureId = UserSingleton.getInstance().getUser().getPictureManager().addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
+            setPictureFromJson(UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(pictureId, context));
+        }
 
         notifyAllObservers();
         return Boolean.TRUE;
@@ -282,46 +319,25 @@ public class Game implements AppObservable {
         observers.add(observer);
     }
 
-    private void notifyAllObservers() {
+    @Override
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
+    public void notifyAllObservers() {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
     }
 
-    private Long getImageJpgSize(Bitmap image) {
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        return new Long(b.length);
+
+    public String getSearchUrl() {
+        return SEARCH_URL;
     }
 
-    private String makeBitmapJsonable(Bitmap image) {
-        // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        image.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        return Base64.encodeToString(b, Base64.DEFAULT);
-    }
-
-    private Bitmap preserveAspectRatio(Bitmap image) {
-        int imgW = image.getWidth();
-        int imgH = image.getHeight();
-
-        if(imgW < imgH) {
-            float aspectRatio = ((float) imgW) / imgH;
-            int newHeight = RESIZE_VALUE;
-            int newWidth = Math.round(aspectRatio * newHeight);
-            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
-        } else if(imgW > imgH) {
-            float aspectRatio = ((float) imgH) / imgW;
-            int newWidth = RESIZE_VALUE;
-            int newHeight = Math.round(aspectRatio * newWidth);
-            return Bitmap.createScaledBitmap(image, newWidth, newHeight, Boolean.TRUE);
-        } else if(imgW == imgH) {
-            return Bitmap.createScaledBitmap(image, RESIZE_VALUE, RESIZE_VALUE, Boolean.TRUE);
-        }
-        // something went horribly wrong.
-        return null;
+    public boolean clonable(){
+        return (1==1);
     }
 
 }

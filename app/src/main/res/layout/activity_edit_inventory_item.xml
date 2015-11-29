@@ -12,15 +12,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/inventoryItemTitle"
-        android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/uploadImage"
         android:inputType="text"
         android:textSize="28dp"
-        android:minWidth="50dp" />
+        android:minWidth="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/uploadImage" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:id="@+id/uploadImage"
         android:minHeight="128dp"
         android:minWidth="128dp"
@@ -30,7 +30,8 @@
         android:layout_toEndOf="@+id/gameConditionText"
         android:clickable="true"
         android:contentDescription="Picure of the game."
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="false" />
 
 
     <!-- regarding spinners: http://developer.android.com/guide/topics/ui/controls/spinner.html -->
@@ -122,9 +123,10 @@
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:id="@+id/saveInventory"
+        android:clickable="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:clickable="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/AddInfoText" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -143,6 +145,16 @@
         android:inputType="textMultiLine"
         android:layout_below="@+id/shareStatus"
         android:layout_toEndOf="@+id/gameConditionText" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete"
+        android:id="@+id/deleteInventory"
+        android:clickable="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/saveInventory" />
 
 
 </RelativeLayout>

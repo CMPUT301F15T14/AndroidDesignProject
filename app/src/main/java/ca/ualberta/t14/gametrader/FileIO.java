@@ -55,7 +55,6 @@ public class FileIO {
         }
     }
 
-
     /**
      * Loads a single object, this works with all models: game, user, inventory...
      * converts json back to object form, and returns that object back.
@@ -85,12 +84,79 @@ public class FileIO {
     }
 
     /**
-     * This function checks if the file exists, returns true if it does, and false if it doesn't.
+     * A function that saves a given object to android's internal storage in json format, to use simply provide a filename
+     * which is just a string. The openFileOutput depends on context, when using in an activity/view
+     * pass it the parameter getApplicationContext().
+     * @param fileName - String to name the file you want to create
+     * @param context - getApplicationContext()
+     */
+    public void saveJsonWithObject(Object objectToSaveInJson, String fileName, Context context){
+        Gson gson = new Gson();
+        String stringObject = gson.toJson(objectToSaveInJson);
+        try {
+            FileOutputStream saveToDisk = context.openFileOutput(fileName, context.MODE_PRIVATE);
+            saveToDisk.write(stringObject.getBytes());
+            saveToDisk.flush();
+            saveToDisk.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Loads a single object of given class, this works with all models: game, user, inventory...
+     * converts json back to object form, and returns that object back.
+     *
+     * use case:
+     * User x = new User();
+     * x = (User) x.loadJson("FileNameOfUserObject", getApplicationContext);
+     * x will now be loaded with the object stored in memory.
+     *
+     * @param fileName - String of the filename that exists, so that you can load an object.
+     * @param context - getApplicationContext();
+     * @return
+     * @throws IOException
+     */
+    public Object loadJsonGivenObject(String fileName, Context context, Object objectToGetClass) throws IOException {
+        FileInputStream input = context.openFileInput(fileName);
+        BufferedReader myReader = new BufferedReader(new InputStreamReader(input));
+
+        Gson gson = new Gson();
+        Object x = gson.fromJson(myReader.readLine(), objectToGetClass.getClass());
+
+        myReader.close();
+        input.close();
+
+        return x;
+    }
+
+    /**
+     * This method checks if file exists and if so removes it.
+     * @param fileName - String of the filename that you want to remove.
+     * @param context - getApplicationContext();
+     * @return Returns true if successfully removed file. Returns false if removal failed, or file does not exist.
+     */
+    public boolean removeFile(String fileName, Context context){
+        //Taken from stackoverflow --> http://stackoverflow.com/questions/13205385/how-to-check-if-file-is-available-in-internal-memory
+        String path=context.getFilesDir().getAbsolutePath() + "/" + fileName;
+        File file = new File( path );
+
+        if (file.exists()) {
+            return file.delete();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * This static function checks if the file exists, returns true if it does, and false if it doesn't.
      * @param context - see above methods
      * @param fileName -see above methods
      * @return
      */
-    public boolean doesFileExist(String fileName, Context context){
+    public static boolean doesFileExist(String fileName, Context context){
         //Taken from stackoverflow --> http://stackoverflow.com/questions/13205385/how-to-check-if-file-is-available-in-internal-memory
         String path=context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File( path );

@@ -40,7 +40,13 @@ public class Trade extends FileIO implements AppObservable{
         observers.add(observer);
     }
 
-    private void notifyAllObservers() {
+    @Override
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
+    public void notifyAllObservers() {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }

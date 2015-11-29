@@ -36,17 +36,12 @@ public class ProfileController {
     public ProfileController(User model, Context context) {
         this.context = context;
         this.model = model;
-        try {
-            this.model = (User) this.model.loadJson(MainUser, this.context);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private User model;
 
     /**
-     * Saves any changes to the profile information.
+     * Saves any changes to the profile information. Used by EditProfileActivity upon clicking save.
      * @param userName is a String containing the updated user name.
      * @param email is a String containing the updated email.
      * @param address is a String containing the updated address.
@@ -58,5 +53,7 @@ public class ProfileController {
         UserSingleton.getInstance().getUser().setAddress(address);
         UserSingleton.getInstance().getUser().setPhoneNumber(phoneNumber);
         UserSingleton.getInstance().getUser().saveJson(MainUser, this.context);
+
+        UserSingleton.getInstance().getUser().notifyAllObservers();
     }
 }

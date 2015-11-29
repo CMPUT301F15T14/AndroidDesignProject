@@ -3,15 +3,19 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /*
@@ -37,15 +41,42 @@ public class InventoryListActivity extends Activity {
     private ArrayList<String> mobileArray;
     private ListView GameList;
     private ArrayAdapter<String> adapter;
+    private Button AddGame;
+    private Button Search;
+    private EditText SearchString;
+    private Spinner gameConsole;
+
+    private InventoryController invtC;
+
+    public Button getAddGameButton() {
+        return AddGame;
+    }
+
+    public ArrayList<String> getMobileArray() {
+        return mobileArray;
+    }
+
+    public ListView getGameList() {
+        return GameList;
+    }
+
+    public boolean containGameTitle (String Title){
+        return mobileArray.contains(Title);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_list);
 
+        // Load user from JSON. The user contains Inventory.
+        User mainUser = UserSingleton.getInstance().getUser();
+
+        invtC = new InventoryController(mainUser.getInventory());
+
         //  Array reserved for storing names of game.
         mobileArray = new ArrayList<String>();
-        //later add observer observing the inventory:
+        // later add observer observing the inventory:
         mobileArray.clear();
         for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
             mobileArray.add(each.getTitle());
@@ -60,7 +91,9 @@ public class InventoryListActivity extends Activity {
 
                 // assuming the adapter view order is same as the array game list order
                 Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
+
                 ObjParseSingleton.getInstance().addObject("game", g);
+                ObjParseSingleton.getInstance().addObject("gameOwner", UserSingleton.getInstance().getUser()); // TODO: pass the right user, not just phone owner!
 
                 Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
 
@@ -68,8 +101,9 @@ public class InventoryListActivity extends Activity {
             }
         });
 
-        Button AddGame= (Button)findViewById(R.id.newInventoryItem);
-        //SettingActivity the button helps navigating to AddInventory Activity.
+        AddGame= (Button)findViewById(R.id.newInventoryItem);
+        //Setting the button helps navigating to AddInventory Activity.
+
         AddGame.setOnClickListener(new Button.OnClickListener() {
             // Navigating to another activity.
             public void onClick(View arg0) {
@@ -85,7 +119,42 @@ public class InventoryListActivity extends Activity {
             }
         });
 
+        gameConsole = (Spinner)findViewById(R.id.gameConsoleInv);
 
+        SearchString = (EditText)findViewById(R.id.searchInventory);
+        Search = (Button)findViewById(R.id.searchInventoryButton);
+
+        Search.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View view) {
+                adapter.clear();
+                if(gameConsole.getSelectedItemPosition() == 0) {
+                    for (Game game : invtC.Search(SearchString.getText().toString())) {
+                        adapter.add(game.getTitle());
+                    }
+                }
+                else {
+                    int i = gameConsole.getSelectedItemPosition();
+                    Game.Platform selectedPlatform = null;
+
+                    for(Game.Platform platform : Game.Platform.values()){
+                        if(i == 1){
+                            selectedPlatform = platform;
+                            break;
+                        }
+                        i--;
+                    }
+
+                    if(selectedPlatform == null) {
+                        throw new RuntimeException("Platform selection was null");
+                    }
+
+
+                    for (Game game : invtC.Search(SearchString.getText().toString(), selectedPlatform)) {
+                        adapter.add(game.getTitle());
+                    }
+                }
+            }
+        });
     }
 
     @Override
