@@ -93,4 +93,14 @@ public class InventoryController {
 
         return result;
     }
+
+    public boolean clonable(User user){
+        return UserSingleton.getInstance().getUser().getUserName()==user.getUserName();
+    }
+
+    public void clone(Game game){
+        this.addItem(game);
+        //Todo: Need to copy image as well.
+    }
+
 }

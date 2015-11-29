@@ -33,6 +33,7 @@ import android.widget.TextView;
 public class InventoryItemActivity extends Activity {
 
     Game game;
+    InventoryController inventorycontroller;
     User ownerProfile;
     TextView gameTitle;
     TextView platform;
@@ -81,12 +82,21 @@ public class InventoryItemActivity extends Activity {
             imageButton.setImageBitmap(game.getPicture());
         }
 
-        Button editGame = (Button)findViewById(R.id.buttonEditItem);
+        final Button editGame = (Button)findViewById(R.id.buttonEditItem);
+        if (!inventorycontroller.clonable(ownerProfile)){
+            editGame.setText("Edit Game");
+        }else{
+            editGame.setText("Clone Game");
+        };
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                ObjParseSingleton.getInstance().addObject("game", game);
-                Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
-                startActivityForResult(myIntent, 1);
+                if (!inventorycontroller.clonable(ownerProfile)){
+                    ObjParseSingleton.getInstance().addObject("game", game);
+                    Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
+                    startActivityForResult(myIntent, 1);
+                }else{
+                    inventorycontroller.clone(game);
+                };
             }
         });
 
@@ -153,4 +163,6 @@ public class InventoryItemActivity extends Activity {
         ObjParseSingleton.getInstance().addObject("userProfile", ownerProfile);
         startActivity(intent);
     }
+
+
 }
