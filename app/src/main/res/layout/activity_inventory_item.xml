@@ -12,11 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Inventory Item"
-        android:textColor="#000000"
+        android:textColor="#dfe3e6"
         android:id="@+id/inventoryItemText"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="                         " />
 
     <ImageButton
         android:layout_width="125dp"
@@ -34,32 +34,37 @@
         android:layout_marginLeft="5dp" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Game Info"
         android:id="@+id/gameInfoText"
         android:layout_alignTop="@+id/inventoryItemImage"
-        android:layout_toEndOf="@+id/inventoryItemText" />
+        android:layout_toEndOf="@+id/inventoryItemText"
+        android:textColor="#f3f5f7"
+        android:textSize="16dp"
+        android:layout_marginTop="16dp" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Game Title"
         android:id="@+id/gameInfoTitle"
         android:layout_below="@+id/gameInfoText"
-        android:layout_alignStart="@+id/gameInfoText" />
+        android:layout_alignStart="@+id/gameInfoText"
+        android:textColor="#060708" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Game Console"
-        android:textColor="#000000"
+        android:textColor="#060708"
         android:id="@+id/gameInfoConsole"
         android:layout_below="@+id/gameInfoTitle"
-        android:layout_alignStart="@+id/gameInfoTitle" />
+        android:layout_alignStart="@+id/gameInfoTitle"
+        android:textSize="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -68,7 +73,8 @@
         android:text="@string/conditionString"
         android:id="@+id/gameInfoCondition"
         android:layout_alignTop="@+id/gameConditionText"
-        android:layout_alignStart="@+id/gameInfoConsole" />
+        android:layout_alignStart="@+id/gameInfoConsole"
+        android:textColor="#060708" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -79,7 +85,8 @@
         android:clickable="true"
         android:onClick="ViewProfile"
         android:layout_below="@+id/gameInfoCondition"
-        android:layout_alignStart="@+id/gameInfoCondition" />
+        android:layout_alignStart="@+id/gameInfoCondition"
+        android:textColor="#060708" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -89,7 +96,8 @@
         android:id="@+id/gameInfoStatus"
         android:layout_marginRight="27dp"
         android:layout_below="@+id/gameInfoOwner"
-        android:layout_alignStart="@+id/gameInfoOwner" />
+        android:layout_alignStart="@+id/gameInfoOwner"
+        android:textColor="#060708" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -98,7 +106,8 @@
         android:text="@string/condition"
         android:id="@+id/gameConditionText"
         android:layout_below="@+id/inventoryItemImage"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textColor="#dfe3e6" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -108,7 +117,8 @@
         android:id="@+id/gameOwnerText"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/gameConditionText"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:textColor="#dfe3e6" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -118,7 +128,8 @@
         android:id="@+id/gameStatusText"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/gameOwnerText"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:textColor="#dfe3e6" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -128,18 +139,20 @@
         android:id="@+id/ContactInfoText"
         android:layout_marginTop="36dp"
         android:layout_below="@+id/gameInfoStatus"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:textColor="#dfe3e6" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/adressString"
         android:id="@+id/contactAddress"
         android:layout_toEndOf="@+id/contactAddressText"
         android:layout_toRightOf="@+id/contactAddressText"
         android:singleLine="false"
-        android:layout_alignTop="@+id/contactAddressText" />
+        android:layout_alignTop="@+id/contactAddressText"
+        android:textColor="#060708"
+        android:background="#0e97f1" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -148,7 +161,9 @@
         android:text="@string/additionalInfo"
         android:id="@+id/additionalInfo"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/contactAddress" />
+        android:layout_below="@+id/contactAddress"
+        android:textColor="#dfe3e6"
+        android:textSize="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -158,7 +173,10 @@
         android:id="@+id/contactPhoneText"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/ContactInfoText"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:textColor="#dfe3e6"
+        android:textSize="16dp"
+        android:layout_marginRight="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -167,17 +185,20 @@
         android:text="@string/Address"
         android:id="@+id/contactAddressText"
         android:layout_below="@+id/contactPhoneText"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:textColor="#dfe3e6"
+        android:textSize="16dp"
+        android:layout_marginRight="5dp" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="120dp"
-        android:layout_height="40dp"
+        android:layout_height="60dp"
         android:text="Edit Item"
         android:id="@+id/buttonEditItem"
         android:singleLine="true"
         android:textAlignment="center"
-        android:textSize="15dp"
+        android:textSize="20dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_above="@+id/gameInfoText"
@@ -185,18 +206,18 @@
         android:padding="0dp" />
 
     <TextView
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="phone"
         android:ems="10"
         android:id="@+id/phoneEditField"
         android:layout_toEndOf="@+id/gameStatusText"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="465135"
         android:phoneNumber="true"
         android:textAlignment="center"
         android:layout_alignBottom="@+id/contactPhoneText"
-        android:layout_toRightOf="@+id/contactPhoneText" />
+        android:layout_toRightOf="@+id/contactPhoneText"
+        android:textColor="#060708" />
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -209,12 +230,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
         android:id="@+id/additionalInfoText"
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/buttonEditItem"
-        android:layout_below="@+id/additionalInfo" />
+        android:layout_below="@+id/additionalInfo"
+        android:textColor="#060708" />
 
 
 </RelativeLayout>
