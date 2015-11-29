@@ -26,6 +26,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class SettingActivity extends Activity {
 
     private SettingsController controller;
@@ -51,18 +53,30 @@ public class SettingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         Switch switch1 = (Switch)findViewById(R.id.EnableSwitch);
-        controller = new SettingsController();
+        SettingsMode settings = SettingsSingleton.getInstance().getSettings();
+        try {
+            settings = (SettingsMode) settings.loadJson("settings", getApplicationContext());
+            SettingsSingleton.getInstance().setSettings(settings);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        controller = new SettingsController(settings, this.getApplicationContext());
+
+        switch1.setChecked(settings.getEnableDownloadPhoto1().booleanValue());
+
         switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             //switch ON, user can download the pic for the item
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
                     Toast.makeText(getApplicationContext(),"Enable Download the Picture",Toast.LENGTH_LONG).show();
-                    controller.EnableDownloadPhotos();
+                    SettingsSingleton.getInstance().getSettings().setEnableDownloadPhoto1(Boolean.TRUE);
+                    SettingsSingleton.getInstance().getSettings().saveJson("settings", getApplicationContext());
 
                 }else{
-                    Toast.makeText(getApplicationContext(),"Disable Download the Picture",Toast.LENGTH_LONG).show();
-                    controller.DisableDownloadPhotos();
+                    SettingsSingleton.getInstance().getSettings().setEnableDownloadPhoto1(Boolean.FALSE);
+                    SettingsSingleton.getInstance().getSettings().saveJson("settings", getApplicationContext());
                 }
             }
         });

@@ -2,6 +2,7 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.os.RecoverySystem;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;

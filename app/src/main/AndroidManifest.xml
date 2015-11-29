@@ -20,10 +20,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".InventoryActivity"
-            android:label="My Inventory" >
-        </activity>
-        <activity
             android:name=".FriendsListActivity"
             android:label="@string/title_activity_friends_list"
             android:theme="@style/ListFont" >
@@ -64,6 +60,10 @@
         <activity
             android:name=".TradeActivity"
             android:label="@string/title_activity_trade" >
+        </activity>
+        <activity
+            android:name=".InventoryItemPictureViewer"
+            android:label="@string/title_activity_item_picture_viewer" >
         </activity>
     </application>
 

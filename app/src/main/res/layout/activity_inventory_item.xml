@@ -18,19 +18,20 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageButton
+        android:layout_width="125dp"
+        android:layout_height="125dp"
         android:id="@+id/inventoryItemImage"
         android:textColor="#ffffff"
-        android:layout_below="@+id/inventoryItemText"
-        android:layout_alignParentStart="true"
         android:minHeight="128dp"
         android:minWidth="128dp"
         android:maxWidth="128dp"
         android:maxHeight="128dp"
         android:contentDescription="Game Image"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:layout_below="@+id/inventoryItemText"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="5dp" />
 
     <TextView
         android:layout_width="fill_parent"
@@ -67,7 +68,7 @@
         android:text="@string/conditionString"
         android:id="@+id/gameInfoCondition"
         android:layout_alignTop="@+id/gameConditionText"
-        android:layout_alignStart="@+id/gameInfoOwner" />
+        android:layout_alignStart="@+id/gameInfoConsole" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -75,8 +76,10 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/ownerString"
         android:id="@+id/gameInfoOwner"
+        android:clickable="true"
+        android:onClick="ViewProfile"
         android:layout_below="@+id/gameInfoCondition"
-        android:layout_toEndOf="@+id/inventoryItemImage" />
+        android:layout_alignStart="@+id/gameInfoCondition" />
 
     <TextView
         android:layout_width="wrap_content"

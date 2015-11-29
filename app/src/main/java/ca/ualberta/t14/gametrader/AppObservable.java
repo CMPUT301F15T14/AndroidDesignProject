@@ -28,4 +28,6 @@ public interface AppObservable {
      * @param observer The observer to be added which wants to be notified on the update.
      */
     public void addObserver(AppObserver observer);
+    public void deleteObserver(AppObserver observer);
+    public void notifyAllObservers();
 }

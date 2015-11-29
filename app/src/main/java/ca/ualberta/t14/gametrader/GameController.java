@@ -18,7 +18,13 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+
+import java.io.InputStream;
 
 /**
  * This is the Controller class for EditInventoryItemActivity.
@@ -63,43 +69,54 @@ public class GameController {
      * It will update the Game's model with the new input received from the user.
      * @param game The game that is to be updated.
      * @param title A new title for the Game.
-     * @param picture A new picture for the Game.
      * @param platform A new platform for the Game.
      * @param condition A new condition for the Game.
      * @param sharableStatus Change sharable status to either Public or Private
      * @param additionalInfo New additional information for the game.
      */
-    public void editGame(Game game, String title, Bitmap picture, Game.Platform platform,
+    public void editGame(Game game, String title, Game.Platform platform,
                          Game.Condition condition, Boolean sharableStatus, String additionalInfo) {
         game.setPlatform(platform);
         game.setCondition(condition);
         game.setTitle(title);
         game.setShared(sharableStatus);
         game.setAdditionalInfo(additionalInfo);
-        if(picture != null) {
-            game.setPicture(picture);
-        }
 
+        //model.notifyAllObservers();
     }
 
     /**
      * Given game, it will add the bitmap given to the game.
      * @param game the game to receive the image.
-     * @param img the image to be added to the game
+     * @param uri the URI of the image to be added to the game.
+     * @param contentResolver is the contentResolver from the activitie's getContentResolver();
      * @return returns false if the Bitmap supplied is invalid: has a height or width of 0;
      */
-    public Boolean addPhoto(Game game, Bitmap img) {
-        return game.setPicture(img);
+    public Boolean addPhoto(Game game, Uri uri, ContentResolver contentResolver, Context context) {
+        Boolean success = Boolean.FALSE;
+
+        Bitmap selectedImage = resolveUri(uri, contentResolver);
+        if(selectedImage != null) {
+            success = game.setPicture(selectedImage, context);
+            selectedImage = null;
+            success = Boolean.TRUE;
+        }
+        return success;
     }
 
-    /**
-     * Manually force download the image from the network even if settings is set to don't download images.
-     * @param game The game that contains the image you want to force download.
-     * @return the bitmap from that game.
-     */
-    public Bitmap manualDownloadPhoto(Game game) {
-        // TODO: from cache or elastisearch, find the image associated to this game and force download it (disregard the settings)
-        return null;
+    public Bitmap resolveUri(Uri uri, ContentResolver contentResolver){
+        Bitmap selectedImage = null;
+        try {
+            InputStream imageStream = contentResolver.openInputStream(uri);
+
+            BitmapFactory.Options o = new BitmapFactory.Options();
+
+            selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
+            imageStream.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return selectedImage;
     }
 
     /**

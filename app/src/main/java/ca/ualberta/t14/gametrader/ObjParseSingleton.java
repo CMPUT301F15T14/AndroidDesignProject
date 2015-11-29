@@ -84,7 +84,7 @@ public class ObjParseSingleton {
      * @return whether it exists or not.
      */
     public Boolean objectExist(Object object) {
-        return objectStorage.containsKey(object);
+        return objectStorage.containsValue(object);
     }
 
     /**
