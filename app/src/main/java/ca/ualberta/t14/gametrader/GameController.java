@@ -99,7 +99,6 @@ public class GameController {
         if(selectedImage != null) {
             success = game.setPicture(selectedImage, context);
             selectedImage = null;
-            success = Boolean.TRUE;
         }
         return success;
     }

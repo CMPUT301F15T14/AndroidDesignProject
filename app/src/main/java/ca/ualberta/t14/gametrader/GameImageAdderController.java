@@ -1,5 +1,7 @@
 package ca.ualberta.t14.gametrader;
 
+import android.animation.LayoutTransition;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -8,10 +10,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -39,8 +44,8 @@ public class GameImageAdderController {
         public void onClick(View v) {
             uriToReturn.remove(uriToRemove);
             LinearLayout layout = (LinearLayout) activity.findViewById(R.id.ImageAdderImagesLayout);
-            layout.removeViewInLayout(viewToRemove);
-            // TODO: update this layout somehow. .notify() causes it to crash...
+            layout.removeView(viewToRemove);
+            layout.refreshDrawableState();
         }
     }
 
@@ -72,7 +77,7 @@ public class GameImageAdderController {
             @Override
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("result", uriToReturn);
+                returnIntent.putParcelableArrayListExtra("result", uriToReturn);
                 activity.setResult(Activity.RESULT_OK, returnIntent);
                 activity.finish();
             }
@@ -93,21 +98,33 @@ public class GameImageAdderController {
             e.printStackTrace();
         }
 
+        DisplayMetrics dm = activity.getResources().getDisplayMetrics();
+        int goodHeight = Math.round(0.6f * (dm.heightPixels / dm.density));
+
         LinearLayout entry = new LinearLayout(context);
-        entry.setOrientation(LinearLayout.HORIZONTAL);
+        entry.setOrientation(LinearLayout.VERTICAL);
+        entry.setWeightSum(5.0f);
+        entry.setPadding(0, 0, 0, 40);
+        entry.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, goodHeight, 1.0f));
 
         uriToReturn.add(uri);
 
         Button deleteThatImage = new Button(context);
+        deleteThatImage.setText("Remove");
         deleteThatImage.setOnClickListener(new UriRemoveButton(uri, entry));
+
+        // Taken from http://stackoverflow.com/questions/4641072/how-to-set-layout-weight-attribute-dynamically-from-code
+        deleteThatImage.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 4.0f));
 
         ImageView image = new ImageView(context);
         image.setImageBitmap(addImage);
+        image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
 
-        entry.addView(deleteThatImage, -1);
-        entry.addView(image, -1);
+        entry.addView(image, 0);
+        entry.addView(deleteThatImage, 1);
 
-        imagesLayout.addView(entry, -1);
+        imagesLayout.addView(entry, 0);
+        imagesLayout.refreshDrawableState();
 
     }
 

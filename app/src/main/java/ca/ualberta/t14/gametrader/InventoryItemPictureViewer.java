@@ -20,7 +20,17 @@ public class InventoryItemPictureViewer extends Activity implements AppObserver 
         game = new Game();
         game = (Game) ObjParseSingleton.getInstance().popObject("game");
 
+        getActionBar().setTitle(game.getTitle() + " Photos");
+
         pictureViewerController = new PictureViewerController(getApplicationContext(), this);
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
         pictureViewerController.putImages(game);
         pictureViewerController.setButtonClickers();
 

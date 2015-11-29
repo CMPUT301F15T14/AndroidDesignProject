@@ -35,12 +35,13 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 
 public class EditInventoryItemActivity extends Activity {
 
     private final int PICK_IMAGE = 465132;
     private GameController gc;
-    private Uri imageUri;
     private Game g;
     private EditText gameTitle;
     private Spinner spinConsole;
@@ -51,6 +52,7 @@ public class EditInventoryItemActivity extends Activity {
     private ImageButton imageButton;
     private Button save;
     private Button delete;
+    private ArrayList<Uri> uriList;
 
     public Button getSaveButton() {
         return save;
@@ -64,6 +66,8 @@ public class EditInventoryItemActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_inventory_item);
+
+        uriList = new ArrayList<Uri>();
 
         gameTitle = (EditText) findViewById(R.id.inventoryItemTitle);
 
@@ -202,7 +206,12 @@ public class EditInventoryItemActivity extends Activity {
                 gc.editGame(g, gameTitle, platform, condition, shareStatus, additionalInfo);
 
                 // Save picture of game
-                gc.addPhoto(g, imageUri, getContentResolver(), getApplicationContext());
+                if(!uriList.isEmpty()) {
+                    imageButton.setImageBitmap(gc.resolveUri(uriList.get(0), getContentResolver()));
+                    for (Uri each : uriList) {
+                        gc.addPhoto(g, each, getContentResolver(), getApplicationContext());
+                    }
+                }
 
                 // Save user to JSON. The user contains Inventory which contains the item.
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
@@ -269,10 +278,7 @@ public class EditInventoryItemActivity extends Activity {
         switch(requestCode) {
             case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
-
-
-                    imageUri = imageReturnedIntent.getData();
-                    imageButton.setImageBitmap( gc.resolveUri(imageUri, getContentResolver()) );
+                   uriList = imageReturnedIntent.getParcelableArrayListExtra("result");
                 }
                 break;
         }
