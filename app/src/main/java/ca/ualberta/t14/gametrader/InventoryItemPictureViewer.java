@@ -7,32 +7,38 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class InventoryItemPictureViewer extends Activity {
+public class InventoryItemPictureViewer extends Activity implements AppObserver {
 
+    PictureViewerController pictureViewerController;
     Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_picture_viewer);
+
+        game = new Game();
         game = (Game) ObjParseSingleton.getInstance().popObject("game");
-        if( game == null) {
-            game = new Game();
-        }
+
         getActionBar().setTitle(game.getTitle() + " Photos");
 
-        LinearLayout photoContainer = (LinearLayout) findViewById(R.id.viewPhotoScroller);
+        pictureViewerController = new PictureViewerController(getApplicationContext(), this);
 
-        ImageView iv = new ImageView(getApplicationContext());
-        if(!game.getPictureId().isEmpty()) {
-            game.setPictureFromJson(UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(game.getPictureId(), getApplicationContext()));
-            iv.setImageBitmap(game.getPicture());
-            iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            iv.setPadding(10, 10, 10, 10);
-        }
-        // -1 add with largest index in other words, last.
-        photoContainer.addView(iv, -1);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        pictureViewerController.putImages(game);
+        pictureViewerController.setButtonClickers();
+
+    }
+
+    public void appNotify(AppObservable observable) {
+        pictureViewerController.clearAllImages();
+        pictureViewerController.putImages(game);
     }
 
     @Override

@@ -99,7 +99,6 @@ public class GameController {
         if(selectedImage != null) {
             success = game.setPicture(selectedImage, context);
             selectedImage = null;
-            success = Boolean.TRUE;
         }
         return success;
     }
@@ -125,7 +124,6 @@ public class GameController {
      * @param user the user who's inventory he game is to be deleted from.
      */
     public void removeGame(Game game, User user) {
-        // TODO: removeGame will remove the entry from the inventory.
         if(isOwner(game, user)) {
             user.getInventory().remove(game);
         }

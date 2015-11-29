@@ -76,7 +76,7 @@ public class InventoryItemActivity extends Activity {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         // Important, have to load bitmap from it's json first! Because bitmap is volatile.
-        String imageJson = UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(game.getPictureId(), getApplicationContext());
+        String imageJson = UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
             imageButton.setImageBitmap(game.getPicture());
