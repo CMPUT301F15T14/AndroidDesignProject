@@ -55,7 +55,7 @@ public class PictureManager extends FileIO {
     }
 
     // @return a string containing the byteArray of the bitmap encoded as a string in Base64.
-    public String loadImageJsonFromJsonFile(String fileName, Context context) {
+    public static String loadImageJsonFromJsonFile(String fileName, Context context) {
         String imageJson = "";
         // Load file here as IO.
         // TODO: check if it exists locally, and if not pull the image from elastic search.

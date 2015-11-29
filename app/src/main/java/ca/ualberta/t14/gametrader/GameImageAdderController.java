@@ -103,7 +103,7 @@ public class GameImageAdderController {
 
         LinearLayout entry = new LinearLayout(context);
         entry.setOrientation(LinearLayout.VERTICAL);
-        entry.setWeightSum(5.0f);
+        entry.setWeightSum(6.0f);
         entry.setPadding(0, 0, 0, 40);
         entry.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, goodHeight, 1.0f));
 
@@ -118,7 +118,7 @@ public class GameImageAdderController {
 
         ImageView image = new ImageView(context);
         image.setImageBitmap(addImage);
-        image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.0f));
+        image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 2.0f));
 
         entry.addView(image, 0);
         entry.addView(deleteThatImage, 1);

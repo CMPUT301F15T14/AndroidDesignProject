@@ -30,7 +30,7 @@ import android.widget.TextView;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-public class InventoryItemActivity extends Activity {
+public class InventoryItemActivity extends Activity implements AppObserver {
 
     Game game;
     User ownerProfile;
@@ -52,6 +52,8 @@ public class InventoryItemActivity extends Activity {
         if( game == null) {
             game = new Game();
         }
+
+        game.addObserver(this);
 
         ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
         if(ownerProfile == null) {
@@ -75,7 +77,7 @@ public class InventoryItemActivity extends Activity {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         // Important, have to load bitmap from it's json first! Because bitmap is volatile.
-        String imageJson = UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        String imageJson = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
             imageButton.setImageBitmap(game.getPicture());
@@ -123,7 +125,8 @@ public class InventoryItemActivity extends Activity {
         phone.setText(ownerProfile.getPhoneNumber());
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
-        imageButton.setImageBitmap(game.getPicture());
+        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
     }
 
     @Override
@@ -153,4 +156,10 @@ public class InventoryItemActivity extends Activity {
         ObjParseSingleton.getInstance().addObject("userProfile", ownerProfile);
         startActivity(intent);
     }
+
+    public void appNotify(AppObservable observable) {
+        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+    }
+
 }
