@@ -49,7 +49,7 @@ public class GameImageAdderController {
         }
     }
 
-    GameImageAdderController(Context context, Activity activity) {
+    public GameImageAdderController(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
         uriToReturn = new ArrayList<Uri>();

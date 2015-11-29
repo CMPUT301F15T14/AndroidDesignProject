@@ -160,7 +160,7 @@ public class EditInventoryItemActivity extends Activity {
                     AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
                     SinglePrompt.setTitle("Warning");
                     SinglePrompt.setMessage("Do you want to delete or reselect the picture?");
-                    SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+                    SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Remove Images", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     deletePicture();
                                     Toast.makeText(EditInventoryItemActivity.this, "Picture Deleted!", Toast.LENGTH_SHORT).show();
@@ -168,7 +168,7 @@ public class EditInventoryItemActivity extends Activity {
                                 }
                             }
                     );
-                    SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "Reselect", new DialogInterface.OnClickListener() {
+                    SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "Add Images", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     selectPicture();
                                     dialog.dismiss();
@@ -184,6 +184,8 @@ public class EditInventoryItemActivity extends Activity {
         save.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                setProgressBarVisibility(Boolean.TRUE);
 
                 Toast.makeText(EditInventoryItemActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
 
