@@ -65,6 +65,14 @@
             android:name=".InventoryItemPictureViewer"
             android:label="@string/title_activity_item_picture_viewer" >
         </activity>
+        <activity
+            android:name=".GameImageAdder"
+            android:label="@string/title_activity_game_image_adder" >
+        </activity>
+        <activity
+            android:name=".GameImageRemover"
+            android:label="@string/title_activity_game_image_remover" >
+        </activity>
     </application>
 
 </manifest>

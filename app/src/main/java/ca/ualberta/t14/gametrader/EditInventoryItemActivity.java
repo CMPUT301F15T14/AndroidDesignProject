@@ -35,12 +35,13 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 
 public class EditInventoryItemActivity extends Activity {
 
     private final int PICK_IMAGE = 465132;
     private GameController gc;
-    private Uri imageUri;
     private Game g;
     private EditText gameTitle;
     private Spinner spinConsole;
@@ -51,6 +52,7 @@ public class EditInventoryItemActivity extends Activity {
     private ImageButton imageButton;
     private Button save;
     private Button delete;
+    private ArrayList<Uri> uriList;
 
     public Button getSaveButton() {
         return save;
@@ -64,6 +66,8 @@ public class EditInventoryItemActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_inventory_item);
+
+        uriList = new ArrayList<Uri>();
 
         gameTitle = (EditText) findViewById(R.id.inventoryItemTitle);
 
@@ -114,7 +118,8 @@ public class EditInventoryItemActivity extends Activity {
 
         additionalInfo.setText(g.getAdditionalInfo());
 
-        imageButton.setImageBitmap(g.getPicture());
+        String jsonStr = PictureManager.loadImageJsonFromJsonFile(g.getFirstPictureId(), getApplicationContext());
+        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
 
         addInputEvents();
         deleteItem();
@@ -149,13 +154,13 @@ public class EditInventoryItemActivity extends Activity {
         ((ImageButton) findViewById(R.id.uploadImage)).setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (g.hasPictureId()){
+                if (g.pictureIdIsEmpty()){
                     selectPicture();
                 }else{
                     AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
                     SinglePrompt.setTitle("Warning");
                     SinglePrompt.setMessage("Do you want to delete or reselect the picture?");
-                    SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+                    SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Remove Images", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     deletePicture();
                                     Toast.makeText(EditInventoryItemActivity.this, "Picture Deleted!", Toast.LENGTH_SHORT).show();
@@ -163,7 +168,7 @@ public class EditInventoryItemActivity extends Activity {
                                 }
                             }
                     );
-                    SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "Reselect", new DialogInterface.OnClickListener() {
+                    SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "Add Images", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     selectPicture();
                                     dialog.dismiss();
@@ -179,6 +184,8 @@ public class EditInventoryItemActivity extends Activity {
         save.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                setProgressBarVisibility(Boolean.TRUE);
 
                 Toast.makeText(EditInventoryItemActivity.this, "Saving...", Toast.LENGTH_SHORT).show();
 
@@ -202,7 +209,12 @@ public class EditInventoryItemActivity extends Activity {
                 gc.editGame(g, gameTitle, platform, condition, shareStatus, additionalInfo);
 
                 // Save picture of game
-                gc.addPhoto(g, imageUri, getContentResolver(), getApplicationContext());
+                if (!uriList.isEmpty()) {
+                    imageButton.setImageBitmap(gc.resolveUri(uriList.get(0), getContentResolver()));
+                    for (Uri each : uriList) {
+                        gc.addPhoto(g, each, getContentResolver(), getApplicationContext());
+                    }
+                }
 
                 // Save user to JSON. The user contains Inventory which contains the item.
                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
@@ -216,19 +228,16 @@ public class EditInventoryItemActivity extends Activity {
     }
 
     private void selectPicture(){
-        // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
-        // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select photo representing the game:"), PICK_IMAGE);
+        // Taken from http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
+        Intent intent = new Intent(EditInventoryItemActivity.this, GameImageAdder.class);
+        startActivityForResult(intent, PICK_IMAGE);
     }
 
     private void deleteItem(){
         delete=(Button) findViewById(R.id.deleteInventory);
         delete.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
                 SinglePrompt.setTitle("Warning");
                 SinglePrompt.setMessage("Are you sure you want to delete this item?");
@@ -259,7 +268,7 @@ public class EditInventoryItemActivity extends Activity {
     }
 
     private void deletePicture(){
-        g.removePictureId(getApplicationContext());
+        //g.removePictureId(getApplicationContext());
         imageButton.setImageResource(android.R.color.transparent);
     }
 
@@ -271,8 +280,11 @@ public class EditInventoryItemActivity extends Activity {
         switch(requestCode) {
             case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
-                    imageUri = imageReturnedIntent.getData();
-                    imageButton.setImageBitmap( gc.resolveUri(imageUri, getContentResolver()) );
+                    ArrayList<Uri> toAdd = imageReturnedIntent.getParcelableArrayListExtra("result");
+                    uriList.addAll(toAdd);
+                    if(!uriList.isEmpty()) {
+                        imageButton.setImageBitmap(gc.setPreviewImage(uriList.get(0), getContentResolver()));
+                    }
                 }
                 break;
         }

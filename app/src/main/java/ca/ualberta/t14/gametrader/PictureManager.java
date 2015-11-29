@@ -20,9 +20,11 @@ package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -53,14 +55,16 @@ public class PictureManager extends FileIO {
     }
 
     // @return a string containing the byteArray of the bitmap encoded as a string in Base64.
-    public String loadImageJsonFromJsonFile(String fileName, Context context) {
+    public static String loadImageJsonFromJsonFile(String fileName, Context context) {
         String imageJson = "";
         // Load file here as IO.
         // TODO: check if it exists locally, and if not pull the image from elastic search.
         // TODO: BUT check here if allowDownloadPhoto setting is true, and if not ask if manually want to download this photo.
         try {
             imageJson = (String) loadJsonGivenObject(fileName, context, new String());
-        } catch(IOException e){
+        } catch(FileNotFoundException e){
+            e.printStackTrace();
+        } catch(IOException e) {
             e.printStackTrace();
         }
         return imageJson;
@@ -106,6 +110,16 @@ public class PictureManager extends FileIO {
         return size;
     }
 
+    public static Bitmap getBitmapFromJson(String jsonBitmap) {
+        //taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
+        byte[] decodedString = Base64.decode(jsonBitmap, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        if(decodedByte != null) {
+            return decodedByte;
+        }
+        return null;
+    }
+
     public static Bitmap makeImageSmaller(Bitmap image) {
         Bitmap img = image;
         if(getImageFileSize(img) < MAXSIZE) {
@@ -140,7 +154,5 @@ public class PictureManager extends FileIO {
         // something went horribly wrong.
         return null;
     }
-
-
 
 }
