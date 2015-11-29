@@ -61,6 +61,8 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             throw new RuntimeException("Received null User for game owner.");
         }
 
+        inventorycontroller = new InventoryController(ownerProfile.getInventory());
+
         gameTitle = (TextView) findViewById(R.id.gameInfoTitle);
         platform = (TextView) findViewById(R.id.gameInfoConsole);
         condition = (TextView) findViewById(R.id.gameInfoCondition);
@@ -89,7 +91,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             editGame.setText("Edit Game");
         }else{
             editGame.setText("Clone Game");
-        };
+        }
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 if (!inventorycontroller.clonable(ownerProfile)){
