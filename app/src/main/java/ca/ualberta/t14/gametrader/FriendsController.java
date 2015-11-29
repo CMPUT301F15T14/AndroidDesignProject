@@ -44,14 +44,14 @@ public class FriendsController {
                 e.printStackTrace();
             }
 
-            return new User();
+            return null;
         }
 
         protected void onPostExecute(User result) {
             super.onPostExecute(result);
-            if(!result.equals(new User())) {
+            if(result != null) {
                 System.out.println(result.getUserName());
-                //model.AddFriend(result);
+                model.AddFriend(result);
             }
         }
     }
