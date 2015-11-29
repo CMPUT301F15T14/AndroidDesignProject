@@ -3,6 +3,7 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.text.InputFilter;
 import android.text.LoginFilter;
 import android.util.Log;
@@ -12,11 +13,17 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * Created by satyabra on 11/27/15.
  */
 public class FriendsListController {
+    final FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
 
     private final int EDIT_TEXT_ID = 1337;
 
@@ -37,8 +44,7 @@ public class FriendsListController {
         addFriendButtonState = Boolean.FALSE;
     }
 
-    void initButonOnClickListeners(Activity activity, Context context) {
-        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+    void initButonOnClickListeners(Activity activity, final Context context) {
 
         final Context c = context;
         final Activity a = activity;
@@ -76,12 +82,12 @@ public class FriendsListController {
                         userToAdd = "";
                     } else {
                         // query the server for a friend with the given user name
-                        // add that user to the friends list
-                    }
-                    friendListLayout.removeView(inputFriend);
+                        fc.AddFriend(userToAdd);
+                        friendListLayout.removeView(inputFriend);
 
-                    addFriend.setText(FRIEND_TEXT_DEFAULT);
-                    addFriendButtonState = Boolean.FALSE;
+                        addFriend.setText(FRIEND_TEXT_DEFAULT);
+                        addFriendButtonState = Boolean.FALSE;
+                    }
                 }
             }
         });

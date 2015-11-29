@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
+import ca.ualberta.t14.gametrader.es.data.SearchHit;
 
 /**
  * Talks to the elastic search user. Supports adding, loading, and updating users.
@@ -196,5 +197,9 @@ public class NetworkController implements AppObserver {
         }
         System.err.println("JSON:"+json);
         return json;
+    }
+
+    public void ShitFuckingNothing() {
+
     }
 }
