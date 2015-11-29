@@ -149,7 +149,7 @@ public class EditInventoryItemActivity extends Activity {
         ((ImageButton) findViewById(R.id.uploadImage)).setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (g.hasPictureId()){
+                if (g.pictureIdIsEmpty()){
                     selectPicture();
                 }else{
                     AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
@@ -217,8 +217,7 @@ public class EditInventoryItemActivity extends Activity {
     }
 
     private void selectPicture(){
-        // TODO: opens a prompt to select an image from file on phone and then put into Game http://javatechig.com/android/writing-image-picker-using-intent-in-android and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
-        // http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT
+        // Taken from http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -260,7 +259,7 @@ public class EditInventoryItemActivity extends Activity {
     }
 
     private void deletePicture(){
-        g.removePictureId(getApplicationContext());
+        //g.removePictureId(getApplicationContext());
         imageButton.setImageResource(android.R.color.transparent);
     }
 
