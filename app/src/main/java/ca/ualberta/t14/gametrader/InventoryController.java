@@ -95,7 +95,7 @@ public class InventoryController {
     }
 
     public boolean clonable(User user){
-        return UserSingleton.getInstance().getUser().getUserName()==user.getUserName();
+        return UserSingleton.getInstance().getUser().getUserName() != user.getUserName();
     }
 
     public void clone(Game game){

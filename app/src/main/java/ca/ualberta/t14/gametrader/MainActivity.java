@@ -12,9 +12,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+
 
 public class MainActivity extends Activity {
     private ArrayAdapter<String> adapter;
@@ -68,6 +70,18 @@ public class MainActivity extends Activity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /**
+         * Check Internet status
+         * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
+         * */
+        NetworkConnectivity networkConnectivity;
+        Boolean isInternetPresent = false;
+        // creating network connection detector instance
+        networkConnectivity = new NetworkConnectivity(getApplicationContext());
+
+        // get Internet status
+        isInternetPresent = networkConnectivity.isConnectingToInternet();
 
 
         profileButton = (Button) findViewById(R.id.myProfile);

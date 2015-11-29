@@ -62,6 +62,6 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
         assertEquals(testLoadUser.getAddress(), "The Land of Oz2");
         assertEquals(testLoadUser.getPhoneNumber(), "555-555-5555");
         assertEquals(testLoadUser.getEmail(), "PotionMaster@oz.com");
-        assertEquals(testLoadUser.getUserName(), "TheManBehindTheCurtain");
+        assertEquals(testLoadUser.getUserName(), "testusr");
     }
 }
