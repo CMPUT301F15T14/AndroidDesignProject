@@ -28,21 +28,27 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TradeActivity extends Activity {
-    private ArrayList<String> mobileArray;
-    private ArrayAdapter<String> adapter;
-    private ListView GameList;
-    Game g1;
     private Spinner offerGameforTrade;
-    ArrayList<String> getAll =  new ArrayList<String>();
-    spinnerArray.add();
+    ArrayList<String> spinnerArray =  new ArrayList<String>();
 
     private ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
     //private Button offerGameButton;
 
+    private ArrayList<String> mobileArray;
+    private ArrayAdapter<String> adapter;
+    private ListView GameList;
+    Game g1;
+    Button offerGameButton;
+    Button tradeAskButton;
+    Button cancelTradeButtom;
+
+    public ListView getGameList() {
+        return GameList;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +63,12 @@ public class TradeActivity extends Activity {
         // later add observer observing the inventory:
         mobileArray.clear();
         mobileArray.add(g1.getTitle());
+
         GameList=(ListView)findViewById(R.id.tradeFor);
         /*
         // get this from Ryan's part Inventory item load, guess it should be loaded from Json
         // all info should be save in Json before and get it here.
+<<<<<<< HEAD
         //-------------------------------------------------------*/
 
         /*offerGameButton = (Button) findViewById(R.id.offerGame);
@@ -74,9 +82,53 @@ public class TradeActivity extends Activity {
         offerGameforTrade = (Spinner)findViewById(R.id.offerGame);
 
 
+        //-------------------------------------------------------
+        User mainUser = UserSingleton.getInstance().getUser();
+        try {
+            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext());
+            UserSingleton.getInstance().setUser(mainUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        //  Array reserved for storing names of game.
+        mobileArray = new ArrayList<String>();
+        // later add observer observing the inventory:
+        mobileArray.clear();
+        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
+            mobileArray.add(each.getTitle());
+        }
 
+        offerGameButton = (Button) findViewById(R.id.offerGame);
+        offerGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
+                startActivity(intent);
+            }
+        });
+        tradeAskButton = (Button) findViewById(R.id.tradeAsk);
+        tradeAskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
+                startActivity(intent);
+            }
+        });
+        /*
+        //cannot work becaseu the nullpointer exception in InventoyItemActivity line 56,57,58
+        cancelTradeButtom = (Button) findViewById(R.id.cancelTrade);
+        cancelTradeButtom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TradeActivity.this, InventoryItemActivity.class);
+                startActivity(intent);
+            }
+        });
+        */
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,7 +146,8 @@ public class TradeActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(TradeActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

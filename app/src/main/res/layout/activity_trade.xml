@@ -94,6 +94,6 @@
         android:layout_above="@+id/comment"
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="125dp"
-        android:layout_toRightOf="@+id/gameOffer" />
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
