@@ -127,9 +127,9 @@ public class GameController {
      * @param game the game to be removed
      * @param user the user who's inventory he game is to be deleted from.
      */
-    public void removeGame(Game game, User user) {
+    public void removeGame(Game game, User user, Context context) {
         if(isOwner(game, user)) {
-            user.getInventory().remove(game);
+            user.getInventory().remove(game, context);
         }
     }
 

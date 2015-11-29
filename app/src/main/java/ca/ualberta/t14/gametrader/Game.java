@@ -332,8 +332,4 @@ public class Game implements AppObservable {
         return SEARCH_URL;
     }
 
-    public boolean clonable(){
-        return (1==1);
-    }
-
 }
