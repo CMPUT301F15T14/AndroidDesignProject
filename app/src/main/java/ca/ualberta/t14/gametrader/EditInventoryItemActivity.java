@@ -218,10 +218,8 @@ public class EditInventoryItemActivity extends Activity {
 
     private void selectPicture(){
         // Taken from http://developer.android.com/reference/android/content/Intent.html#ACTION_GET_CONTENT and http://www.sitepoint.com/web-foundations/mime-types-complete-list/
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select photo representing the game:"), PICK_IMAGE);
+        Intent intent = new Intent(EditInventoryItemActivity.this, GameImageAdder.class);
+        startActivityForResult(intent, PICK_IMAGE);
     }
 
     private void deleteItem(){
@@ -271,6 +269,8 @@ public class EditInventoryItemActivity extends Activity {
         switch(requestCode) {
             case PICK_IMAGE:
                 if(resultCode == RESULT_OK){
+
+
                     imageUri = imageReturnedIntent.getData();
                     imageButton.setImageBitmap( gc.resolveUri(imageUri, getContentResolver()) );
                 }

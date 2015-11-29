@@ -7,17 +7,14 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.text.BoringLayout;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by satyabra on 11/28/15.
@@ -27,15 +24,30 @@ public class GameImageAdderController {
     Context context;
     Activity activity;
     LinearLayout imagesLayout;
-    HashMap<String, UriBitmapPair> uriBitmapPair;
-    Integer uriBitPair;
+    ArrayList<Uri> uriToReturn;
+
+    private class UriRemoveButton implements Button.OnClickListener {
+        private Uri uriToRemove;
+        private View viewToRemove;
+
+        UriRemoveButton(Uri uri, View viewAdd) {
+            uriToRemove = uri;
+            viewToRemove = viewAdd;
+        }
+
+        @Override
+        public void onClick(View v) {
+            uriToReturn.remove(uriToRemove);
+            LinearLayout layout = (LinearLayout) activity.findViewById(R.id.ImageAdderImagesLayout);
+            layout.removeViewInLayout(viewToRemove);
+            // TODO: update this layout somehow. .notify() causes it to crash...
+        }
+    }
 
     GameImageAdderController(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
-
-        uriBitPair = 0;
-        uriBitmapPair = new HashMap<String, UriBitmapPair>();
+        uriToReturn = new ArrayList<Uri>();
 
         // make fancy fading graphics haha.
         (activity.findViewById(R.id.ImageAdderScrollView)).setVerticalFadingEdgeEnabled(Boolean.TRUE);
@@ -59,7 +71,10 @@ public class GameImageAdderController {
         saveButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // SAVE STUFF AAAAAAjiofsjiji
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("result", uriToReturn);
+                activity.setResult(Activity.RESULT_OK, returnIntent);
+                activity.finish();
             }
         });
 
@@ -78,27 +93,22 @@ public class GameImageAdderController {
             e.printStackTrace();
         }
 
-        final String id = uriBitmapPair.toString();
-        uriBitmapPair.put(id, new UriBitmapPair(uri, addImage));
+        LinearLayout entry = new LinearLayout(context);
+        entry.setOrientation(LinearLayout.HORIZONTAL);
+
+        uriToReturn.add(uri);
 
         Button deleteThatImage = new Button(context);
-        deleteThatImage.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                uriBitmapPair.remove(id);
-            }
-        });
+        deleteThatImage.setOnClickListener(new UriRemoveButton(uri, entry));
 
         ImageView image = new ImageView(context);
         image.setImageBitmap(addImage);
 
-        LinearLayout entry = new LinearLayout(context);
-        entry.setOrientation(LinearLayout.HORIZONTAL);
         entry.addView(deleteThatImage, -1);
         entry.addView(image, -1);
 
         imagesLayout.addView(entry, -1);
-        uriBitPair += 1;
+
     }
 
 

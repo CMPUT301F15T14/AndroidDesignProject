@@ -18,7 +18,7 @@ public class GameImageAdder extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_image_adder);
-        GameImageAdderController controller = new GameImageAdderController(getApplicationContext(), this);
+        controller = new GameImageAdderController(getApplicationContext(), this);
         controller.setOnClickListeners();
     }
 
