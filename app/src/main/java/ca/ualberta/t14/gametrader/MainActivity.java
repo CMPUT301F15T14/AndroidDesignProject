@@ -5,17 +5,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
@@ -63,6 +63,11 @@ public class MainActivity extends Activity {
 
     private ListView updates;
 
+    private static final long GET_DATA_INTERVAL = 300000;
+    TextView testingTextView;
+    Handler hand = new Handler();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -71,17 +76,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /**
-         * Check Internet status
-         * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
-         * */
-        NetworkConnectivity networkConnectivity;
-        Boolean isInternetPresent = false;
-        // creating network connection detector instance
-        networkConnectivity = new NetworkConnectivity(getApplicationContext());
+        testingTextView = (TextView) findViewById(R.id.testingText);
+        hand.postDelayed(run, GET_DATA_INTERVAL);
 
-        // get Internet status
-        isInternetPresent = networkConnectivity.isConnectingToInternet();
 
 
         profileButton = (Button) findViewById(R.id.myProfile);
@@ -175,6 +172,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+
     public void PostUpdates() {
         FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
         fc.UpdateFriends();
@@ -186,4 +184,30 @@ public class MainActivity extends Activity {
             newUpdate = fc.getMostRecentUpdates().poll();
         }
     }
+
+    Runnable run = new Runnable() {
+        @Override
+        public void run() {
+            /**
+             * Check Internet status
+             * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
+             * */
+            NetworkConnectivity networkConnectivity;
+            Boolean isInternetPresent = false;
+            // creating network connection detector instance
+            networkConnectivity = new NetworkConnectivity(getApplicationContext());
+
+            // get Internet status
+            isInternetPresent = networkConnectivity.isConnectingToInternet();
+
+            if (isInternetPresent){
+                testingTextView.setText("Connected to Internet");
+            } else {
+                testingTextView.setText("No Internet Connection");
+            }
+
+            hand.postDelayed(run, GET_DATA_INTERVAL);
+        }
+    };
+
 }
