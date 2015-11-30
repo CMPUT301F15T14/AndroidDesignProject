@@ -18,6 +18,7 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -118,13 +119,13 @@ public class GameController {
         return game.removePictureId(imageId, context);
     }
 
-    public void updateTemporaryImageBox(ImageButton imgBtn, ArrayList<String> imageIds, ArrayList<Uri> uriList, Context context, ContentResolver content) {
+    public void updateTemporaryImageBox(ImageButton imgBtn, ArrayList<String> imageIds, ArrayList<Uri> uriList, Context context, ContentResolver content, Activity activity) {
         if(!imageIds.isEmpty()) {
             imgBtn.setImageBitmap(setPreviewImage(imageIds.get(0), context));
         } else if(!uriList.isEmpty()) {
             imgBtn.setImageBitmap(setPreviewUriImage(uriList.get(0), content));
         } else {
-            imgBtn.setImageBitmap(null);
+            imgBtn.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
         }
     }
 
