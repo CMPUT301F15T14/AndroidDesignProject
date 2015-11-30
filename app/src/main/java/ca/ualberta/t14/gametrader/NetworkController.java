@@ -31,7 +31,7 @@ import ca.ualberta.t14.gametrader.es.data.SearchHit;
  * Created by jjohnsto on 11/26/15.
  */
 public class NetworkController implements AppObserver {
-    private final String netLocation = "http://cmput301.softwareprocess.es:8080/testing/t14/";
+    private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
 
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();

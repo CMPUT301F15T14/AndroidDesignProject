@@ -49,7 +49,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
 
     Gson gson = new Gson();
-    public static final int tradeItemSelected = 100;
+    //public static final int tradeItemSelected = 100;
     public static final int offerItemSelected = 101;
 
     @Override
@@ -113,22 +113,14 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         offerItem.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-//                ObjParseSingleton.getInstance().addObject("offergame", game);
 
                 Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
                 myIntent.putExtra("offeredItem",gson.toJson(game));
 
-//                InventoryController ic = new InventoryController(UserSingleton.getInstance().getUser().getInventory());
-//                ic.removeItem(game);
                 setResult(offerItemSelected, myIntent);
                 finish();
 
                 //TODO: add item back if trade is cancelled
-
-//                startActivity(myIntent);
-//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivityForResult(myIntent, 1);
-
             }
         });
 

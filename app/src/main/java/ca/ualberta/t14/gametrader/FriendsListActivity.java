@@ -3,6 +3,7 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,6 +31,7 @@ public class FriendsListActivity extends Activity {
 
         friendsListView = (ListView) findViewById(R.id.friendsList);
 
+
         friendsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
             public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
@@ -40,7 +42,8 @@ public class FriendsListActivity extends Activity {
                 ObjParseSingleton.getInstance().addObject("userProfile", u); // TODO: pass the right user, not just phone owner!
                 Intent myIntent = new Intent(FriendsListActivity.this, ProfileActivity.class);
 
-                startActivity(myIntent);
+                startActivityForResult(myIntent, 1);
+
             }
         });
 
@@ -57,6 +60,8 @@ public class FriendsListActivity extends Activity {
 
         for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
             friendsArrayList.add(friend.getUserName());
+            Log.d("friend", "" + friendsArrayList.size());
+
         }
         adapter.notifyDataSetChanged();
     }
