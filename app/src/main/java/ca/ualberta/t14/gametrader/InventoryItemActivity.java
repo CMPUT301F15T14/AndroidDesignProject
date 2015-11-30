@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 /*
  * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
  *
@@ -41,7 +43,11 @@ public class InventoryItemActivity extends Activity {
     TextView phone;
     TextView address;
     ImageView imageView;
-    private Button tradeItemButton;
+
+
+    Gson gson = new Gson();
+    public static final int tradeItemSelected = 100;
+    public static final int offerItemSelected = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +90,37 @@ public class InventoryItemActivity extends Activity {
         tradeItem.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                ObjParseSingleton.getInstance().addObject("game", game);
+                ObjParseSingleton.getInstance().addObject("tradegame", game);
 
                 Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
 
-                startActivityForResult(myIntent, 1);
+                startActivity(myIntent);
+
+//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivityForResult(myIntent, 1);
+
+            }
+        });
+
+        Button offerItem  = (Button)findViewById(R.id.offerMyItemButton);
+        offerItem.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+//                ObjParseSingleton.getInstance().addObject("offergame", game);
+
+                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+                myIntent.putExtra("offeredItem",gson.toJson(game));
+
+//                InventoryController ic = new InventoryController(UserSingleton.getInstance().getUser().getInventory());
+//                ic.removeItem(game);
+                setResult(offerItemSelected, myIntent);
+                finish();
+
+                //TODO: add item back if trade is cancelled
+
+//                startActivity(myIntent);
+//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivityForResult(myIntent, 1);
 
             }
         });
@@ -105,14 +137,6 @@ public class InventoryItemActivity extends Activity {
 
             }
         });
-        tradeItemButton = (Button) findViewById(R.id.tradeButton);
-        tradeItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(InventoryItemActivity.this, TradeActivity.class);
-                startActivity(intent);
-            }
-        });
 
 
     }
@@ -120,7 +144,7 @@ public class InventoryItemActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == RESULT_OK){
+        if(requestCode == 1 && resultCode == RESULT_OK){
             finish();
         }
 
