@@ -45,6 +45,11 @@ public class EditInventoryItemActivity extends Activity {
     private GameController gc;
     private Game g;
     private EditText gameTitle;
+
+    public Spinner getSpinConsole() {
+        return spinConsole;
+    }
+
     private Spinner spinConsole;
     private Spinner spinCondition;
     private RadioButton radioShared;
@@ -54,10 +59,22 @@ public class EditInventoryItemActivity extends Activity {
     private Button save;
     private Button delete;
     private ArrayList<Uri> uriList;
+    private AlertDialog deletDialogue;
+
+    public AlertDialog getDeletDialogue() {
+        return deletDialogue;
+    }
+
+    private ArrayList<String> imageIds;
+    private ArrayList<String> imageIdsToRemove;
 
     public Button getSaveButton() {
         return save;
     }
+    public Button getDelete() {
+        return delete;
+    }
+
 
     public EditText getGameTitle() {
         return gameTitle;
@@ -69,6 +86,8 @@ public class EditInventoryItemActivity extends Activity {
         setContentView(R.layout.activity_edit_inventory_item);
 
         uriList = new ArrayList<Uri>();
+        imageIds = new ArrayList<String>();
+        imageIdsToRemove = new ArrayList<String>();
 
         gameTitle = (EditText) findViewById(R.id.inventoryItemTitle);
 
@@ -119,9 +138,14 @@ public class EditInventoryItemActivity extends Activity {
 
         additionalInfo.setText(g.getAdditionalInfo());
 
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(g.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        imageIds = g.getPictureIds();
 
+        String jsonStr = PictureManager.loadImageJsonFromJsonFile(g.getFirstPictureId(), getApplicationContext());
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver(), this);
+        }
         addInputEvents();
         deleteItem();
     }
@@ -151,17 +175,15 @@ public class EditInventoryItemActivity extends Activity {
 
     private void addInputEvents() {
 
-        // image button doesnt work, image picker never launches...
-
         ((ImageButton) findViewById(R.id.uploadImage)).setOnClickListener(new ImageButton.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (g.pictureIdIsEmpty()){
+                if (g.pictureIdIsEmpty() && uriList.isEmpty()){
                     selectPicture();
                 }else{
                     AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
                     SinglePrompt.setTitle("Warning");
-                    SinglePrompt.setMessage("Do you want to delete or reselect the picture?");
+                    SinglePrompt.setMessage("Do you want to remove or add pictures?");
                     SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Remove Images", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     deletePicture();
@@ -210,9 +232,14 @@ public class EditInventoryItemActivity extends Activity {
                 gc.editGame(g, gameTitle, platform, condition, shareStatus, additionalInfo);
 
                 // Save picture of game
-                if (!uriList.isEmpty()) {
-                    imageButton.setImageBitmap(gc.resolveUri(uriList.get(0), getContentResolver()));
-                    for (Uri each : uriList) {
+                if(!imageIdsToRemove.isEmpty()) {
+                    for(String each : imageIdsToRemove) {
+                        gc.removePhotos(g, each, getApplicationContext());
+                    }
+                }
+
+                if(!uriList.isEmpty()) {
+                    for(Uri each : uriList) {
                         gc.addPhoto(g, each, getContentResolver(), getApplicationContext());
                     }
                 }
@@ -239,15 +266,15 @@ public class EditInventoryItemActivity extends Activity {
         delete.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
-                SinglePrompt.setTitle("Warning");
-                SinglePrompt.setMessage("Are you sure you want to delete this item?");
-                SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                deletDialogue = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
+                deletDialogue.setTitle("Warning");
+                deletDialogue.setMessage("Are you sure you want to delete this item?");
+                deletDialogue.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 gc.removeGame(g, UserSingleton.getInstance().getUser(), getApplicationContext());
                                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
                                 UserSingleton.getInstance().getUser().notifyAllObservers();
-                                Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditInventoryItemActivity.this, "Game has been deleted!", Toast.LENGTH_SHORT).show();
                                 setResult(RESULT_OK);
                                 finish();
                                 dialog.dismiss();
@@ -255,21 +282,23 @@ public class EditInventoryItemActivity extends Activity {
                         }
                 );
 
-                SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                deletDialogue.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         }
                 );
 
-                SinglePrompt.show();
+                deletDialogue.show();
             }
         });
     }
 
     private void deletePicture(){
         Intent intent = new Intent(EditInventoryItemActivity.this, GameImageRemover.class);
-        ObjParseSingleton.getInstance().addObject("imagesUriArray", g.getPictureIds());
+        // TODO: make so it puts in the list of all the current uri, and removes from that if needed.
+        ObjParseSingleton.getInstance().addObject("gameImagesList", g.getPictureIds());
+        ObjParseSingleton.getInstance().addObject("imagesUriArray", uriList);
         startActivityForResult(intent, REMOVE_IMAGE);
     }
 
@@ -283,13 +312,28 @@ public class EditInventoryItemActivity extends Activity {
                 if(resultCode == RESULT_OK){
                     ArrayList<Uri> toAdd = imageReturnedIntent.getParcelableArrayListExtra("result");
                     uriList.addAll(toAdd);
-                    if(!uriList.isEmpty()) {
-                        imageButton.setImageBitmap(gc.setPreviewImage(uriList.get(0), getContentResolver()));
-                    }
+                    gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver(), this);
                 }
                 break;
             case REMOVE_IMAGE:
+                if(imageReturnedIntent != null) {
+                    ArrayList<String> toRemove = imageReturnedIntent.getStringArrayListExtra("resultIdsToRem");
+                    ArrayList<Uri> toRemUris = imageReturnedIntent.getParcelableArrayListExtra("resultsUrisToRem");
 
+                    if (toRemove != null) {
+                        for (String each : toRemove) {
+                            imageIdsToRemove.add(each);
+                            imageIds.remove(each);
+                        }
+                    }
+
+                    if (toRemUris != null) {
+                        for (Uri each : toRemUris) {
+                            uriList.remove(each);
+                        }
+                    }
+                    gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver(), this);
+                }
                 break;
         }
     }

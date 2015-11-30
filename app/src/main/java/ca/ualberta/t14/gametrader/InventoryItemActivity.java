@@ -2,6 +2,8 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -45,11 +47,17 @@ public class InventoryItemActivity extends Activity implements AppObserver {
     TextView additionalInfo;
     TextView phone;
     TextView address;
+    private Button editGame;
+
+    public Button getEditGame() {
+        return editGame;
+    }
+
     ImageButton imageButton;
 
 
     Gson gson = new Gson();
-    public static final int tradeItemSelected = 100;
+    //public static final int tradeItemSelected = 100;
     public static final int offerItemSelected = 101;
 
     @Override
@@ -92,6 +100,8 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
             imageButton.setImageBitmap(game.getPicture());
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
         }
         Button tradeItem  = (Button)findViewById(R.id.tradeButton);
         tradeItem.setOnClickListener(new Button.OnClickListener() {
@@ -113,30 +123,22 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         offerItem.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-//                ObjParseSingleton.getInstance().addObject("offergame", game);
 
                 Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
                 myIntent.putExtra("offeredItem",gson.toJson(game));
 
-//                InventoryController ic = new InventoryController(UserSingleton.getInstance().getUser().getInventory());
-//                ic.removeItem(game);
                 setResult(offerItemSelected, myIntent);
                 finish();
 
                 //TODO: add item back if trade is cancelled
-
-//                startActivity(myIntent);
-//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivityForResult(myIntent, 1);
-
             }
         });
 
-        final Button editGame = (Button)findViewById(R.id.buttonEditItem);
+        editGame = (Button)findViewById(R.id.buttonEditItem);
         if (!inventorycontroller.clonable(ownerProfile)){
-            editGame.setText("Edit Game");
+            editGame.setText("Edit");
         }else{
-            editGame.setText("Clone Game");
+            editGame.setText("Clone");
         }
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -146,7 +148,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
                     startActivityForResult(myIntent, 1);
                 }else{
                     inventorycontroller.clone(game,getApplicationContext());
-                    Toast.makeText(InventoryItemActivity.this, "Game cloned to your inventory!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(InventoryItemActivity.this, "Game has been cloned to your inventory!", Toast.LENGTH_SHORT).show();
 
                 };
             }
@@ -187,7 +189,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
     @Override
@@ -221,7 +227,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
     public void appNotify(AppObservable observable) {
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
 }

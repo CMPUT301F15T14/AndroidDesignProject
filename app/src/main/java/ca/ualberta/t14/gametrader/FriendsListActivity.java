@@ -2,7 +2,9 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,9 +13,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 
-public class FriendsListActivity extends Activity {
+public class FriendsListActivity extends Activity implements AppObserver {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> friendsArrayList = new ArrayList<String>();
 
@@ -23,12 +26,15 @@ public class FriendsListActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        UserSingleton.getInstance().getUser().getFriends().addObserver(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
         friendsListController.initButonOnClickListeners(this, getApplicationContext());
 
         friendsListView = (ListView) findViewById(R.id.friendsList);
+
 
         friendsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
@@ -40,7 +46,8 @@ public class FriendsListActivity extends Activity {
                 ObjParseSingleton.getInstance().addObject("userProfile", u); // TODO: pass the right user, not just phone owner!
                 Intent myIntent = new Intent(FriendsListActivity.this, ProfileActivity.class);
 
-                startActivity(myIntent);
+                startActivityForResult(myIntent, 1);
+
             }
         });
 
@@ -57,6 +64,8 @@ public class FriendsListActivity extends Activity {
 
         for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
             friendsArrayList.add(friend.getUserName());
+            Log.d("friend", "" + friendsArrayList.size());
+
         }
         adapter.notifyDataSetChanged();
     }
@@ -83,5 +92,17 @@ public class FriendsListActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void appNotify(AppObservable observable) {
+        friendsArrayList.clear();
+
+        for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+            friendsArrayList.add(friend.getUserName());
+        }
+        adapter.notifyDataSetChanged();
+
+        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+        //fc.WriteFriends(getApplicationContext());
     }
 }

@@ -28,8 +28,8 @@ import java.util.HashMap;
  */
 public class ObjParseSingleton {
     //Lazy init taken from https://en.wikipedia.org/wiki/Singleton_pattern#Lazy_initialization
-    private static volatile ObjParseSingleton instance;
-    private volatile HashMap<String, Object> objectStorage;
+    private static transient ObjParseSingleton instance;
+    private transient HashMap<String, Object> objectStorage;
     private ObjParseSingleton() { objectStorage = new HashMap<String, Object>(); }
 
     /**

@@ -72,7 +72,7 @@ public class InventoryListActivity extends Activity {
         setContentView(R.layout.activity_inventory_list);
 
         // Load user from JSON. The user contains Inventory.
-        mainUser = (User)ObjParseSingleton.getInstance().getObject("User");
+        mainUser = (User)ObjParseSingleton.getInstance().popObject("User");
         if(mainUser == null) {
             throw new RuntimeException("InventoryListActivity was not passed a user");
         }

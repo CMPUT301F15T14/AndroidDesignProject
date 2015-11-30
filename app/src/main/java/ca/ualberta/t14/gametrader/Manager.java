@@ -20,13 +20,4 @@ public class Manager {
         return id;
     }
 
-    /**
-     * To be used in e.g. remove game, so it will be removed from the tracked list. (and elastic search)
-     * @param id the key string identifying the object to be removed.
-     * @return True if the key and item was removed. False if that key entry didn't exist in the first place.
-     */
-    Boolean removeItemToTrack(String id) {
-        return Boolean.FALSE;
-    }
-
 }

@@ -1,5 +1,6 @@
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -25,6 +26,19 @@ public class FriendsController {
 
     FriendsController(Friends friends) {
         model = friends;
+    }
+
+    public void WriteFriends(Context context) {
+        model.saveJson("myFriends", context);
+    }
+
+    public void LoadFriends(Context context) {
+        try {
+            model.loadJson("myFriends", context);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

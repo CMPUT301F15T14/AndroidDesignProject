@@ -18,9 +18,11 @@ public class GameImageRemover extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_image_remover);
 
-        ArrayList<Uri> uriArrayList = (ArrayList<Uri>) ObjParseSingleton.getInstance().popObject("imagesUriArray");
+        ArrayList<String> imageIdsList = (ArrayList<String>) ObjParseSingleton.getInstance().popObject("gameImagesList");
+        ArrayList<Uri> imageUriList = (ArrayList<Uri>) ObjParseSingleton.getInstance().popObject("imagesUriArray");
 
-        controller = new GameImageRemoverController(uriArrayList, getApplicationContext(), this);
+        controller = new GameImageRemoverController(imageIdsList, imageUriList, getApplicationContext(), this);
+        controller.setOnClickButtons();
 
     }
 

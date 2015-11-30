@@ -51,8 +51,7 @@ public class TradeActivity extends Activity {
     Game g1;
     Game g2;
     Button offerGameButton;
-    Button tradeAskButton;
-    //Button cancelTradeButtom;
+    Button offerTradeButton;
 
     public ListView getGameAskList() {
         return GameAskList;
@@ -68,7 +67,21 @@ public class TradeActivity extends Activity {
 
         g1 = (Game) ObjParseSingleton.getInstance().popObject("tradegame");
         if( g1 == null) {
-            g1 = new Game();
+            throw new RuntimeException("Null game passed to trade activity.");
+        }
+        User tradingWith = (User)ObjParseSingleton.getInstance().popObject("tradeGameOwner");
+        if(tradingWith == null){
+            throw new RuntimeException("Trade activity was not passed a user.");
+        }
+        Trade currentTrade = new Trade(new Game(), new User(), new User());
+        try {
+            currentTrade.loadJson("currentTrade", getBaseContext());
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+        if(currentTrade == null) {
+
         }
 
         //  Array reserved for storing names of game.
@@ -87,12 +100,7 @@ public class TradeActivity extends Activity {
         if (g2 != null) {
             mobileArray1.add(g2.getTitle());
         }
-//        if( g2 == null) {
-//            g2 = new Game();
-//        }
 
-
-//===============================================================>
         GameAskList=(ListView)findViewById(R.id.tradeFor);
         GameOfferList =(ListView)findViewById(R.id.tradeOffer);
         User mainUser = UserSingleton.getInstance().getUser();
@@ -113,28 +121,24 @@ public class TradeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
+                ObjParseSingleton.getInstance().addObject("User", UserSingleton.getInstance().getUser());
                 startActivityForResult(intent, 2);
             }
         });
-        tradeAskButton = (Button) findViewById(R.id.tradeAsk);
-        tradeAskButton.setOnClickListener(new View.OnClickListener() {
+
+
+        offerTradeButton = (Button) findViewById(R.id.makeTrade);
+        offerTradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
-                startActivityForResult(intent, 1);
-            }
-        });
-        /*
-        //cannot work becaseu the nullpointer exception in InventoyItemActivity line 56,57,58
-        cancelTradeButtom = (Button) findViewById(R.id.cancelTrade);
-        cancelTradeButtom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TradeActivity.this, InventoryItemActivity.class);
+                Intent intent = new Intent(TradeActivity.this, TradeHistoryActivity.class);
                 startActivity(intent);
+
             }
         });
-        */
+
+
+
     }
 
 
@@ -164,38 +168,15 @@ public class TradeActivity extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
-        /*
-        adapter=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray);
-        GameAskList.setAdapter(adapter);
-        adapter1=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray1);
-        GameOfferList.setAdapter(adapter1);*/
+
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putStringArrayList("GameAskList",mobileArray1);
-//    }
-//
-//    @Override
-//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//        super.onRestoreInstanceState(savedInstanceState);
-//        mobileArray1 = savedInstanceState.getStringArrayList("GameAskList");
-//        adapter1=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray1);
-//        GameAskList.setAdapter(adapter1);
-//    }
+
+
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-//        g1 = (Game) ObjParseSingleton.getInstance().popObject("tradegame");
-//        if( g1 != null) {
-//            mobileArray.add(g1.getTitle());
-//        }
-//        g2 = (Game) ObjParseSingleton.getInstance().popObject("offergame");
-//        if( g2 != null) {
-//            mobileArray1.add(g2.getTitle());
-//        }
 
     }
 
@@ -216,12 +197,4 @@ public class TradeActivity extends Activity {
         }
     }
 
-    /*
-    @Override
-    public void onResume() {
-        super.onResume();
-        mobileArray.clear();
-        mobileArray.add(g1.getTitle());
-    }
-    */
 }

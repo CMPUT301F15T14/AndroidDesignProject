@@ -12,7 +12,8 @@ import java.io.IOException;
 public class MainMenuController {
     User user = new User();
     SettingsMode settingsMode = new SettingsMode();
-    //NetworkController netCtrl = new NetworkController();
+    NetworkController netCtrl = new NetworkController();
+    PictureNetworker pn = new PictureNetworker();
 
     /**
      * Initializes all singletons upon program start so that they are accessible by all activities
@@ -32,6 +33,9 @@ public class MainMenuController {
                 Settings.Secure.ANDROID_ID));
         System.out.println("Does this print?");
 
+        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+        fc.LoadFriends(context);
+
         // Try to load the user's settings.
         try {
             settingsMode = (SettingsMode) settingsMode.loadJson(SettingsMode.SETTINGS_FILE, context);
@@ -50,6 +54,13 @@ public class MainMenuController {
             UserSingleton.getInstance().getUser().setInstallationId(installationIdStr);
         }
 
+        // Try to load this device's Picture Manager and Networker.
+        try {
+            pn = (PictureNetworker) pn.loadJson(PictureNetworker.PictureNetworkId, context);
+            PictureNetworkerSingleton.getInstance().setPicNetMangager(pn);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         final Context c = context;
 
@@ -66,7 +77,9 @@ public class MainMenuController {
                     e.printStackTrace();
                 }
 
-                //UserSingleton.getInstance().getUser().addObserver(netCtrl);
+                UserSingleton.getInstance().getUser().addObserver(netCtrl);
+                FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+                fc.LoadFriends(c);
 
                 // Try to load the user's settings.
                 try {
