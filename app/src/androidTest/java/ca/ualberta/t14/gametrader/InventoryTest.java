@@ -141,7 +141,6 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
                 EditInventoryItemActivity.class, deleteItem.getClass());
 
         final Button delete=deleteItem.getDelete();
-        final Dialog dialog=deleteItem.getDeletDialogue();
         deleteItem.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -149,21 +148,16 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
             }
         });
         getInstrumentation().waitForIdleSync();
+
         final Button YesButton=((AlertDialog) (deleteItem.getDeletDialogue())).getButton(
                 DialogInterface.BUTTON_POSITIVE);
         deleteItem.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (dialog.isShowing()) {
-                    try {
-                        YesButton.performClick();
-                    } catch (Throwable e) {
-                        e.printStackTrace();
-                    }
-                }
+                YesButton.performClick();
             }
         });
-
+        getInstrumentation().waitForIdleSync();
         int expectedCount = 0;
         int actualCount =GameList.getAdapter().getCount();
         assertEquals(expectedCount, actualCount);
