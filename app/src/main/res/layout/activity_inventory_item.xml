@@ -235,7 +235,8 @@
         android:layout_alignParentBottom="true"
 
         android:layout_alignEnd="@+id/buttonEditItem"
-        android:textColor="#060708" />
+        android:textColor="#060708"
+        android:layout_below="@+id/additionalInfo" />
         android:layout_below="@+id/additionalInfo"
         android:layout_toStartOf="@+id/tradeButton" />
 
