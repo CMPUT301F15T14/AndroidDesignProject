@@ -37,7 +37,7 @@ public class PictureViewerController {
 
         if(!game.pictureIdIsEmpty()) {
             for(String eachId : game.getPictureIds()) {
-                String loadedJson = UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(eachId, context);
+                String loadedJson = PictureManager.loadImageJsonFromJsonFile(eachId, context);
                 setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
             }
         } else {
