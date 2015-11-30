@@ -105,7 +105,7 @@ public class InventoryListActivity extends Activity {
 
                 Intent myIntent = new Intent(InventoryListActivity.this, InventoryItemActivity.class);
 
-                startActivity(myIntent);
+                startActivityForResult(myIntent, 1);
             }
         });
 
@@ -200,9 +200,24 @@ public class InventoryListActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(InventoryListActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1 && resultCode == InventoryItemActivity.offerItemSelected){
+            Intent intent = new Intent(InventoryListActivity.this, TradeActivity.class);
+            intent.putExtra("offeredItem", data.getStringExtra("offeredItem"));
+            setResult(InventoryItemActivity.offerItemSelected, intent);
+            Log.d("list",data.getStringExtra("offeredItem"));
+            finish();
+        }
+    }
+
 }
