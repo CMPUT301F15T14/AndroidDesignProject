@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
-import ca.ualberta.t14.gametrader.es.data.SearchHit;
 
 /**
  * Talks to the elastic search user. Supports adding, loading, and updating users.
@@ -31,6 +30,8 @@ import ca.ualberta.t14.gametrader.es.data.SearchHit;
  * Created by jjohnsto on 11/26/15.
  */
 public class NetworkController implements AppObserver {
+    Boolean isInternetPresent;
+
     private final String netLocation = "http://cmput301.softwareprocess.es:8080/testing/t14/";
 
     private HttpClient httpclient = new DefaultHttpClient();
@@ -55,16 +56,19 @@ public class NetworkController implements AppObserver {
         System.err.println(esResponse);
 
         ArrayList<User> returnValue = new ArrayList<User>();
-        for (ElasticSearchResponse<User> r : esResponse.getHits()) {
-            User result = r.getSource();
-            User ret = new User();
-            ret.setAddress(result.getAddress());
-            ret.setPhoneNumber(result.getPhoneNumber());
-            ret.setAndroidID(result.getAndroidID());
-            ret.setUserName(result.getUserName());
-            ret.setEmail(result.getEmail());
+        if(esResponse.getHits()!=null) {
+            for (ElasticSearchResponse<User> r : esResponse.getHits()) {
+                User result = r.getSource();
+                User ret = new User();
+                ret.setAddress(result.getAddress());
+                ret.setPhoneNumber(result.getPhoneNumber());
+                ret.setAndroidID(result.getAndroidID());
+                ret.setUserName(result.getUserName());
+                ret.setEmail(result.getEmail());
+                ret.setInventory(result.getInventory());
 
-            returnValue.add(ret);
+                returnValue.add(ret);
+            }
         }
 
         return returnValue;
@@ -84,6 +88,13 @@ public class NetworkController implements AppObserver {
         System.out.println("Trying to write user to: " + netLocation+user.getAndroidID());
 
         StringEntity stringentity = null;
+
+        isInternetPresent = MainActivity.networkConnectivity.isConnectingToInternet();
+
+        while(!isInternetPresent){
+            isInternetPresent = MainActivity.networkConnectivity.isConnectingToInternet();
+        }
+
         try {
             stringentity = new StringEntity(gson.toJson(user));
         } catch (UnsupportedEncodingException e) {
@@ -146,6 +157,9 @@ public class NetworkController implements AppObserver {
             // We get the recipe from it!
             user = esResponse.getSource();
 
+            System.out.println(user.toString());
+
+            return user;
         } catch (ClientProtocolException e) {
 
             e.printStackTrace();
@@ -165,13 +179,17 @@ public class NetworkController implements AppObserver {
      */
     public void appNotify(final AppObservable observable) {
         System.out.println("Network controller was notified");
+        final User test = UserSingleton.getInstance().getUser();
+
+        System.out.println("My name is: " + test.getUserName());
+
         if(observable.getClass() == User.class){
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         System.out.println("Updating user...");
-                        AddUser((User) observable);
+                        AddUser(test);
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -205,9 +223,5 @@ public class NetworkController implements AppObserver {
         }
         System.err.println("JSON:"+json);
         return json;
-    }
-
-    public void ShitFuckingNothing() {
-
     }
 }

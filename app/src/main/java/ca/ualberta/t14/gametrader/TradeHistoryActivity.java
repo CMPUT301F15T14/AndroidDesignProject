@@ -42,6 +42,7 @@ public class TradeHistoryActivity extends Activity {
         setContentView(R.layout.activity_trade_history);
 
         tradeName = new ArrayList<String>();
+        //TODO: to fill tradeName, would you search through the database for trades that contain the user id?
 /*       tradeName.clear();
         for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
             tradeName.add(each.getTitle());
@@ -87,7 +88,8 @@ public class TradeHistoryActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(TradeHistoryActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

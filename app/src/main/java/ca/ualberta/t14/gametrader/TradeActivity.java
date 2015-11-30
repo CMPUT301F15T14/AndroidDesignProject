@@ -18,17 +18,126 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Spinner;
+
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class TradeActivity extends Activity {
+    //private Spinner offerGameforTrade;
+    //ArrayList<String> spinnerArray =  new ArrayList<String>();
+
+    //private ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, spinnerArray);
+    //private Button offerGameButton;
+
+    private ArrayList<String> mobileArray;
+    private ArrayList<String> mobileArray1;
+    private ArrayAdapter<String> adapter;
+    private ArrayAdapter<String> adapter1;
+    private ListView GameAskList;
+    private ListView GameOfferList;
+    Game game;
+    Game g1;
+    Game g2;
+    Button offerGameButton;
+    Button tradeAskButton;
+    //Button cancelTradeButtom;
+
+    public ListView getGameAskList() {
+        return GameAskList;
+    }
+    public ListView getGameOfferList(){
+        return GameOfferList;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade);
+
+        g1 = (Game) ObjParseSingleton.getInstance().popObject("tradegame");
+        if( g1 == null) {
+            g1 = new Game();
+        }
+
+        //  Array reserved for storing names of game.
+        mobileArray = new ArrayList<String>();
+        // later add observer observing the inventory:
+        mobileArray.clear();
+        mobileArray.add(g1.getTitle());
+
+
+        //  Array reserved for storing names of game.
+        mobileArray1 = new ArrayList<String>();
+        // later add observer observing the inventory:
+        mobileArray1.clear();
+
+        g2 = (Game) ObjParseSingleton.getInstance().popObject("offergame");
+        if (g2 != null) {
+            mobileArray1.add(g2.getTitle());
+        }
+//        if( g2 == null) {
+//            g2 = new Game();
+//        }
+
+
+//===============================================================>
+        GameAskList=(ListView)findViewById(R.id.tradeFor);
+        GameOfferList =(ListView)findViewById(R.id.tradeOffer);
+        User mainUser = UserSingleton.getInstance().getUser();
+        try {
+            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext());
+            UserSingleton.getInstance().setUser(mainUser);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        adapter=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray);
+        GameAskList.setAdapter(adapter);
+        adapter1=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray1);
+        GameOfferList.setAdapter(adapter1);
+
+
+        offerGameButton = (Button) findViewById(R.id.offerGame);
+        offerGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
+                startActivityForResult(intent, 2);
+            }
+        });
+        tradeAskButton = (Button) findViewById(R.id.tradeAsk);
+        tradeAskButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
+                startActivityForResult(intent, 1);
+            }
+        });
+        /*
+        //cannot work becaseu the nullpointer exception in InventoyItemActivity line 56,57,58
+        cancelTradeButtom = (Button) findViewById(R.id.cancelTrade);
+        cancelTradeButtom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TradeActivity.this, InventoryItemActivity.class);
+                startActivity(intent);
+            }
+        });
+        */
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -46,9 +155,73 @@ public class TradeActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(TradeActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
     }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        /*
+        adapter=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray);
+        GameAskList.setAdapter(adapter);
+        adapter1=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray1);
+        GameOfferList.setAdapter(adapter1);*/
+    }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        outState.putStringArrayList("GameAskList",mobileArray1);
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        mobileArray1 = savedInstanceState.getStringArrayList("GameAskList");
+//        adapter1=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray1);
+//        GameAskList.setAdapter(adapter1);
+//    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+//        g1 = (Game) ObjParseSingleton.getInstance().popObject("tradegame");
+//        if( g1 != null) {
+//            mobileArray.add(g1.getTitle());
+//        }
+//        g2 = (Game) ObjParseSingleton.getInstance().popObject("offergame");
+//        if( g2 != null) {
+//            mobileArray1.add(g2.getTitle());
+//        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 2 && resultCode == InventoryItemActivity.offerItemSelected){
+            Gson gson = new Gson();
+            Game offer = gson.fromJson(data.getStringExtra("offeredItem"), Game.class);
+            Log.d("trade", data.getStringExtra("offeredItem"));
+            Log.d("title", offer.getTitle());
+            mobileArray1.add(offer.getTitle());
+            Log.d("arraysize", ""+mobileArray1.size());
+            Log.d("array",mobileArray1.get(0));
+            adapter1.notifyDataSetChanged();
+            //TODO: not only add title, add game object to list
+        }
+    }
+
+    /*
+    @Override
+    public void onResume() {
+        super.onResume();
+        mobileArray.clear();
+        mobileArray.add(g1.getTitle());
+    }
+    */
 }
