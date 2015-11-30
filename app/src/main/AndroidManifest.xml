@@ -58,7 +58,8 @@
         </activity>
         <activity
             android:name=".TradeActivity"
-            android:label="@string/title_activity_trade" >
+            android:label="@string/title_activity_trade"
+            >
         </activity>
         <activity
             android:name=".InventoryItemPictureViewer"
