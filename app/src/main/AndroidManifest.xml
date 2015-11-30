@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -21,13 +22,11 @@
         </activity>
         <activity
             android:name=".FriendsListActivity"
-            android:label="@string/title_activity_friends_list"
-            android:theme="@style/ListFont" >
+            android:label="@string/title_activity_friends_list">
         </activity>
         <activity
             android:name=".InventoryListActivity"
-            android:label="@string/title_activity_inventory_list"
-            android:theme="@style/ListFont" >
+            android:label="@string/title_activity_inventory_list">
         </activity>
         <activity
             android:name=".ProfileActivity"
@@ -61,6 +60,18 @@
             android:name=".TradeActivity"
             android:label="@string/title_activity_trade"
             >
+        </activity>
+        <activity
+            android:name=".InventoryItemPictureViewer"
+            android:label="@string/title_activity_item_picture_viewer" >
+        </activity>
+        <activity
+            android:name=".GameImageAdder"
+            android:label="@string/title_activity_game_image_adder" >
+        </activity>
+        <activity
+            android:name=".GameImageRemover"
+            android:label="@string/title_activity_game_image_remover" >
         </activity>
     </application>
 

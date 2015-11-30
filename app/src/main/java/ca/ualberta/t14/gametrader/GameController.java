@@ -85,6 +85,10 @@ public class GameController {
         //model.notifyAllObservers();
     }
 
+    public Bitmap setPreviewImage(Uri uri, ContentResolver contentResolver) {
+        return resolveUri(uri, contentResolver);
+    }
+
     /**
      * Given game, it will add the bitmap given to the game.
      * @param game the game to receive the image.
@@ -99,7 +103,6 @@ public class GameController {
         if(selectedImage != null) {
             success = game.setPicture(selectedImage, context);
             selectedImage = null;
-            success = Boolean.TRUE;
         }
         return success;
     }
@@ -109,26 +112,8 @@ public class GameController {
         try {
             InputStream imageStream = contentResolver.openInputStream(uri);
 
-            //Start of should GO into controller
-            // getting just image bounds taken from http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
             BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(imageStream, null, o);
-            int approxSample = (int) Math.ceil((o.outHeight * o.outWidth) / (500.0f * 500.0f));
 
-            // Bitmap options taken from http://stackoverflow.com/questions/11944182/android-out-of-memory-exception-how-does-decoderesource-add-to-the-vm-budget
-            o.inJustDecodeBounds = false;
-            o.inSampleSize = approxSample;
-            o.inDither = false;
-
-            // taken from http://stackoverflow.com/questions/12006785/android-skimagedecoder-factory-returned-null
-            if (imageStream.markSupported()) {
-                // will only throw if markSupported is false.
-                imageStream.reset();
-            } else {
-                // reload it again just to reset reader position...
-                imageStream = contentResolver.openInputStream(uri);
-            }
             selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
             imageStream.close();
         } catch(Exception e) {
@@ -142,10 +127,9 @@ public class GameController {
      * @param game the game to be removed
      * @param user the user who's inventory he game is to be deleted from.
      */
-    public void removeGame(Game game, User user) {
-        // TODO: removeGame will remove the entry from the inventory.
+    public void removeGame(Game game, User user, Context context) {
         if(isOwner(game, user)) {
-            user.getInventory().remove(game);
+            user.getInventory().remove(game, context);
         }
     }
 

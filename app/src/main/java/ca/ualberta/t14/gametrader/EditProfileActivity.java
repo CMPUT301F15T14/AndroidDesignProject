@@ -3,6 +3,8 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.LoginFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,6 +76,11 @@ public class EditProfileActivity extends Activity {
         phoneText.setText(user.getPhoneNumber());
         emailText.setText(user.getEmail());
         addressText.setText(user.getAddress());
+
+        profileText.setMaxLines(1);
+        profileText.setLines(1);
+        InputFilter[] a = { new InputFilter.LengthFilter(14), new LoginFilter.UsernameFilterGeneric()};
+        profileText.setFilters(a);
 
         saveButton = (Button) findViewById(R.id.saveProfileButton);
         saveButton.setOnClickListener(new View.OnClickListener(){

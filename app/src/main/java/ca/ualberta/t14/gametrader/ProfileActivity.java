@@ -75,6 +75,7 @@ public class ProfileActivity extends Activity {
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ObjParseSingleton.getInstance().addObject("User", user);
                 Intent intent = new Intent(ProfileActivity.this, InventoryListActivity.class);
                 startActivity(intent);
                 finish();

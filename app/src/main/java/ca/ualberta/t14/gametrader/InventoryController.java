@@ -35,6 +35,8 @@ package ca.ualberta.t14.gametrader;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 // Controller class of Inventory Class.
@@ -45,10 +47,6 @@ public class InventoryController {
     }
     public void addItem(Game game){
         stock.add(game);
-    }
-
-    public void removeItem(Game game){
-        stock.remove(game);
     }
 
     public void clearInventory(){
@@ -93,4 +91,15 @@ public class InventoryController {
 
         return result;
     }
+
+    public boolean clonable(User user){
+        return UserSingleton.getInstance().getUser().getUserName() != user.getUserName();
+    }
+
+    public void clone(Game game,Context context){
+        this.addItem(game);
+        UserSingleton.getInstance().getUser().saveJson("MainUserProfile", context);
+        //Todo: Need to copy image as well.
+    }
+
 }
