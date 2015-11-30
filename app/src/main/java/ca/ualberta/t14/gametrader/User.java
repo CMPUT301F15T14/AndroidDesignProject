@@ -42,7 +42,7 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         return friends;
     }
 
-    Friends friends;
+    private transient Friends friends;
 
     public User() {
         // if a user file already exists simply load it from the file

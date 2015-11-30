@@ -46,6 +46,7 @@ public class InventoryListActivity extends Activity {
     private Button Search;
     private EditText SearchString;
     private Spinner gameConsole;
+    private TextView title;
 
     private InventoryController invtC;
 
@@ -75,6 +76,9 @@ public class InventoryListActivity extends Activity {
         if(mainUser == null) {
             throw new RuntimeException("InventoryListActivity was not passed a user");
         }
+
+        title = (TextView) findViewById(R.id.inventoryListText);
+        title.setText(mainUser.getUserName() + "\'s inventory");
 
         invtC = new InventoryController(mainUser.getInventory());
 
@@ -106,6 +110,9 @@ public class InventoryListActivity extends Activity {
         });
 
         AddGame= (Button)findViewById(R.id.newInventoryItem);
+        if(mainUser.getAndroidID() != UserSingleton.getInstance().getUser().getAndroidID()){
+            AddGame.setVisibility(View.INVISIBLE);
+        }
         //Setting the button helps navigating to AddInventory Activity.
 
         AddGame.setOnClickListener(new Button.OnClickListener() {
