@@ -34,7 +34,6 @@ public class FriendsController {
     private class AddFriendThread extends AsyncTask<String, Integer, User> {
         protected User doInBackground(String... params) {
             NetworkController nc = new NetworkController();
-            nc.ShitFuckingNothing();
 
             String userName = params[0];
 
