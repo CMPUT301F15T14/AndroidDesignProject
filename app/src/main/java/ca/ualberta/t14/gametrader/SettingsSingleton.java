@@ -4,7 +4,7 @@ package ca.ualberta.t14.gametrader;
  * Created by jjohnsto on 11/17/15.
  */
 public class SettingsSingleton {
-    private static volatile SettingsSingleton instance;
+    private static transient SettingsSingleton instance;
     private SettingsMode model;
     private SettingsSingleton() { model = new SettingsMode(); }
 

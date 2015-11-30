@@ -36,7 +36,7 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
 
     private transient ArrayList<AppObserver> observers;
     private Inventory inventory;
-    private PictureManager pm;
+
 
     public Friends getFriends() {
         return friends;
@@ -50,13 +50,9 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         observers = new ArrayList<AppObserver>();
         inventory = new Inventory();
         inventory.addObserver(this);
-        pm = new PictureManager();
+
 
         friends = new Friends();
-    }
-
-    public PictureManager getPictureManager() {
-        return pm;
     }
 
     /**
@@ -161,7 +157,6 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
-
 
     /**
      * Adds a class to the observer's list

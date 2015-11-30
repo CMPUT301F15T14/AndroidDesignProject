@@ -7,7 +7,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:background="@drawable/bluebackground"
-    tools:context="ca.ualberta.t14.gametrader.TradeActivity">
+    tools:context="ca.ualberta.t14.gametrader.EditTradeActivity">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -38,15 +38,6 @@
                 android:layout_below="@+id/tradeWant"
                 android:visibility="visible" />
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tradeAsk"
-                android:textColor="#ffffff"
-                android:id="@+id/tradeAsk"
-                android:layout_below="@+id/tradeFor"
-                android:layout_alignParentStart="true" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,8 +45,8 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#ffffff"
                 android:id="@+id/myGames"
-                android:layout_below="@+id/tradeAsk"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/tradeFor" />
 
             <ListView
                 android:layout_width="wrap_content"

@@ -12,8 +12,12 @@ public class TradeTest extends ActivityInstrumentationTestCase2 {
     }
 
     public void testTradeStatus() {
+
+        User owner = new User();
+        User borrower = new User();
+
         Game game = new Game();
-        Trade trade = new Trade(game);
+        Trade trade = new Trade(game, owner, borrower);
         String status = trade.getStatus().toString();
         assertEquals(status, "OWNERAPPROVAL");
 
@@ -23,8 +27,12 @@ public class TradeTest extends ActivityInstrumentationTestCase2 {
     }
 
     public void testOffers() {
+
+        User owner = new User();
+        User borrower = new User();
+
         Game game = new Game();
-        Trade trade = new Trade(game);
+        Trade trade = new Trade(game, owner, borrower);
         ArrayList<Game> borrowerGames = new ArrayList<Game>();
         ArrayList<Game> ownerGames = new ArrayList<Game>();
         borrowerGames = trade.getBorrowerOffers();
@@ -51,8 +59,10 @@ public class TradeTest extends ActivityInstrumentationTestCase2 {
     }
 
     public void testComment() {
+        User owner = new User();
+        User borrower = new User();
         Game game = new Game();
-        Trade trade = new Trade(game);
+        Trade trade = new Trade(game, owner, borrower);
 
         trade.setOwnersComment("This is a very fine trade.");
         String comment = trade.getOwnersComment();

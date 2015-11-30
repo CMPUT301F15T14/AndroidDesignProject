@@ -18,13 +18,17 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.widget.ImageButton;
 
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  * This is the Controller class for EditInventoryItemActivity.
@@ -85,8 +89,12 @@ public class GameController {
         //model.notifyAllObservers();
     }
 
-    public Bitmap setPreviewImage(Uri uri, ContentResolver contentResolver) {
-        return resolveUri(uri, contentResolver);
+    public Bitmap setPreviewImage(String imageId, Context context) {
+        return PictureManager.getBitmapFromJson(PictureManager.loadImageJsonFromJsonFile(imageId, context));
+    }
+
+    public Bitmap setPreviewUriImage(Uri uri, ContentResolver contentResolver) {
+        return PictureManager.resolveUri(uri, contentResolver);
     }
 
     /**
@@ -99,7 +107,7 @@ public class GameController {
     public Boolean addPhoto(Game game, Uri uri, ContentResolver contentResolver, Context context) {
         Boolean success = Boolean.FALSE;
 
-        Bitmap selectedImage = resolveUri(uri, contentResolver);
+        Bitmap selectedImage = PictureManager.resolveUri(uri, contentResolver);
         if(selectedImage != null) {
             success = game.setPicture(selectedImage, context);
             selectedImage = null;
@@ -107,19 +115,18 @@ public class GameController {
         return success;
     }
 
-    public Bitmap resolveUri(Uri uri, ContentResolver contentResolver){
-        Bitmap selectedImage = null;
-        try {
-            InputStream imageStream = contentResolver.openInputStream(uri);
+    public Boolean removePhotos(Game game, String imageId, Context context) {
+        return game.removePictureId(imageId, context);
+    }
 
-            BitmapFactory.Options o = new BitmapFactory.Options();
-
-            selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
-            imageStream.close();
-        } catch(Exception e) {
-            e.printStackTrace();
+    public void updateTemporaryImageBox(ImageButton imgBtn, ArrayList<String> imageIds, ArrayList<Uri> uriList, Context context, ContentResolver content, Activity activity) {
+        if(!imageIds.isEmpty()) {
+            imgBtn.setImageBitmap(setPreviewImage(imageIds.get(0), context));
+        } else if(!uriList.isEmpty()) {
+            imgBtn.setImageBitmap(setPreviewUriImage(uriList.get(0), content));
+        } else {
+            imgBtn.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
         }
-        return selectedImage;
     }
 
     /**

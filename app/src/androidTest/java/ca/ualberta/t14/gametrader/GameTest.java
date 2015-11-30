@@ -84,7 +84,8 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         Long maxFileSize = new Long(65536);
 
         // Test an image that is too big and gets resized with width being longest edge
-        Bitmap testImage1 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.big_game);
+
+        Bitmap testImage1 = BitmapFactory.decodeResource(activity.getResources(),R.drawable.big_game);
         assertTrue(item.setPicture(testImage1, activity.getApplicationContext()));
         // filesize check of testImage1
         assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
@@ -109,7 +110,7 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
 
         // Test for JSON-able bitmap.
-        String json = pm.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext());
+        String json = PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext());
         Bitmap origImage = getBitmapFromJson(json);
 
 
@@ -120,7 +121,7 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         assertTrue(item.setPictureFromJson(json));
 
         // json and resulting image are same.
-        assertSame(json, pm.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext()));
+        assertSame(json, PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext()));
         assertTrue(origImage.sameAs(item.getPicture()));
     }
 

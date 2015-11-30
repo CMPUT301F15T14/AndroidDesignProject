@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /*
@@ -72,7 +71,7 @@ public class InventoryListActivity extends Activity {
         setContentView(R.layout.activity_inventory_list);
 
         // Load user from JSON. The user contains Inventory.
-        mainUser = (User)ObjParseSingleton.getInstance().getObject("User");
+        mainUser = (User)ObjParseSingleton.getInstance().popObject("User");
         if(mainUser == null) {
             throw new RuntimeException("InventoryListActivity was not passed a user");
         }
@@ -212,7 +211,7 @@ public class InventoryListActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == InventoryItemActivity.offerItemSelected){
-            Intent intent = new Intent(InventoryListActivity.this, TradeActivity.class);
+            Intent intent = new Intent(InventoryListActivity.this, EditTradeActivity.class);
             intent.putExtra("offeredItem", data.getStringExtra("offeredItem"));
             setResult(InventoryItemActivity.offerItemSelected, intent);
             Log.d("list",data.getStringExtra("offeredItem"));

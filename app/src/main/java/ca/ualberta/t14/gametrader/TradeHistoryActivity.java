@@ -33,20 +33,27 @@ import java.util.ArrayList;
 public class TradeHistoryActivity extends Activity {
 
     private ArrayList<String> tradeName;
+    private ArrayList<Trade> myTrades;
     private ListView tradePendingList;
     private ArrayAdapter<String> adapter;
+    private NetworkController controller;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_history);
 
+        user = new User();
+
+        controller = new NetworkController();
+        myTrades = controller.GetMyTrades(user.getAndroidID());
+
         tradeName = new ArrayList<String>();
-        //TODO: to fill tradeName, would you search through the database for trades that contain the user id?
-/*       tradeName.clear();
-        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
-            tradeName.add(each.getTitle());
-        } */
+        tradeName.clear();
+        for(Trade each : myTrades) {
+            tradeName.add(each.getTradeName());
+        }
 
         tradePendingList = (ListView)findViewById(R.id.tradePendingList);
         //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
@@ -55,8 +62,8 @@ public class TradeHistoryActivity extends Activity {
             public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
 
                 // assuming the adapter view order is same as the array game list order
-//                Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
-//                ObjParseSingleton.getInstance().addObject("game", g);
+                Trade trade = myTrades.get(position);
+                ObjParseSingleton.getInstance().addObject("trade", trade);
 
                 Intent myIntent = new Intent(TradeHistoryActivity.this, InventoryItemActivity.class);
 

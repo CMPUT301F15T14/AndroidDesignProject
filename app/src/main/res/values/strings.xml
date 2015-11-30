@@ -31,7 +31,7 @@
     <string name="Address">Address:</string>
     <string name="addressString">Address</string>
     <string name="phone">Phone:</string>
-    <string name="contactInfo">Contact Information:</string>
+    <string name="contactInfo">Contact Information</string>
     <string name="condition">Condition:</string>
     <string name="owner">Owner:</string>
     <string name="status">Status:</string>
@@ -65,6 +65,8 @@
     <string name="searchNameText">Search By Name</string>
     <string name="delete">Delete</string>
     <string name="gameoffer">Offer Game</string>
+    <string name="deleteTrade">Delete Trade</string>
+    <string name="editTrade">Edit Trade</string>
 
     <string-array name="platforms_array">
         <item>PC</item>

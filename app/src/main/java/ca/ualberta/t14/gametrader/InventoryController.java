@@ -97,9 +97,10 @@ public class InventoryController {
     }
 
     public void clone(Game game,Context context){
-        this.addItem(game);
-        UserSingleton.getInstance().getUser().saveJson("MainUserProfile", context);
-        //Todo: Need to copy image as well.
+        Game clonedGame = new Game(game, context);
+        User deviceUser = UserSingleton.getInstance().getUser();
+        deviceUser.getInventory().add(clonedGame);
+        deviceUser.saveJson("MainUserProfile", context);
     }
 
 }
