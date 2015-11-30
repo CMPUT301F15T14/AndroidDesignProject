@@ -32,6 +32,9 @@ public class MainMenuController {
                 Settings.Secure.ANDROID_ID));
         System.out.println("Does this print?");
 
+        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+        fc.LoadFriends(context);
+
         // Try to load the user's settings.
         try {
             settingsMode = (SettingsMode) settingsMode.loadJson(SettingsMode.SETTINGS_FILE, context);
@@ -67,6 +70,8 @@ public class MainMenuController {
                 }
 
                 UserSingleton.getInstance().getUser().addObserver(netCtrl);
+                FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+                fc.LoadFriends(c);
 
                 // Try to load the user's settings.
                 try {

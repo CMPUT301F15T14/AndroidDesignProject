@@ -17,6 +17,8 @@
  */
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 /*
@@ -65,7 +67,12 @@ public class Inventory implements AppObservable {
      * Remove Games to gameCollections. Must be called from InventoryController.
      * @param game
      */
-    public void remove(Game game){
+    public void remove(Game game, Context context){
+        // Remove all associated images first.
+        ArrayList<String> picsIds = game.getPictureIds();
+        for(String each : picsIds) {
+            PictureManager.removeFile(each, context);
+        }
         gameCollections.remove(game);
         this.notifyAllObservers();
     }

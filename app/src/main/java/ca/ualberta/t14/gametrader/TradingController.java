@@ -14,29 +14,33 @@ public class TradingController {
     }
 
     public Boolean isOwner(User user) {
-        //1. Get the device id
-        //2. Find user associated with that device id
+        //TODO: 1. Get the device id
+        //TODO: 2. Find user associated with that device id
         return true; //deviceiduser == user
-    }
-
-    public void offerTrade(ArrayList<Game> offering, ArrayList<Game> want) {
-
     }
 
     public void acceptOrDeny(Boolean yesno) {
         if (yesno) {
-
+            model.setStatus(Trade.TradeStatus.COMPLETE);
         }
         else {
             deleteTrade(model);
         }
     }
 
-    public void editTrade(Trade trade) {
+    public void borrowerAddGame(Game game) {
+        model.addBorrowerGame(game);
+    }
 
+    public void ownerAddGame(Game game) {
+        model.addOwnerGame(game);
+    }
+
+    public void changeOwnersComment(String comment) {
+        model.setOwnersComment(comment);
     }
 
     public void deleteTrade(Trade trade) {
-
+        //TODO: 1.Remove trades with this tradeid from database
     }
 }

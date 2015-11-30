@@ -18,6 +18,9 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 import java.util.ArrayList;
 
 /**
@@ -65,7 +68,9 @@ public class Trade extends FileIO implements AppObservable{
     private ArrayList<Game> borrowerOffers;
     private User owner;
     private ArrayList<Game> ownerOffers;
-    private int tradeId;
+
+    private String borrowerID;
+
     private String ownersComment;
     private TradeStatus status;
 
@@ -80,16 +85,18 @@ public class Trade extends FileIO implements AppObservable{
      *
      * @param game
      */
-    public Trade(Game game) {
+    public Trade(Game game, User owner, User borrower) {
+        this.owner = owner;
+        this.borrower = borrower;
         borrowerOffers = new ArrayList<Game>();
-        //borrower = current user
-        //owner = user with id
         ownerOffers = new ArrayList<Game>();
         ownerOffers.add(game);
         ownersComment = "";
         status = TradeStatus.OWNERAPPROVAL;
         observers = new ArrayList<AppObserver>();
-        //tradeId = randomly generated number?
+
+        borrowerID = borrower.getAndroidID();
+        //or just set the tradeId = 0; and generate it from later function
     }
 
     /**

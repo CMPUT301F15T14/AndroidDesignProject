@@ -2,6 +2,8 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 /*
  * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
@@ -50,6 +54,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
     }
 
     ImageButton imageButton;
+
+
+    Gson gson = new Gson();
+    //public static final int tradeItemSelected = 100;
+    public static final int offerItemSelected = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +100,39 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
             imageButton.setImageBitmap(game.getPicture());
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
         }
+        Button tradeItem  = (Button)findViewById(R.id.tradeButton);
+        tradeItem.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+                ObjParseSingleton.getInstance().addObject("tradegame", game);
+
+                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+
+                startActivity(myIntent);
+
+//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivityForResult(myIntent, 1);
+
+            }
+        });
+
+        Button offerItem  = (Button)findViewById(R.id.offerMyItemButton);
+        offerItem.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+
+                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+                myIntent.putExtra("offeredItem",gson.toJson(game));
+
+                setResult(offerItemSelected, myIntent);
+                finish();
+
+                //TODO: add item back if trade is cancelled
+            }
+        });
 
         editGame = (Button)findViewById(R.id.buttonEditItem);
         if (!inventorycontroller.clonable(ownerProfile)){
@@ -121,12 +162,13 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             }
         });
 
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == RESULT_OK){
+        if(requestCode == 1 && resultCode == RESULT_OK){
             finish();
         }
 
@@ -147,7 +189,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
     @Override
@@ -166,8 +212,8 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
-        }
+            Intent intent = new Intent(InventoryItemActivity.this, SettingActivity.class);
+            startActivity(intent);        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -181,7 +227,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
     public void appNotify(AppObservable observable) {
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
 }

@@ -49,10 +49,6 @@ public class InventoryController {
         stock.add(game);
     }
 
-    public void removeItem(Game game){
-        stock.remove(game);
-    }
-
     public void clearInventory(){
         stock.clear();
     }
@@ -97,7 +93,7 @@ public class InventoryController {
     }
 
     public boolean clonable(User user){
-        return UserSingleton.getInstance().getUser().getUserName()!=user.getUserName();
+        return UserSingleton.getInstance().getUser().getUserName() != user.getUserName();
     }
 
     public void clone(Game game,Context context){

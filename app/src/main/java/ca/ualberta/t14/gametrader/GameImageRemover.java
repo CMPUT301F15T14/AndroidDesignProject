@@ -1,9 +1,13 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class GameImageRemover extends Activity {
 
@@ -14,7 +18,11 @@ public class GameImageRemover extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_image_remover);
 
-        controller = new GameImageRemoverController(getApplicationContext(), this);
+        ArrayList<String> imageIdsList = (ArrayList<String>) ObjParseSingleton.getInstance().popObject("gameImagesList");
+        ArrayList<Uri> imageUriList = (ArrayList<Uri>) ObjParseSingleton.getInstance().popObject("imagesUriArray");
+
+        controller = new GameImageRemoverController(imageIdsList, imageUriList, getApplicationContext(), this);
+        controller.setOnClickButtons();
 
     }
 

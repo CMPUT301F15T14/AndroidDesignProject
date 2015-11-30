@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
-import ca.ualberta.t14.gametrader.es.data.SearchHit;
 
 /**
  * Talks to the elastic search user. Supports adding, loading, and updating users.
@@ -31,7 +30,12 @@ import ca.ualberta.t14.gametrader.es.data.SearchHit;
  * Created by jjohnsto on 11/26/15.
  */
 public class NetworkController implements AppObserver {
-    private final String netLocation = "http://cmput301.softwareprocess.es:8080/testing/t14/";
+
+
+    private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
+    private final String tradesLocation = "http://cmput301.softwareprocess.es:8080/t14/Trades/";
+
+    Boolean isInternetPresent;
 
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();
@@ -55,16 +59,19 @@ public class NetworkController implements AppObserver {
         System.err.println(esResponse);
 
         ArrayList<User> returnValue = new ArrayList<User>();
-        for (ElasticSearchResponse<User> r : esResponse.getHits()) {
-            User result = r.getSource();
-            User ret = new User();
-            ret.setAddress(result.getAddress());
-            ret.setPhoneNumber(result.getPhoneNumber());
-            ret.setAndroidID(result.getAndroidID());
-            ret.setUserName(result.getUserName());
-            ret.setEmail(result.getEmail());
+        if(esResponse.getHits()!=null) {
+            for (ElasticSearchResponse<User> r : esResponse.getHits()) {
+                User result = r.getSource();
+                User ret = new User();
+                ret.setAddress(result.getAddress());
+                ret.setPhoneNumber(result.getPhoneNumber());
+                ret.setAndroidID(result.getAndroidID());
+                ret.setUserName(result.getUserName());
+                ret.setEmail(result.getEmail());
+                ret.setInventory(result.getInventory());
 
-            returnValue.add(ret);
+                returnValue.add(ret);
+            }
         }
 
         return returnValue;
@@ -84,6 +91,13 @@ public class NetworkController implements AppObserver {
         System.out.println("Trying to write user to: " + netLocation+user.getAndroidID());
 
         StringEntity stringentity = null;
+
+        isInternetPresent = MainActivity.networkConnectivity.isConnectingToInternet();
+
+        while(!isInternetPresent){
+            isInternetPresent = MainActivity.networkConnectivity.isConnectingToInternet();
+        }
+
         try {
             stringentity = new StringEntity(gson.toJson(user));
         } catch (UnsupportedEncodingException e) {
@@ -146,6 +160,9 @@ public class NetworkController implements AppObserver {
             // We get the recipe from it!
             user = esResponse.getSource();
 
+            System.out.println(user.toString());
+
+            return user;
         } catch (ClientProtocolException e) {
 
             e.printStackTrace();
@@ -158,6 +175,83 @@ public class NetworkController implements AppObserver {
         return user;
     }
 
+    public void PostTrade(Trade trade) {
+        HttpPost httpPost = new HttpPost(tradesLocation + trade.getOwner().getAndroidID());
+
+        StringEntity stringentity = null;
+        try {
+            stringentity = new StringEntity(gson.toJson(trade));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        httpPost.setHeader("Accept","application/json");
+
+        httpPost.setEntity(stringentity);
+        HttpResponse response = null;
+        try {
+            response = httpclient.execute(httpPost);
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        String status = response.getStatusLine().toString();
+        System.out.println(status);
+        HttpEntity entity = response.getEntity();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
+
+            String output;
+            System.err.println("Output from Server -> ");
+
+            while ((output = br.readLine()) != null) {
+                System.err.println(output);
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public ArrayList<Trade> GetMyTrades(String id) {
+        HttpPost searchRequest = new HttpPost(tradesLocation + id + "_search?pretty=1");
+
+        searchRequest.setHeader("Accept","application/json");
+
+        try {
+            HttpResponse response = httpclient.execute(searchRequest);
+
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
+
+            String json = getEntityContent(response);
+
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<User>>() {
+            }.getType();
+            ElasticSearchSearchResponse<Trade> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
+            System.err.println(esResponse);
+
+            ArrayList<Trade> returnValue = new ArrayList<Trade>();
+            if (esResponse.getHits() != null) {
+                for (ElasticSearchResponse<Trade> r : esResponse.getHits()) {
+                    Trade result = r.getSource();
+                    returnValue.add(result);
+                }
+
+                return returnValue;
+            }
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /**
      * NetworkController observers the User. Whenever the user edits their profile/inventory/games,
      * we want to send the updated data to the server.
@@ -165,13 +259,17 @@ public class NetworkController implements AppObserver {
      */
     public void appNotify(final AppObservable observable) {
         System.out.println("Network controller was notified");
+        final User test = UserSingleton.getInstance().getUser();
+
+        System.out.println("My name is: " + test.getUserName());
+
         if(observable.getClass() == User.class){
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         System.out.println("Updating user...");
-                        AddUser((User) observable);
+                        AddUser(test);
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -205,9 +303,5 @@ public class NetworkController implements AppObserver {
         }
         System.err.println("JSON:"+json);
         return json;
-    }
-
-    public void ShitFuckingNothing() {
-
     }
 }

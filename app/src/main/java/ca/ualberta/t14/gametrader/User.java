@@ -42,7 +42,7 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         return friends;
     }
 
-    Friends friends = new Friends();
+    private transient Friends friends;
 
     public User() {
         // if a user file already exists simply load it from the file
@@ -51,6 +51,8 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         inventory = new Inventory();
         inventory.addObserver(this);
         pm = new PictureManager();
+
+        friends = new Friends();
     }
 
     public PictureManager getPictureManager() {
