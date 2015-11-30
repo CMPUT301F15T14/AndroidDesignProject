@@ -46,6 +46,7 @@ public class EditTradeActivity extends Activity {
     private ArrayAdapter<String> adapter1;
     private ListView GameAskList;
     private ListView GameOfferList;
+    private Trade currentTrade;
     Game game;
     Game g1;
     Game g2;
@@ -64,23 +65,28 @@ public class EditTradeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade);
 
-        g1 = (Game) ObjParseSingleton.getInstance().popObject("tradegame");
-        if( g1 == null) {
-            throw new RuntimeException("Null game passed to trade activity.");
-        }
-        User tradingWith = (User)ObjParseSingleton.getInstance().popObject("tradeGameOwner");
-        if(tradingWith == null){
-            throw new RuntimeException("Trade activity was not passed a user.");
-        }
-        Trade currentTrade = new Trade(new Game(), new User(), new User());
-        try {
-            currentTrade.loadJson("currentTrade", getBaseContext());
-        }
-        catch(IOException e) {
-            e.printStackTrace();
-        }
-        if(currentTrade == null) {
+        Trade trade = (Trade) ObjParseSingleton.getInstance().popObject("trade");
+        if (trade == null) {
+            g1 = (Game) ObjParseSingleton.getInstance().popObject("tradegame");
+            if (g1 == null) {
+                throw new RuntimeException("Null game passed to trade activity.");
+            }
+            User tradingWith = (User) ObjParseSingleton.getInstance().popObject("tradeGameOwner");
+            if (tradingWith == null) {
+                throw new RuntimeException("Trade activity was not passed a user.");
+            }
+            currentTrade = new Trade(new Game(), new User(), new User());
+            try {
+                currentTrade.loadJson("currentTrade", getBaseContext());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (currentTrade == null) {
 
+            }
+        }
+        else {
+            currentTrade = trade;
         }
 
         //  Array reserved for storing names of game.
