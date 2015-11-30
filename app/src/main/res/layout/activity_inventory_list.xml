@@ -28,7 +28,8 @@
         android:background="#0e97f1"
         android:visibility="visible"
         android:layout_below="@+id/searchInventoryButton"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp" />
 
     <EditText
         android:layout_width="match_parent"

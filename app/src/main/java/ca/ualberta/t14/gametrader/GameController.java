@@ -85,6 +85,10 @@ public class GameController {
         //model.notifyAllObservers();
     }
 
+    public Bitmap setPreviewImage(Uri uri, ContentResolver contentResolver) {
+        return resolveUri(uri, contentResolver);
+    }
+
     /**
      * Given game, it will add the bitmap given to the game.
      * @param game the game to receive the image.
@@ -99,7 +103,6 @@ public class GameController {
         if(selectedImage != null) {
             success = game.setPicture(selectedImage, context);
             selectedImage = null;
-            success = Boolean.TRUE;
         }
         return success;
     }
@@ -124,10 +127,9 @@ public class GameController {
      * @param game the game to be removed
      * @param user the user who's inventory he game is to be deleted from.
      */
-    public void removeGame(Game game, User user) {
-        // TODO: removeGame will remove the entry from the inventory.
+    public void removeGame(Game game, User user, Context context) {
         if(isOwner(game, user)) {
-            user.getInventory().remove(game);
+            user.getInventory().remove(game, context);
         }
     }
 

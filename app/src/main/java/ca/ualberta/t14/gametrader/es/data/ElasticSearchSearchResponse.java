@@ -11,7 +11,10 @@ public class ElasticSearchSearchResponse<T> {
     Hits<T> hits;
     boolean exists;
     public Collection<ElasticSearchResponse<T>> getHits() {
-        return hits.getHits();
+        if(hits!=null)
+            return hits.getHits();
+        else
+            return null;
     }
     public Collection<T> getSources() {
         Collection<T> out = new ArrayList<T>();

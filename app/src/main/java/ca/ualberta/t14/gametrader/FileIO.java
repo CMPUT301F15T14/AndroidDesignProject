@@ -90,7 +90,7 @@ public class FileIO {
      * @param fileName - String to name the file you want to create
      * @param context - getApplicationContext()
      */
-    public void saveJsonWithObject(Object objectToSaveInJson, String fileName, Context context){
+    public static void saveJsonWithObject(Object objectToSaveInJson, String fileName, Context context){
         Gson gson = new Gson();
         String stringObject = gson.toJson(objectToSaveInJson);
         try {
@@ -119,7 +119,7 @@ public class FileIO {
      * @return
      * @throws IOException
      */
-    public Object loadJsonGivenObject(String fileName, Context context, Object objectToGetClass) throws IOException {
+    public static Object loadJsonGivenObject(String fileName, Context context, Object objectToGetClass) throws IOException {
         FileInputStream input = context.openFileInput(fileName);
         BufferedReader myReader = new BufferedReader(new InputStreamReader(input));
 
@@ -138,7 +138,7 @@ public class FileIO {
      * @param context - getApplicationContext();
      * @return Returns true if successfully removed file. Returns false if removal failed, or file does not exist.
      */
-    public boolean removeFile(String fileName, Context context){
+    public static boolean removeFile(String fileName, Context context){
         //Taken from stackoverflow --> http://stackoverflow.com/questions/13205385/how-to-check-if-file-is-available-in-internal-memory
         String path=context.getFilesDir().getAbsolutePath() + "/" + fileName;
         File file = new File( path );

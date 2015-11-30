@@ -1,6 +1,7 @@
 package ca.ualberta.t14.gametrader;
 
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,15 +16,19 @@ import java.util.Queue;
  */
 public class FriendsController {
     Friends model;
-    PriorityQueue<String> MostRecentUpdates = new PriorityQueue<String>();
+
+    public static PriorityQueue<String> getMostRecentUpdates() {
+        return MostRecentUpdates;
+    }
+
+    static PriorityQueue<String> MostRecentUpdates = new PriorityQueue<String>();
 
     FriendsController(Friends friends) {
         model = friends;
     }
 
     /**
-     * Adds another user in the network as a friend. We will see updates from them and be able
-     * to browse their publicly listed items.
+     * Talks to the nextwork in another thread when adding a friend.
      * @param friend is the User we wish to add.
      */
     private class AddFriendThread extends AsyncTask<String, Integer, User> {
@@ -50,12 +55,22 @@ public class FriendsController {
         protected void onPostExecute(User result) {
             super.onPostExecute(result);
             if(result != null) {
-                System.out.println(result.getUserName());
+                for(User friend : model.GetFriends()){
+                    if(friend.getAndroidID() == result.getAndroidID()){ // don't add an existing friend
+                        return;
+                    }
+                }
+                System.out.println("Adding: " + result.getUserName());
                 model.AddFriend(result);
             }
         }
     }
 
+    /**
+     * Searches the sever for a User with the given user name. If found (and not already in the frineds
+     * list) they are added as a friend.
+     * @param name
+     */
     public void AddFriend(String name) {
         new AddFriendThread().execute(name);
     }
