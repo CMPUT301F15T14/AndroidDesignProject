@@ -75,6 +75,7 @@ public class ProfileActivity extends Activity {
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ObjParseSingleton.getInstance().addObject("User", user);
                 Intent intent = new Intent(ProfileActivity.this, InventoryListActivity.class);
                 startActivity(intent);
                 finish();
@@ -101,8 +102,8 @@ public class ProfileActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
-        }
+            Intent intent = new Intent(ProfileActivity.this, SettingActivity.class);
+            startActivity(intent);        }
 
         return super.onOptionsItemSelected(item);
     }

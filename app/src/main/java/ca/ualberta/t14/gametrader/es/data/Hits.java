@@ -5,7 +5,6 @@ import java.util.List;
 
 import java.util.Collection;
 
-
 public class Hits<T> {
 	int total;
 	double max_score;

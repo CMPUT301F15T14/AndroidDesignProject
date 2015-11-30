@@ -18,6 +18,9 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 import java.util.ArrayList;
 
 /**
@@ -90,6 +93,7 @@ public class Trade extends FileIO implements AppObservable{
         status = TradeStatus.OWNERAPPROVAL;
         observers = new ArrayList<AppObserver>();
         //tradeId = randomly generated number?
+        //or just set the tradeId = 0; and generate it from later function
     }
 
     /**

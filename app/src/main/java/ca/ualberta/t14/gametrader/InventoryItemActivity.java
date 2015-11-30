@@ -11,6 +11,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 /*
  * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
@@ -30,7 +33,7 @@ import android.widget.TextView;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-public class InventoryItemActivity extends Activity {
+public class InventoryItemActivity extends Activity implements AppObserver {
 
     Game game;
     InventoryController inventorycontroller;
@@ -44,6 +47,11 @@ public class InventoryItemActivity extends Activity {
     TextView address;
     ImageButton imageButton;
 
+
+    Gson gson = new Gson();
+    public static final int tradeItemSelected = 100;
+    public static final int offerItemSelected = 101;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,10 +62,14 @@ public class InventoryItemActivity extends Activity {
             game = new Game();
         }
 
+        game.addObserver(this);
+
         ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
         if(ownerProfile == null) {
             throw new RuntimeException("Received null User for game owner.");
         }
+
+        inventorycontroller = new InventoryController(ownerProfile.getInventory());
 
         gameTitle = (TextView) findViewById(R.id.gameInfoTitle);
         platform = (TextView) findViewById(R.id.gameInfoConsole);
@@ -76,18 +88,56 @@ public class InventoryItemActivity extends Activity {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         // Important, have to load bitmap from it's json first! Because bitmap is volatile.
-        String imageJson = UserSingleton.getInstance().getUser().getPictureManager().loadImageJsonFromJsonFile(game.getPictureId(), getApplicationContext());
+        String imageJson = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
             imageButton.setImageBitmap(game.getPicture());
         }
+        Button tradeItem  = (Button)findViewById(R.id.tradeButton);
+        tradeItem.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+                ObjParseSingleton.getInstance().addObject("tradegame", game);
+
+                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+
+                startActivity(myIntent);
+
+//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivityForResult(myIntent, 1);
+
+            }
+        });
+
+        Button offerItem  = (Button)findViewById(R.id.offerMyItemButton);
+        offerItem.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+
+//                ObjParseSingleton.getInstance().addObject("offergame", game);
+
+                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+                myIntent.putExtra("offeredItem",gson.toJson(game));
+
+//                InventoryController ic = new InventoryController(UserSingleton.getInstance().getUser().getInventory());
+//                ic.removeItem(game);
+                setResult(offerItemSelected, myIntent);
+                finish();
+
+                //TODO: add item back if trade is cancelled
+
+//                startActivity(myIntent);
+//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                startActivityForResult(myIntent, 1);
+
+            }
+        });
 
         final Button editGame = (Button)findViewById(R.id.buttonEditItem);
         if (!inventorycontroller.clonable(ownerProfile)){
             editGame.setText("Edit Game");
         }else{
             editGame.setText("Clone Game");
-        };
+        }
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 if (!inventorycontroller.clonable(ownerProfile)){
@@ -95,7 +145,9 @@ public class InventoryItemActivity extends Activity {
                     Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
                     startActivityForResult(myIntent, 1);
                 }else{
-                    inventorycontroller.clone(game);
+                    inventorycontroller.clone(game,getApplicationContext());
+                    Toast.makeText(InventoryItemActivity.this, "Game cloned to your inventory!", Toast.LENGTH_SHORT).show();
+
                 };
             }
         });
@@ -108,12 +160,13 @@ public class InventoryItemActivity extends Activity {
             }
         });
 
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == RESULT_OK){
+        if(requestCode == 1 && resultCode == RESULT_OK){
             finish();
         }
 
@@ -133,7 +186,8 @@ public class InventoryItemActivity extends Activity {
         phone.setText(ownerProfile.getPhoneNumber());
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
-        imageButton.setImageBitmap(game.getPicture());
+        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
     }
 
     @Override
@@ -152,8 +206,8 @@ public class InventoryItemActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
-        }
+            Intent intent = new Intent(InventoryItemActivity.this, SettingActivity.class);
+            startActivity(intent);        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -164,5 +218,10 @@ public class InventoryItemActivity extends Activity {
         startActivity(intent);
     }
 
+
+    public void appNotify(AppObservable observable) {
+        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+    }
 
 }

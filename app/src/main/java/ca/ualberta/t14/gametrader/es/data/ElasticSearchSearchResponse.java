@@ -1,6 +1,7 @@
 package ca.ualberta.t14.gametrader.es.data;
 
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 
