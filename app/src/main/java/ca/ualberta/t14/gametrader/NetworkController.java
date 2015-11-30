@@ -166,9 +166,8 @@ public class NetworkController implements AppObserver {
     }
 
     public void PostTrade(Trade trade) {
-        HttpPost httpPost = new HttpPost(tradesLocation+trade.getTradeId());
-
-        System.out.println("Trying to write user to: " + tradesLocation+trade.getTradeId());
+        HttpPost httpPost = new HttpPost(tradesLocation);//+trade.getTradeId());
+        //System.out.println("Trying to write user to: " + tradesLocation+trade.getTradeId());
 
         StringEntity stringentity = null;
         try {
@@ -196,7 +195,7 @@ public class NetworkController implements AppObserver {
         HttpEntity entity = response.getEntity();
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
-            
+
             String output;
             System.err.println("Output from Server -> ");
 

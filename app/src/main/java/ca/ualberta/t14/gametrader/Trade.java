@@ -69,15 +69,6 @@ public class Trade extends FileIO implements AppObservable{
     private User owner;
     private ArrayList<Game> ownerOffers;
 
-    public int getTradeId() {
-        return tradeId;
-    }
-
-    public void setTradeId(int tradeId) {
-        this.tradeId = tradeId;
-    }
-
-    private int tradeId;
     private String ownersComment;
     private TradeStatus status;
 
@@ -92,16 +83,15 @@ public class Trade extends FileIO implements AppObservable{
      *
      * @param game
      */
-    public Trade(Game game) {
+    public Trade(Game game, User owner, User borrower) {
+        this.owner = owner;
+        this.borrower = borrower;
         borrowerOffers = new ArrayList<Game>();
-        //borrower = current user
-        //owner = user with id
         ownerOffers = new ArrayList<Game>();
         ownerOffers.add(game);
         ownersComment = "";
         status = TradeStatus.OWNERAPPROVAL;
         observers = new ArrayList<AppObserver>();
-        //tradeId = randomly generated number?
         //or just set the tradeId = 0; and generate it from later function
     }
 
