@@ -158,7 +158,6 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         this.inventory = inventory;
     }
 
-
     /**
      * Adds a class to the observer's list
      * @param observer The observer to be added which wants to be notified on the update.

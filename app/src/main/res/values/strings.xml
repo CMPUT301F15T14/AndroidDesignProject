@@ -65,6 +65,8 @@
     <string name="searchNameText">Search By Name</string>
     <string name="delete">Delete</string>
     <string name="gameoffer">Offer Game</string>
+    <string name="deleteTrade">Delete Trade</string>
+    <string name="editTrade">Edit Trade</string>
 
     <string-array name="platforms_array">
         <item>PC</item>

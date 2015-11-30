@@ -41,6 +41,6 @@ public class TradingController {
     }
 
     public void deleteTrade(Trade trade) {
-        //TODO: 1.Remove trades with this tradeid from database
+        //delete trade from network
     }
 }

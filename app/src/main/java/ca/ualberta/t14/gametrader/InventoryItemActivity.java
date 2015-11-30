@@ -2,16 +2,13 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -119,7 +116,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
                 ObjParseSingleton.getInstance().addObject("tradegame", game);
 
-                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+                Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
 
                 startActivity(myIntent);
 
@@ -134,7 +131,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             public void onClick(View v) {
 
 
-                Intent myIntent = new Intent(InventoryItemActivity.this, TradeActivity.class);
+                Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
                 myIntent.putExtra("offeredItem",gson.toJson(game));
 
                 setResult(offerItemSelected, myIntent);

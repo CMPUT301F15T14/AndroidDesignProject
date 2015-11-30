@@ -20,6 +20,7 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,25 +29,34 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class TradeHistoryActivity extends Activity {
 
     private ArrayList<String> tradeName;
+    private ArrayList<Trade> myTrades;
     private ListView tradePendingList;
     private ArrayAdapter<String> adapter;
+    private NetworkController controller;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_history);
 
+        user = new User();
+
+        controller = new NetworkController();
+//        myTrades = controller.GetMyTrades(user.getAndroidID());
+        new GetTrades().execute(user.getAndroidID());
+
         tradeName = new ArrayList<String>();
-        //TODO: to fill tradeName, would you search through the database for trades that contain the user id?
-/*       tradeName.clear();
-        for(Game each : UserSingleton.getInstance().getUser().getInventory().getAllGames()) {
-            tradeName.add(each.getTitle());
-        } */
+        tradeName.clear();
+        for(Trade each : myTrades) {
+            tradeName.add(each.getTradeName());
+        }
 
         tradePendingList = (ListView)findViewById(R.id.tradePendingList);
         //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
@@ -55,10 +65,10 @@ public class TradeHistoryActivity extends Activity {
             public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
 
                 // assuming the adapter view order is same as the array game list order
-//                Game g = UserSingleton.getInstance().getUser().getInventory().getAllGames().get(position);
-//                ObjParseSingleton.getInstance().addObject("game", g);
+                Trade trade = myTrades.get(position);
+                ObjParseSingleton.getInstance().addObject("trade", trade);
 
-                Intent myIntent = new Intent(TradeHistoryActivity.this, InventoryItemActivity.class);
+                Intent myIntent = new Intent(TradeHistoryActivity.this, TradeActivity.class);
 
                 startActivity(myIntent);
             }
@@ -94,4 +104,22 @@ public class TradeHistoryActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private class GetTrades extends AsyncTask<String, Integer, ArrayList<Trade>> {
+        @Override
+        protected ArrayList<Trade> doInBackground(String... params) {
+            NetworkController nc = new NetworkController();
+            String userid = params[0];
+
+            ArrayList<Trade> results = nc.GetMyTrades(userid);
+
+            return results;
+        }
+
+        protected void onPostExecute(ArrayList<Trade> result) {
+            super.onPostExecute(result);
+            myTrades = result;
+        }
+    }
 }
+
