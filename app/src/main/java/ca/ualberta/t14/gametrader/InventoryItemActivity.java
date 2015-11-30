@@ -43,7 +43,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
     TextView additionalInfo;
     TextView phone;
     TextView address;
-    Button editGame;
+    private Button editGame;
 
     public Button getEditGame() {
         return editGame;
@@ -93,7 +93,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             imageButton.setImageBitmap(game.getPicture());
         }
 
-        Button editGame = (Button)findViewById(R.id.buttonEditItem);
+        editGame = (Button)findViewById(R.id.buttonEditItem);
         if (!inventorycontroller.clonable(ownerProfile)){
             editGame.setText("Edit");
         }else{

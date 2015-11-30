@@ -58,10 +58,20 @@ public class EditInventoryItemActivity extends Activity {
     private Button save;
     private Button delete;
     private ArrayList<Uri> uriList;
+    private AlertDialog deletDialogue;
+
+    public AlertDialog getDeletDialogue() {
+        return deletDialogue;
+    }
+
 
     public Button getSaveButton() {
         return save;
     }
+    public Button getDelete() {
+        return delete;
+    }
+
 
     public EditText getGameTitle() {
         return gameTitle;
@@ -243,10 +253,10 @@ public class EditInventoryItemActivity extends Activity {
         delete.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog SinglePrompt = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
-                SinglePrompt.setTitle("Warning");
-                SinglePrompt.setMessage("Are you sure you want to delete this item?");
-                SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                deletDialogue = new AlertDialog.Builder(EditInventoryItemActivity.this).create();
+                deletDialogue.setTitle("Warning");
+                deletDialogue.setMessage("Are you sure you want to delete this item?");
+                deletDialogue.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 InventoryController ic = new InventoryController(UserSingleton.getInstance().getUser().getInventory());
                                 ic.removeItem(g);
@@ -260,14 +270,14 @@ public class EditInventoryItemActivity extends Activity {
                         }
                 );
 
-                SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                deletDialogue.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
                         }
                 );
 
-                SinglePrompt.show();
+                deletDialogue.show();
             }
         });
     }

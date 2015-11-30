@@ -1,6 +1,9 @@
 package ca.ualberta.t14.gametrader;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Instrumentation;
+import android.content.DialogInterface;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,9 +29,10 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         Instrumentation.ActivityMonitor inventoryItemMonitor =
                 getInstrumentation().addMonitor(InventoryItemActivity.class.getName(),
                         null, false);
-        viewGameTest(listActivity,inventoryItemMonitor,GameList);
 
-        //deleteTest(inventoryItem,inventoryItemMonitor);
+        InventoryItemActivity inventoryItem=viewGameTest(listActivity, inventoryItemMonitor, GameList);
+
+        deleteTest(inventoryItem,GameList);
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(inventoryItemMonitor);
@@ -89,7 +93,7 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         assertEquals(expectedCount, actualCount);
     }
 
-    public void viewGameTest(InventoryListActivity listActivity,Instrumentation.ActivityMonitor inventoryItemMonitor,final ListView GameList){
+    public InventoryItemActivity viewGameTest(InventoryListActivity listActivity,Instrumentation.ActivityMonitor inventoryItemMonitor,final ListView GameList){
         listActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -107,9 +111,11 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
                 1, inventoryItemMonitor.getHits());
         assertEquals("Activity is of wrong type",
                 InventoryItemActivity.class, inventoryItem.getClass());
+
+        return inventoryItem;
     }
 
-    public void deleteTest(InventoryItemActivity inventoryItem,Instrumentation.ActivityMonitor inventoryItemMonitor){
+    public void deleteTest(InventoryItemActivity inventoryItem,ListView GameList){
         // Set up a new ActivityMonitor
         Instrumentation.ActivityMonitor deleteItemMonitor =
                 getInstrumentation().addMonitor(EditInventoryItemActivity.class.getName(),
@@ -127,14 +133,40 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         getInstrumentation().waitForIdleSync();
         // Validate that ReceiverActivity is started
         EditInventoryItemActivity deleteItem = (EditInventoryItemActivity)
-                inventoryItemMonitor.waitForActivityWithTimeout(1000);
+                deleteItemMonitor.waitForActivityWithTimeout(1000);
         assertNotNull("ReceiverActivity is null", deleteItem);
         assertEquals("Monitor for ReceiverActivity has not been called",
                 1, deleteItemMonitor.getHits());
         assertEquals("Activity is of wrong type",
                 EditInventoryItemActivity.class, deleteItem.getClass());
-        deleteItem.finish();
 
+        final Button delete=deleteItem.getDelete();
+        final Dialog dialog=deleteItem.getDeletDialogue();
+        deleteItem.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                delete.performClick();
+            }
+        });
+        getInstrumentation().waitForIdleSync();
+        final Button YesButton=((AlertDialog) (deleteItem.getDeletDialogue())).getButton(
+                DialogInterface.BUTTON_POSITIVE);
+        deleteItem.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog.isShowing()) {
+                    try {
+                        YesButton.performClick();
+                    } catch (Throwable e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        int expectedCount = 0;
+        int actualCount =GameList.getAdapter().getCount();
+        assertEquals(expectedCount, actualCount);
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(deleteItemMonitor);
     }
