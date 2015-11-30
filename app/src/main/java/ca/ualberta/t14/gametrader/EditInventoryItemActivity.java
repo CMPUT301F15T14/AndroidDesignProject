@@ -41,6 +41,7 @@ import java.util.ArrayList;
 public class EditInventoryItemActivity extends Activity {
 
     private final int PICK_IMAGE = 465132;
+    private final int REMOVE_IMAGE = 471326;
     private GameController gc;
     private Game g;
     private EditText gameTitle;
@@ -163,7 +164,6 @@ public class EditInventoryItemActivity extends Activity {
                     SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Remove Images", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     deletePicture();
-                                    Toast.makeText(EditInventoryItemActivity.this, "Picture Deleted!", Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
                                 }
                             }
@@ -243,8 +243,7 @@ public class EditInventoryItemActivity extends Activity {
                 SinglePrompt.setMessage("Are you sure you want to delete this item?");
                 SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                InventoryController ic = new InventoryController(UserSingleton.getInstance().getUser().getInventory());
-                                ic.removeItem(g);
+                                gc.removeGame(g, UserSingleton.getInstance().getUser(), getApplicationContext());
                                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
                                 UserSingleton.getInstance().getUser().notifyAllObservers();
                                 Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
@@ -268,8 +267,9 @@ public class EditInventoryItemActivity extends Activity {
     }
 
     private void deletePicture(){
-        //g.removePictureId(getApplicationContext());
-        imageButton.setImageResource(android.R.color.transparent);
+        Intent intent = new Intent(EditInventoryItemActivity.this, GameImageRemover.class);
+        ObjParseSingleton.getInstance().addObject("imagesUriArray", g.getPictureIds());
+        startActivityForResult(intent, REMOVE_IMAGE);
     }
 
     // Taken from http://javatechig.com/android/writing-image-picker-using-intent-in-android
@@ -286,6 +286,9 @@ public class EditInventoryItemActivity extends Activity {
                         imageButton.setImageBitmap(gc.setPreviewImage(uriList.get(0), getContentResolver()));
                     }
                 }
+                break;
+            case REMOVE_IMAGE:
+
                 break;
         }
     }

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /*
  * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
@@ -99,7 +100,9 @@ public class InventoryItemActivity extends Activity implements AppObserver {
                     Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
                     startActivityForResult(myIntent, 1);
                 }else{
-                    inventorycontroller.clone(game);
+                    inventorycontroller.clone(game,getApplicationContext());
+                    Toast.makeText(InventoryItemActivity.this, "Game cloned to your inventory!", Toast.LENGTH_SHORT).show();
+
                 };
             }
         });
@@ -168,6 +171,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         ObjParseSingleton.getInstance().addObject("userProfile", ownerProfile);
         startActivity(intent);
     }
+
 
     public void appNotify(AppObservable observable) {
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
