@@ -87,6 +87,7 @@ public class Game implements AppObservable {
         pictureId = new ArrayList<String>();
         quantities = 0;
         observers = new ArrayList<AppObserver>();
+        notifyAllObservers();
     }
 
     /**
@@ -113,6 +114,7 @@ public class Game implements AppObservable {
 
         this.quantities = game.getQuantities();
         this.observers = new ArrayList<AppObserver>();
+        notifyAllObservers();
     }
 
     /**
@@ -129,7 +131,6 @@ public class Game implements AppObservable {
         picture = null;
         quantities = 0;
         observers = new ArrayList<AppObserver>();
-
     }
 
 
@@ -292,6 +293,7 @@ public class Game implements AppObservable {
             PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToRemove(idToRemove, context);
             picture = null;
         }
+        notifyAllObservers();
         return success;
     }
 
@@ -303,6 +305,7 @@ public class Game implements AppObservable {
      */
     public Boolean setPictureFromJson(String jsonBitmap) {
         picture = PictureManager.getBitmapFromJson(jsonBitmap);
+        notifyAllObservers();
         return picture != null;
     }
 
