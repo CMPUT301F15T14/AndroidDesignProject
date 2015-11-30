@@ -40,8 +40,18 @@ public class InventoryItemActivity extends Activity implements AppObserver {
     Game game;
     InventoryController inventorycontroller;
     User ownerProfile;
-    TextView gameTitle;
-    TextView platform;
+
+    public String getGameTitle() {
+        return gameTitle.getText().toString();
+    }
+
+    private TextView gameTitle;
+
+    public String  getPlatform() {
+        return platform.getText().toString();
+    }
+
+    private TextView platform;
     TextView condition;
     TextView owner;
     TextView additionalInfo;
