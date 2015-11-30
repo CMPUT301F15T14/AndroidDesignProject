@@ -20,6 +20,7 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class TradeHistoryActivity extends Activity {
@@ -47,7 +49,8 @@ public class TradeHistoryActivity extends Activity {
         user = new User();
 
         controller = new NetworkController();
-        myTrades = controller.GetMyTrades(user.getAndroidID());
+//        myTrades = controller.GetMyTrades(user.getAndroidID());
+        new GetTrades().execute(user.getAndroidID());
 
         tradeName = new ArrayList<String>();
         tradeName.clear();
@@ -101,4 +104,22 @@ public class TradeHistoryActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    private class GetTrades extends AsyncTask<String, Integer, ArrayList<Trade>> {
+        @Override
+        protected ArrayList<Trade> doInBackground(String... params) {
+            NetworkController nc = new NetworkController();
+            String userid = params[0];
+
+            ArrayList<Trade> results = nc.GetMyTrades(userid);
+
+            return results;
+        }
+
+        protected void onPostExecute(ArrayList<Trade> result) {
+            super.onPostExecute(result);
+            myTrades = result;
+        }
+    }
 }
+
