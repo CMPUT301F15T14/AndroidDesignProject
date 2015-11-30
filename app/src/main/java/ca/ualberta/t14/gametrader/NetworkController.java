@@ -149,6 +149,9 @@ public class NetworkController implements AppObserver {
             // We get the recipe from it!
             user = esResponse.getSource();
 
+            System.out.println(user.toString());
+
+            return user;
         } catch (ClientProtocolException e) {
 
             e.printStackTrace();
@@ -168,13 +171,17 @@ public class NetworkController implements AppObserver {
      */
     public void appNotify(final AppObservable observable) {
         System.out.println("Network controller was notified");
+        final User test = UserSingleton.getInstance().getUser();
+
+        System.out.println("My name is: " + test.getUserName());
+
         if(observable.getClass() == User.class){
             AsyncTask.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         System.out.println("Updating user...");
-                        AddUser((User) observable);
+                        AddUser(test);
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -208,9 +215,5 @@ public class NetworkController implements AppObserver {
         }
         System.err.println("JSON:"+json);
         return json;
-    }
-
-    public void ShitFuckingNothing() {
-
     }
 }

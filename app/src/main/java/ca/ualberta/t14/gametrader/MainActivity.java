@@ -139,7 +139,7 @@ public class MainActivity extends Activity {
 
         updates = (ListView) findViewById(R.id.friendUpdates);
 
-        //PostUpdates();
+        new checkForUpdates().execute("not much");
     }
 
     @Override
@@ -173,15 +173,25 @@ public class MainActivity extends Activity {
     }
 
 
-    public void PostUpdates() {
-        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
-        fc.UpdateFriends();
+    private class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
+        protected ArrayList<String> doInBackground(String... params) {
+            FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+            fc.UpdateFriends();
 
-        String newUpdate = fc.getMostRecentUpdates().poll();
-        while(newUpdate != null) {
-            updatesList.add(newUpdate);
+            ArrayList<String> foundUpdates = new ArrayList<String>();
+            String newUpdate = fc.getMostRecentUpdates().poll();
+            while(newUpdate != null) {
+                foundUpdates.add(newUpdate);
+                newUpdate = fc.getMostRecentUpdates().poll();
+            }
+
+            return foundUpdates;
+        }
+
+        protected void onPostExecute(ArrayList<String> result) {
+            super.onPostExecute(result);
+            updatesList.addAll(result);
             adapter.notifyDataSetChanged();
-            newUpdate = fc.getMostRecentUpdates().poll();
         }
     }
 
