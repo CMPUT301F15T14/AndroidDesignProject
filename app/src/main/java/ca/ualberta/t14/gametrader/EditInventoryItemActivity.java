@@ -44,6 +44,11 @@ public class EditInventoryItemActivity extends Activity {
     private GameController gc;
     private Game g;
     private EditText gameTitle;
+
+    public Spinner getSpinConsole() {
+        return spinConsole;
+    }
+
     private Spinner spinConsole;
     private Spinner spinCondition;
     private RadioButton radioShared;
@@ -247,7 +252,7 @@ public class EditInventoryItemActivity extends Activity {
                                 ic.removeItem(g);
                                 UserSingleton.getInstance().getUser().saveJson("MainUserProfile", getApplicationContext());
                                 UserSingleton.getInstance().getUser().notifyAllObservers();
-                                Toast.makeText(EditInventoryItemActivity.this, "Game Deleted!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditInventoryItemActivity.this, "Game has been deleted!", Toast.LENGTH_SHORT).show();
                                 setResult(RESULT_OK);
                                 finish();
                                 dialog.dismiss();

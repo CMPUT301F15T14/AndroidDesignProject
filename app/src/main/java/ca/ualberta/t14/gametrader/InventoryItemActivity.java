@@ -43,6 +43,12 @@ public class InventoryItemActivity extends Activity implements AppObserver {
     TextView additionalInfo;
     TextView phone;
     TextView address;
+    Button editGame;
+
+    public Button getEditGame() {
+        return editGame;
+    }
+
     ImageButton imageButton;
 
     @Override
@@ -87,11 +93,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             imageButton.setImageBitmap(game.getPicture());
         }
 
-        final Button editGame = (Button)findViewById(R.id.buttonEditItem);
+        Button editGame = (Button)findViewById(R.id.buttonEditItem);
         if (!inventorycontroller.clonable(ownerProfile)){
-            editGame.setText("Edit Game");
+            editGame.setText("Edit");
         }else{
-            editGame.setText("Clone Game");
+            editGame.setText("Clone");
         }
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -101,7 +107,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
                     startActivityForResult(myIntent, 1);
                 }else{
                     inventorycontroller.clone(game,getApplicationContext());
-                    Toast.makeText(InventoryItemActivity.this, "Game cloned to your inventory!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(InventoryItemActivity.this, "Game has been cloned to your inventory!", Toast.LENGTH_SHORT).show();
 
                 };
             }

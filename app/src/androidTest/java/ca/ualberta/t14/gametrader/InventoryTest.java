@@ -4,6 +4,8 @@ import android.app.Instrumentation;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -17,8 +19,26 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
 
     public void testViewInventory(){
         InventoryListActivity listActivity= (InventoryListActivity) getActivity();
-        final Button AddGame=listActivity.getAddGameButton();
 
+        final ListView GameList=listActivity.getGameList();
+        addGameTest(listActivity,GameList);
+        // Set up a new ActivityMonitor
+        Instrumentation.ActivityMonitor inventoryItemMonitor =
+                getInstrumentation().addMonitor(InventoryItemActivity.class.getName(),
+                        null, false);
+        viewGameTest(listActivity,inventoryItemMonitor,GameList);
+
+        //deleteTest(inventoryItem,inventoryItemMonitor);
+
+        // Remove the ActivityMonitor
+        getInstrumentation().removeMonitor(inventoryItemMonitor);
+
+        listActivity.getMobileArray().clear();
+
+    }
+
+    public void addGameTest(InventoryListActivity listActivity,final ListView GameList){
+        final Button AddGame=listActivity.getAddGameButton();
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(EditInventoryItemActivity.class.getName(),
@@ -27,7 +47,7 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         listActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-               AddGame.performClick();
+                AddGame.performClick();
             }
         });
 
@@ -44,11 +64,17 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
 
         final EditText gameTitle=addItemActivity.getGameTitle();
         final Button save=addItemActivity.getSaveButton();
+        final Spinner selectConsole=addItemActivity.getSpinConsole();
+
+        final int PC_POSITION=0;
+        final int XBOX_ONE_POSITION=7;
 
         addItemActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 gameTitle.setText("GTA V");
+                selectConsole.requestFocus();
+                selectConsole.setSelection(PC_POSITION);
                 save.performClick();
             }
         });
@@ -58,9 +84,59 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
 
-        listActivity.getMobileArray().clear();
-        addItemActivity.finish();
+        int expectedCount = 1;
+        int actualCount =GameList.getAdapter().getCount();
+        assertEquals(expectedCount, actualCount);
+    }
 
+    public void viewGameTest(InventoryListActivity listActivity,Instrumentation.ActivityMonitor inventoryItemMonitor,final ListView GameList){
+        listActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                GameList.performItemClick(GameList, 0, GameList.getItemIdAtPosition(0));
+            }
+        });
+
+        getInstrumentation().waitForIdleSync();
+
+        // Validate that ReceiverActivity is started
+        InventoryItemActivity inventoryItem = (InventoryItemActivity)
+                inventoryItemMonitor.waitForActivityWithTimeout(1000);
+        assertNotNull("ReceiverActivity is null", inventoryItem);
+        assertEquals("Monitor for ReceiverActivity has not been called",
+                1, inventoryItemMonitor.getHits());
+        assertEquals("Activity is of wrong type",
+                InventoryItemActivity.class, inventoryItem.getClass());
+    }
+
+    public void deleteTest(InventoryItemActivity inventoryItem,Instrumentation.ActivityMonitor inventoryItemMonitor){
+        // Set up a new ActivityMonitor
+        Instrumentation.ActivityMonitor deleteItemMonitor =
+                getInstrumentation().addMonitor(EditInventoryItemActivity.class.getName(),
+                        null, false);
+
+        final Button edit=inventoryItem.getEditGame();
+
+        inventoryItem.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                edit.performClick();
+            }
+        });
+
+        getInstrumentation().waitForIdleSync();
+        // Validate that ReceiverActivity is started
+        EditInventoryItemActivity deleteItem = (EditInventoryItemActivity)
+                inventoryItemMonitor.waitForActivityWithTimeout(1000);
+        assertNotNull("ReceiverActivity is null", deleteItem);
+        assertEquals("Monitor for ReceiverActivity has not been called",
+                1, deleteItemMonitor.getHits());
+        assertEquals("Activity is of wrong type",
+                EditInventoryItemActivity.class, deleteItem.getClass());
+        deleteItem.finish();
+
+        // Remove the ActivityMonitor
+        getInstrumentation().removeMonitor(deleteItemMonitor);
     }
 
     public void testSearch() {
