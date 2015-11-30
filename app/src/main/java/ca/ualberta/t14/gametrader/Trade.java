@@ -65,6 +65,15 @@ public class Trade extends FileIO implements AppObservable{
     private ArrayList<Game> borrowerOffers;
     private User owner;
     private ArrayList<Game> ownerOffers;
+
+    public int getTradeId() {
+        return tradeId;
+    }
+
+    public void setTradeId(int tradeId) {
+        this.tradeId = tradeId;
+    }
+
     private int tradeId;
     private String ownersComment;
     private TradeStatus status;
