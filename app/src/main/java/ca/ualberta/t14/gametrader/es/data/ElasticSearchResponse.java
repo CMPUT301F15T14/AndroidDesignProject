@@ -1,6 +1,5 @@
 package ca.ualberta.t14.gametrader.es.data;
 
-
 public class ElasticSearchResponse<T> {
     String _index;
     String _type;

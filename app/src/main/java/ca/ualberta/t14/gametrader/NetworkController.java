@@ -149,6 +149,9 @@ public class NetworkController implements AppObserver {
             // We get the recipe from it!
             user = esResponse.getSource();
 
+            System.out.println(user.toString());
+
+            return user;
         } catch (ClientProtocolException e) {
 
             e.printStackTrace();

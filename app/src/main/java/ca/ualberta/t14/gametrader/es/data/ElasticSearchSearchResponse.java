@@ -1,6 +1,7 @@
 package ca.ualberta.t14.gametrader.es.data;
 
 
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,7 +13,6 @@ public class ElasticSearchSearchResponse<T> {
     boolean exists;
     public Collection<ElasticSearchResponse<T>> getHits() {
         return hits.getHits();
-
     }
     public Collection<T> getSources() {
         Collection<T> out = new ArrayList<T>();
