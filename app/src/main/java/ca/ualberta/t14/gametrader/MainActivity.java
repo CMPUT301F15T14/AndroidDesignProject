@@ -12,10 +12,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import java.io.IOException;
+
 import java.util.ArrayList;
-import java.util.PriorityQueue;
-import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
@@ -60,12 +58,11 @@ public class MainActivity extends Activity {
         return settingsButton;
     }
 
-
     private ListView updates;
 
-    private static final long GET_DATA_INTERVAL = 300000;
-    TextView testingTextView;
     Handler hand = new Handler();
+    static NetworkConnectivity networkConnectivity;
+    Boolean isInternetPresent;
 
 
     @Override
@@ -76,8 +73,15 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        testingTextView = (TextView) findViewById(R.id.testingText);
-        hand.postDelayed(run, GET_DATA_INTERVAL);
+        hand.postDelayed(run, 60000);
+        /**
+         * Check Internet status
+         * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
+         * */
+
+        // creating network connection detector instance
+        networkConnectivity = new NetworkConnectivity(getApplicationContext());
+        isInternetPresent = networkConnectivity.isConnectingToInternet();
 
 
 
@@ -199,25 +203,9 @@ public class MainActivity extends Activity {
     Runnable run = new Runnable() {
         @Override
         public void run() {
-            /**
-             * Check Internet status
-             * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
-             * */
-            NetworkConnectivity networkConnectivity;
-            Boolean isInternetPresent = false;
-            // creating network connection detector instance
-            networkConnectivity = new NetworkConnectivity(getApplicationContext());
-
-            // get Internet status
+           // get Internet status
             isInternetPresent = networkConnectivity.isConnectingToInternet();
-
-            if (isInternetPresent){
-                testingTextView.setText("Connected to Internet");
-            } else {
-                testingTextView.setText("No Internet Connection");
-            }
-
-            hand.postDelayed(run, GET_DATA_INTERVAL);
+            hand.postDelayed(run, 60000);
         }
     };
 

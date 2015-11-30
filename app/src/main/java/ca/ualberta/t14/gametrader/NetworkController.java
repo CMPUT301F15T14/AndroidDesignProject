@@ -23,7 +23,6 @@ import java.util.ArrayList;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
-import ca.ualberta.t14.gametrader.es.data.SearchHit;
 
 /**
  * Talks to the elastic search user. Supports adding, loading, and updating users.
@@ -31,6 +30,8 @@ import ca.ualberta.t14.gametrader.es.data.SearchHit;
  * Created by jjohnsto on 11/26/15.
  */
 public class NetworkController implements AppObserver {
+    Boolean isInternetPresent;
+
     private final String netLocation = "http://cmput301.softwareprocess.es:8080/testing/t14/";
 
     private HttpClient httpclient = new DefaultHttpClient();
@@ -87,6 +88,13 @@ public class NetworkController implements AppObserver {
         System.out.println("Trying to write user to: " + netLocation+user.getAndroidID());
 
         StringEntity stringentity = null;
+
+        isInternetPresent = MainActivity.networkConnectivity.isConnectingToInternet();
+
+        while(!isInternetPresent){
+            isInternetPresent = MainActivity.networkConnectivity.isConnectingToInternet();
+        }
+
         try {
             stringentity = new StringEntity(gson.toJson(user));
         } catch (UnsupportedEncodingException e) {
