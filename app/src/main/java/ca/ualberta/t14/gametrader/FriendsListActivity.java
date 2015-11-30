@@ -2,6 +2,7 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,9 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 
-public class FriendsListActivity extends Activity {
+public class FriendsListActivity extends Activity implements AppObserver {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> friendsArrayList = new ArrayList<String>();
 
@@ -23,6 +25,8 @@ public class FriendsListActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        UserSingleton.getInstance().getUser().getFriends().addObserver(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
@@ -83,5 +87,17 @@ public class FriendsListActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void appNotify(AppObservable observable) {
+        friendsArrayList.clear();
+
+        for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+            friendsArrayList.add(friend.getUserName());
+        }
+        adapter.notifyDataSetChanged();
+
+        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+        //fc.WriteFriends(getApplicationContext());
     }
 }

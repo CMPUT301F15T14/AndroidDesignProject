@@ -30,9 +30,12 @@ import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
  * Created by jjohnsto on 11/26/15.
  */
 public class NetworkController implements AppObserver {
+
+    private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
+    private final String tradesLocation = "http://cmput301.softwareprocess.es:8080/t14/Trades/";
+
     Boolean isInternetPresent;
 
-    private final String netLocation = "http://cmput301.softwareprocess.es:8080/testing/t14/";
 
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();
@@ -170,6 +173,49 @@ public class NetworkController implements AppObserver {
         }
 
         return user;
+    }
+
+    public void PostTrade(Trade trade) {
+        HttpPost httpPost = new HttpPost(tradesLocation);//+trade.getTradeId());
+        //System.out.println("Trying to write user to: " + tradesLocation+trade.getTradeId());
+
+        StringEntity stringentity = null;
+        try {
+            stringentity = new StringEntity(gson.toJson(trade));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        httpPost.setHeader("Accept","application/json");
+
+        httpPost.setEntity(stringentity);
+        HttpResponse response = null;
+        try {
+            response = httpclient.execute(httpPost);
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        String status = response.getStatusLine().toString();
+        System.out.println(status);
+        HttpEntity entity = response.getEntity();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
+
+            String output;
+            System.err.println("Output from Server -> ");
+
+            while ((output = br.readLine()) != null) {
+                System.err.println(output);
+            }
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     /**
