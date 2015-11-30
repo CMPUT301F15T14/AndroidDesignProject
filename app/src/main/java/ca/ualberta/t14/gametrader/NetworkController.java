@@ -31,11 +31,11 @@ import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
  */
 public class NetworkController implements AppObserver {
 
+
     private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
     private final String tradesLocation = "http://cmput301.softwareprocess.es:8080/t14/Trades/";
 
     Boolean isInternetPresent;
-
 
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();

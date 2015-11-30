@@ -51,8 +51,7 @@ public class TradeActivity extends Activity {
     Game g1;
     Game g2;
     Button offerGameButton;
-    Button tradeAskButton;
-    //Button cancelTradeButtom;
+    Button offerTradeButton;
 
     public ListView getGameAskList() {
         return GameAskList;
@@ -122,17 +121,24 @@ public class TradeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
+                ObjParseSingleton.getInstance().addObject("User", UserSingleton.getInstance().getUser());
                 startActivityForResult(intent, 2);
             }
         });
-        tradeAskButton = (Button) findViewById(R.id.tradeAsk);
-        tradeAskButton.setOnClickListener(new View.OnClickListener() {
+
+
+        offerTradeButton = (Button) findViewById(R.id.makeTrade);
+        offerTradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(TradeActivity.this, InventoryListActivity.class);
-                startActivityForResult(intent, 1);
+                Intent intent = new Intent(TradeActivity.this, TradeHistoryActivity.class);
+                startActivity(intent);
+
             }
         });
+
+
+
     }
 
 
@@ -162,12 +168,16 @@ public class TradeActivity extends Activity {
     @Override
     protected void onStart(){
         super.onStart();
+
     }
+
+
 
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+
     }
 
     @Override
