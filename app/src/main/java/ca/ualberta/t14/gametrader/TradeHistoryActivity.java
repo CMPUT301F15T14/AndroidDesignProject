@@ -68,7 +68,7 @@ public class TradeHistoryActivity extends Activity {
                 Trade trade = myTrades.get(position);
                 ObjParseSingleton.getInstance().addObject("trade", trade);
 
-                Intent myIntent = new Intent(TradeHistoryActivity.this, InventoryItemActivity.class);
+                Intent myIntent = new Intent(TradeHistoryActivity.this, TradeActivity.class);
 
                 startActivity(myIntent);
             }
