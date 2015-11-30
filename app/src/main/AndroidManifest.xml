@@ -10,10 +10,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,56 +24,82 @@
         </activity>
         <activity
             android:name=".FriendsListActivity"
-            android:label="@string/title_activity_friends_list">
+            android:label="@string/title_activity_friends_list"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".InventoryListActivity"
-            android:label="@string/title_activity_inventory_list">
+            android:label="@string/title_activity_inventory_list"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/title_activity_profile" >
+            android:label="@string/title_activity_profile"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".EditProfileActivity"
-            android:label="@string/title_activity_edit_profile" >
+            android:label="@string/title_activity_edit_profile"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".InventoryItemActivity"
-            android:label="@string/title_activity_inventory_item" >
+            android:label="@string/title_activity_inventory_item"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".EditInventoryItemActivity"
-            android:label="@string/title_activity_edit_inventory_item" >
+            android:label="@string/title_activity_edit_inventory_item"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".SearchPageActivity"
-            android:label="@string/title_activity_search_page" >
+            android:label="@string/title_activity_search_page"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".SettingActivity"
-            android:label="@string/title_activity_setting" >
+            android:label="@string/title_activity_setting"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".TradeHistoryActivity"
-            android:label="@string/title_activity_trade_history" >
+            android:label="@string/title_activity_trade_history"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
             android:name=".TradeActivity"
             android:label="@string/title_activity_trade"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             >
         </activity>
         <activity
             android:name=".InventoryItemPictureViewer"
-            android:label="@string/title_activity_item_picture_viewer" >
+            android:label="@string/title_activity_item_picture_viewer"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
         <activity
-            android:name=".GameImageAdder"
-            android:label="@string/title_activity_game_image_adder" >
-        </activity>
+        android:name=".GameImageAdder"
+        android:label="@string/title_activity_game_image_adder"
+        android:screenOrientation="portrait"
+        android:configChanges="keyboardHidden|orientation|screenSize">
+    </activity>
         <activity
             android:name=".GameImageRemover"
-            android:label="@string/title_activity_game_image_remover" >
+            android:label="@string/title_activity_game_image_remover"
+            android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
     </application>
 

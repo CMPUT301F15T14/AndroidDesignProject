@@ -13,6 +13,7 @@ public class MainMenuController {
     User user = new User();
     SettingsMode settingsMode = new SettingsMode();
     NetworkController netCtrl = new NetworkController();
+    PictureNetworker pn = new PictureNetworker();
 
     /**
      * Initializes all singletons upon program start so that they are accessible by all activities
@@ -53,6 +54,13 @@ public class MainMenuController {
             UserSingleton.getInstance().getUser().setInstallationId(installationIdStr);
         }
 
+        // Try to load this device's Picture Manager and Networker.
+        try {
+            pn = (PictureNetworker) pn.loadJson(PictureNetworker.PictureNetworkId, context);
+            PictureNetworkerSingleton.getInstance().setPicNetMangager(pn);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         final Context c = context;
 

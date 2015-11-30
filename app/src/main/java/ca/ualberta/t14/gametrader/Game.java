@@ -105,7 +105,7 @@ public class Game implements AppObservable {
             for(String each : imgIds) {
                 String json = PictureManager.loadImageJsonFromJsonFile(each, context);
                 User deviceUser = UserSingleton.getInstance().getUser();
-                PictureManager pm = deviceUser.getPictureManager();
+                PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
                 String newId = pm.addImageToJsonFile(json, deviceUser, context);
                 this.pictureId.add(newId);
             }
@@ -289,6 +289,7 @@ public class Game implements AppObservable {
             // remove from local files
             success = PictureManager.removeFile(idToRemove, context);
             pictureId.remove(idToRemove);
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToRemove(idToRemove, context);
             picture = null;
         }
         return success;
@@ -323,9 +324,11 @@ public class Game implements AppObservable {
         }
 
         String pictureJsonable = PictureManager.getStringFromBitmap(picture);
-        PictureManager pm = UserSingleton.getInstance().getUser().getPictureManager();
+        PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
         String newIdImage = pm.addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
         pictureId.add(newIdImage);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToUpload(newIdImage, context);
+
         setPictureFromJson(PictureManager.loadImageJsonFromJsonFile(getFirstPictureId(), context));
 
         notifyAllObservers();

@@ -23,21 +23,21 @@ package ca.ualberta.t14.gametrader;
  * It can be used everywhere in the app to provide global access to the current user.
  * @author  Ryan Satyabrata
  */
-public class UserSingleton {
+public class PictureNetworkerSingleton {
     //Lazy init taken from https://en.wikipedia.org/wiki/Singleton_pattern#Lazy_initialization
-    private static transient UserSingleton instance;
-    private User u;
-    private UserSingleton() { u = new User(); }
+    private static transient PictureNetworkerSingleton instance;
+    private PictureNetworker pn;
+    private PictureNetworkerSingleton() { pn = new PictureNetworker(); }
 
     /**
      * Gets the instance of this singleton.
      * @return a reference to the instance of this class.
      */
-    public static UserSingleton getInstance() {
+    public static PictureNetworkerSingleton getInstance() {
         if(instance == null) {
             synchronized (UserSingleton.class) {
                 if(instance == null) {
-                    instance = new UserSingleton();
+                    instance = new PictureNetworkerSingleton();
                 }
             }
         }
@@ -45,15 +45,15 @@ public class UserSingleton {
     }
 
     /**
-     * Allows to set the User to a different User in this singleton.
-     * @param user the new user to replace the old user with.
+     * Allows to set the pictureNetworker to a different pictureNetworker in this singleton.
+     * @param picNetManager the new pictureNetworker to replace the old pictureNetworker with.
      */
-    public void setUser(User user) { u = user; }
+    public void setPicNetMangager(PictureNetworker picNetManager) { pn = picNetManager; }
 
     /**
      * Gets the user object inside the singleton.
      * @return returns the reference of the singleton's User object.
      */
-    public User getUser() { return u; }
+    public PictureNetworker getPicNetMangager() { return pn; }
 
 }
