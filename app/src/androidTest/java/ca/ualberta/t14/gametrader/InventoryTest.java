@@ -24,7 +24,15 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         InventoryListActivity listActivity= (InventoryListActivity) getActivity();
 
         final ListView GameList=listActivity.getGameList();
-        addGameTest(listActivity,GameList);
+        listActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                User testUser=new User();
+                UserSingleton.getInstance().setUser(testUser);
+                testUser.getInventory().clear();
+            }
+        });
+        addGameTest(listActivity, GameList);
         // Set up a new ActivityMonitor
         Instrumentation.ActivityMonitor inventoryItemMonitor =
                 getInstrumentation().addMonitor(InventoryItemActivity.class.getName(),
