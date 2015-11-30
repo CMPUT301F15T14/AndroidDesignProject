@@ -17,11 +17,11 @@ import java.util.Queue;
 public class FriendsController {
     Friends model;
 
-    public static PriorityQueue<String> getMostRecentUpdates() {
+    public PriorityQueue<String> getMostRecentUpdates() {
         return MostRecentUpdates;
     }
 
-    static PriorityQueue<String> MostRecentUpdates = new PriorityQueue<String>();
+    public PriorityQueue<String> MostRecentUpdates = new PriorityQueue<String>();
 
     FriendsController(Friends friends) {
         model = friends;
