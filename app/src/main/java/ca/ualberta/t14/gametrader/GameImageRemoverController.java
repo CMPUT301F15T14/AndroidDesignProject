@@ -91,7 +91,6 @@ public class GameImageRemoverController {
 
         DisplayMetrics dm = activity.getResources().getDisplayMetrics();
         int goodHeight = Math.round(0.6f * (dm.heightPixels / dm.density));
-        int middleHorizontal = Math.round(0.5f * dm.widthPixels);
 
         LinearLayout entry = new LinearLayout(context);
         entry.setOrientation(LinearLayout.VERTICAL);
@@ -103,14 +102,13 @@ public class GameImageRemoverController {
         checkBox.setId(idNum);
 
         // Taken from http://stackoverflow.com/questions/4641072/how-to-set-layout-weight-attribute-dynamically-from-code
-        checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT, 4.0f));
-        checkBox.setX(middleHorizontal);
+        checkBox.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 4.5f));
         checkBox.setBackgroundColor(Color.rgb(20, 130, 168));
         checkBox.setGravity(Gravity.CENTER);
 
         ImageView image = new ImageView(context);
         image.setImageBitmap(showImage);
-        image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 2.0f));
+        image.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1.5f));
 
         entry.addView(image, 0);
         entry.addView(checkBox, 1);

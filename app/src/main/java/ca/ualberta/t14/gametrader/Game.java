@@ -90,6 +90,32 @@ public class Game implements AppObservable {
     }
 
     /**
+     * Clone/copy constructor game for game class.
+     */
+    public Game(Game game, Context context) {
+        this.platform = game.getPlatform();
+        this.condition = game.getCondition();
+        this.title = game.getTitle();
+        this.sharableStatus = game.isShared();
+        this.additionalInfo = game.getAdditionalInfo();
+        this.picture = null;
+        ArrayList<String> imgIds = game.getPictureIds();
+        this.pictureId = new ArrayList<String>();
+        if(imgIds != null) {
+            for(String each : imgIds) {
+                String json = PictureManager.loadImageJsonFromJsonFile(each, context);
+                User deviceUser = UserSingleton.getInstance().getUser();
+                PictureManager pm = deviceUser.getPictureManager();
+                String newId = pm.addImageToJsonFile(json, deviceUser, context);
+                this.pictureId.add(newId);
+            }
+        }
+
+        this.quantities = game.getQuantities();
+        this.observers = new ArrayList<AppObserver>();
+    }
+
+    /**
      * Overridden constructor to set the title upon instantiation. Useful for testing inventory search
      * without too much bloat.
      * @param title the String used to instantiate the game's title
