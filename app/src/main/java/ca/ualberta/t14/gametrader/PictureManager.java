@@ -18,14 +18,17 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This is a manager for photos, the images will actually be stored in the elastic search online.
@@ -118,6 +121,21 @@ public class PictureManager extends FileIO {
             return decodedByte;
         }
         return null;
+    }
+
+    public static Bitmap resolveUri(Uri uri, ContentResolver contentResolver){
+        Bitmap selectedImage = null;
+        try {
+            InputStream imageStream = contentResolver.openInputStream(uri);
+
+            BitmapFactory.Options o = new BitmapFactory.Options();
+
+            selectedImage = BitmapFactory.decodeStream(imageStream, null, o);
+            imageStream.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return selectedImage;
     }
 
     public static Bitmap makeImageSmaller(Bitmap image) {
