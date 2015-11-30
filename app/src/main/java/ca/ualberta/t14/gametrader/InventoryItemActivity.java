@@ -2,6 +2,8 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -92,6 +94,8 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
             imageButton.setImageBitmap(game.getPicture());
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
         }
         Button tradeItem  = (Button)findViewById(R.id.tradeButton);
         tradeItem.setOnClickListener(new Button.OnClickListener() {
@@ -179,7 +183,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
     @Override
@@ -213,7 +221,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
     public void appNotify(AppObservable observable) {
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
 }

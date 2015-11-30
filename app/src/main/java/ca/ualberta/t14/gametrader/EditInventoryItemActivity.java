@@ -126,8 +126,11 @@ public class EditInventoryItemActivity extends Activity {
         imageIds = g.getPictureIds();
 
         String jsonStr = PictureManager.loadImageJsonFromJsonFile(g.getFirstPictureId(), getApplicationContext());
-        imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
-
+        if(!jsonStr.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        } else {
+            gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver(), this);
+        }
         addInputEvents();
         deleteItem();
     }
@@ -294,7 +297,7 @@ public class EditInventoryItemActivity extends Activity {
                 if(resultCode == RESULT_OK){
                     ArrayList<Uri> toAdd = imageReturnedIntent.getParcelableArrayListExtra("result");
                     uriList.addAll(toAdd);
-                    gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver());
+                    gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver(), this);
                 }
                 break;
             case REMOVE_IMAGE:
@@ -314,7 +317,7 @@ public class EditInventoryItemActivity extends Activity {
                             uriList.remove(each);
                         }
                     }
-                    gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver());
+                    gc.updateTemporaryImageBox(imageButton, imageIds, uriList, getApplicationContext(), getContentResolver(), this);
                 }
                 break;
         }
