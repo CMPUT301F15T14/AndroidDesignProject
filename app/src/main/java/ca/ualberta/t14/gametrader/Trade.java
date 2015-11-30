@@ -69,6 +69,8 @@ public class Trade extends FileIO implements AppObservable{
     private User owner;
     private ArrayList<Game> ownerOffers;
 
+    private String borrowerID;
+
     private String ownersComment;
     private TradeStatus status;
 
@@ -92,6 +94,8 @@ public class Trade extends FileIO implements AppObservable{
         ownersComment = "";
         status = TradeStatus.OWNERAPPROVAL;
         observers = new ArrayList<AppObserver>();
+
+        borrowerID = borrower.getAndroidID();
         //or just set the tradeId = 0; and generate it from later function
     }
 

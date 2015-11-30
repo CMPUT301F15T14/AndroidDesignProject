@@ -176,8 +176,7 @@ public class NetworkController implements AppObserver {
     }
 
     public void PostTrade(Trade trade) {
-        HttpPost httpPost = new HttpPost(tradesLocation);//+trade.getTradeId());
-        //System.out.println("Trying to write user to: " + tradesLocation+trade.getTradeId());
+        HttpPost httpPost = new HttpPost(tradesLocation + trade.getOwner().getAndroidID());
 
         StringEntity stringentity = null;
         try {
@@ -216,6 +215,41 @@ public class NetworkController implements AppObserver {
         catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Trade> GetMyTrades(String id) {
+        HttpPost searchRequest = new HttpPost(tradesLocation + id + "_search?pretty=1");
+
+        searchRequest.setHeader("Accept","application/json");
+
+        try {
+            HttpResponse response = httpclient.execute(searchRequest);
+
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
+
+            String json = getEntityContent(response);
+
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<User>>() {
+            }.getType();
+            ElasticSearchSearchResponse<Trade> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
+            System.err.println(esResponse);
+
+            ArrayList<Trade> returnValue = new ArrayList<Trade>();
+            if (esResponse.getHits() != null) {
+                for (ElasticSearchResponse<Trade> r : esResponse.getHits()) {
+                    Trade result = r.getSource();
+                    returnValue.add(result);
+                }
+
+                return returnValue;
+            }
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**
