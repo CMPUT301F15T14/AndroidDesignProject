@@ -89,9 +89,9 @@ public class TradeHistoryActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
+         public void onStart() {
         super.onStart();
-        adapter = new ArrayAdapter<String>(this, R.layout.list_item,R.id.tradePendingList,tradeName);
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item,R.id.listText,tradeName);
         tradePendingList.setAdapter(adapter);
     }
 
