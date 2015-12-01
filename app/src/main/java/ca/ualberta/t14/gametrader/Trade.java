@@ -81,7 +81,6 @@ public class Trade extends FileIO implements AppObservable{
      * initializes borrower based on user id and owner based on game owner's id
      * creates a blank comment for trade and set tradeStatus to OWNERAPPROVAL
      * initializes an empty list of observers
-     * and randomly generates a tradeId.
      *
      * @param game
      */
@@ -97,6 +96,11 @@ public class Trade extends FileIO implements AppObservable{
 
         borrowerID = borrower.getAndroidID();
         //or just set the tradeId = 0; and generate it from later function
+    }
+
+    public String getTradeName() {
+        String tradeName = "Trade " + ownerOffers.get(0).getTitle() + " for " + borrowerOffers.get(0).getTitle();
+        return tradeName;
     }
 
     /**
