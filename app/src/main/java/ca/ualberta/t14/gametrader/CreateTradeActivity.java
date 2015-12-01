@@ -109,11 +109,6 @@ public class CreateTradeActivity extends Activity {
         // later add observer observing the inventory:
         mobileArray1.clear();
 
-        if (g2 != null) {
-            mobileArray1.add(g2.getTitle());
-            createTradeController.borrowerAddGame(currentTrade, g2);
-        }
-
         GameAskList=(ListView)findViewById(R.id.tradeFor);
         GameOfferList =(ListView)findViewById(R.id.tradeOffer);
 
