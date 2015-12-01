@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 public class TradeHistoryActivity extends Activity implements AppObserver {
 
-    private ArrayList<String> tradeName = new ArrayList<String>();
+    private ArrayList<String> tradeName;
     private ArrayList<Trade> myTrades;
     private ListView tradePendingList;
     private ArrayAdapter<String> adapter;
@@ -44,6 +44,10 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_history);
+
+        tradeName = new ArrayList<String>();
+
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item,R.id.listText,tradeName);
 
         TradeNetworkerSingleton.getInstance().getTradeNetMangager().addObserver(this);
 
@@ -56,7 +60,7 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
         //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
         tradePendingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
-            public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
 
                 // assuming the adapter view order is same as the array game list order
                 Trade trade = myTrades.get(position);
@@ -67,6 +71,7 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
                 startActivity(myIntent);
             }
         });
+        tradePendingList.setAdapter(adapter);
     }
 
     private void updateAdapterLists(Boolean downloadNow) {
@@ -88,15 +93,9 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
             tradeName.add(each.getTradeName());
         }
 
+        // TODO: adapter in trade history crashes too for some reason. If this commented out, then to update it is u have to go back and open the activity again..
         //adapter.notifyDataSetChanged();
 
-    }
-
-    @Override
-         public void onStart() {
-        super.onStart();
-        adapter = new ArrayAdapter<String>(this, R.layout.list_item,R.id.listText,tradeName);
-        tradePendingList.setAdapter(adapter);
     }
 
     @Override

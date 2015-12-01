@@ -250,9 +250,11 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             if (esResponse.getHits() != null) {
                 for (ElasticSearchResponse<Trade> r : esResponse.getHits()) {
                     Trade result = r.getSource();
-                    if(result.getOwner().getAndroidID().compareTo(id) == 0) {
+                    //TODO: fix this. Make so the borrower and owner only can see their trades. This way here below causes some errors...
+                    //if(result.getOwner().getAndroidID().compareTo(id) == 0
+                    //        || result.getBorrower().getAndroidID().compareTo(id) == 0) {
                         returnValue.add(result);
-                    }
+                    //}
                 }
 
                 return returnValue;
@@ -321,14 +323,16 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
     @Override
     public void listenerNotify(int commandRequest) {
         final int command = commandRequest;
+        final String identidyNetTrade = UserSingleton.getInstance().getUser().getAndroidID();
+        final TradeNetworker tradeNetworker = TradeNetworkerSingleton.getInstance().getTradeNetMangager();
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-        TradeNetworker tradeNetworker = TradeNetworkerSingleton.getInstance().getTradeNetMangager();
+
         switch(command) {
             case TradeNetworker.PULL_TRADES:
-                ArrayList<Trade> tradingsOnline = GetMyTrades(UserSingleton.getInstance().getUser().getAndroidID());
+                ArrayList<Trade> tradingsOnline = GetMyTrades(identidyNetTrade);
                 tradeNetworker.setAllTradesOnNet(tradingsOnline);
                 break;
             case TradeNetworker.PUSH_TRADES:
