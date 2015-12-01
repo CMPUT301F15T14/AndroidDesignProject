@@ -71,6 +71,7 @@ public class EditTradeActivity extends Activity {
             if (g1 == null) {
                 throw new RuntimeException("Null game passed to trade activity.");
             }
+            g2 = (Game) ObjParseSingleton.getInstance().popObject("offergame");
             User tradingWith = (User) ObjParseSingleton.getInstance().popObject("tradeGameOwner");
             if (tradingWith == null) {
                 throw new RuntimeException("Trade activity was not passed a user.");
@@ -87,6 +88,8 @@ public class EditTradeActivity extends Activity {
         }
         else {
             currentTrade = trade;
+            g1 = currentTrade.getOwnerOffers().get(0);
+            g2 = currentTrade.getBorrowerOffers().get(0);
         }
 
         //  Array reserved for storing names of game.
@@ -101,7 +104,6 @@ public class EditTradeActivity extends Activity {
         // later add observer observing the inventory:
         mobileArray1.clear();
 
-        g2 = (Game) ObjParseSingleton.getInstance().popObject("offergame");
         if (g2 != null) {
             mobileArray1.add(g2.getTitle());
         }

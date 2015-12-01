@@ -23,6 +23,7 @@
     <string name="title_activity_search_page">Search</string>
     <string name="title_activity_setting">Setting</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_edit_trade">Edit Trade</string>
 
     <string name="AddInventory">Add Game to Inventory</string>
     <string name="inventoryList">Inventory List</string>

@@ -99,7 +99,8 @@ public class Trade extends FileIO implements AppObservable{
     }
 
     public String getTradeName() {
-        return "Trade " + ownerOffers.get(0).getTitle() + " for " + borrowerOffers.get(0).getTitle();
+        String tradeName = "Trade " + ownerOffers.get(0).getTitle() + " for " + borrowerOffers.get(0).getTitle();
+        return tradeName;
     }
 
     /**

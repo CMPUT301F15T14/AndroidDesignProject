@@ -80,10 +80,10 @@ public class TradeActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-        tradeForAdapter = new ArrayAdapter<String>(this, R.layout.text_view,R.id.tradeFor,ownerGame);
+        tradeForAdapter = new ArrayAdapter<String>(this, R.layout.text_view,R.id.GameList,ownerGame);
         tradeFor.setAdapter(tradeForAdapter);
 
-        tradeOfferAdapter = new ArrayAdapter<String>(this, R.layout.text_view,R.id.tradeOffer,borrowerGame);
+        tradeOfferAdapter = new ArrayAdapter<String>(this, R.layout.text_view,R.id.GameList,borrowerGame);
         tradeOffer.setAdapter(tradeOfferAdapter);
     }
 
