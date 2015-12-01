@@ -77,12 +77,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".TradeActivity"
+            android:name=".TradeEditActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_trade"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".EditTradeActivity"
+        <activity android:name=".CreateTradeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_edit_trade"
             android:screenOrientation="portrait">

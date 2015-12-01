@@ -211,7 +211,7 @@ public class InventoryListActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == InventoryItemActivity.offerItemSelected){
-            Intent intent = new Intent(InventoryListActivity.this, EditTradeActivity.class);
+            Intent intent = new Intent(InventoryListActivity.this, CreateTradeActivity.class);
             intent.putExtra("offeredItem", data.getStringExtra("offeredItem"));
             setResult(InventoryItemActivity.offerItemSelected, intent);
             Log.d("list",data.getStringExtra("offeredItem"));

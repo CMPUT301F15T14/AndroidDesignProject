@@ -18,7 +18,6 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,7 +33,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class EditTradeActivity extends Activity {
+public class CreateTradeActivity extends Activity {
     //private Spinner offerGameforTrade;
     //ArrayList<String> spinnerArray =  new ArrayList<String>();
 
@@ -48,6 +47,8 @@ public class EditTradeActivity extends Activity {
     private ListView GameAskList;
     private ListView GameOfferList;
     private Trade currentTrade;
+    private CreateTradeController createTradeController;
+    private User tradingWith;
     Game game;
     Game g1;
     Game g2;
@@ -73,11 +74,11 @@ public class EditTradeActivity extends Activity {
                 throw new RuntimeException("Null game passed to trade activity.");
             }
             g2 = (Game) ObjParseSingleton.getInstance().popObject("offergame");
-            User tradingWith = (User) ObjParseSingleton.getInstance().popObject("tradeGameOwner");
+            tradingWith = (User) ObjParseSingleton.getInstance().popObject("tradeGameOwner");
             if (tradingWith == null) {
                 throw new RuntimeException("Trade activity was not passed a user.");
             }
-            currentTrade = new Trade(new Game(), new User(), new User());
+            currentTrade = new Trade(g1, new User(), new User());
             try {
                 currentTrade.loadJson("currentTrade", getBaseContext());
             } catch (IOException e) {
@@ -92,13 +93,16 @@ public class EditTradeActivity extends Activity {
             g1 = currentTrade.getOwnerOffers().get(0);
             g2 = currentTrade.getBorrowerOffers().get(0);
         }
+        createTradeController = new CreateTradeController(getApplicationContext(), this);
+
+        createTradeController.setOwnerToTrade(currentTrade,tradingWith);
+        createTradeController.setBorrowerToTrade(currentTrade, UserSingleton.getInstance().getUser());
 
         //  Array reserved for storing names of game.
         mobileArray = new ArrayList<String>();
         // later add observer observing the inventory:
         mobileArray.clear();
         mobileArray.add(g1.getTitle());
-
 
         //  Array reserved for storing names of game.
         mobileArray1 = new ArrayList<String>();
@@ -107,17 +111,12 @@ public class EditTradeActivity extends Activity {
 
         if (g2 != null) {
             mobileArray1.add(g2.getTitle());
+            createTradeController.borrowerAddGame(currentTrade, g2);
         }
 
         GameAskList=(ListView)findViewById(R.id.tradeFor);
         GameOfferList =(ListView)findViewById(R.id.tradeOffer);
-        User mainUser = UserSingleton.getInstance().getUser();
-        try {
-            mainUser = (User) mainUser.loadJson("MainUserProfile", getApplicationContext());
-            UserSingleton.getInstance().setUser(mainUser);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         adapter=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray);
         GameAskList.setAdapter(adapter);
         adapter1=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray1);
@@ -127,7 +126,7 @@ public class EditTradeActivity extends Activity {
         offerGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(EditTradeActivity.this, InventoryListActivity.class);
+                Intent intent = new Intent(CreateTradeActivity.this, InventoryListActivity.class);
                 ObjParseSingleton.getInstance().addObject("User", UserSingleton.getInstance().getUser());
                 ObjParseSingleton.getInstance().addObject("isInTrade", new Boolean(Boolean.TRUE));
                 startActivityForResult(intent, 2);
@@ -141,7 +140,7 @@ public class EditTradeActivity extends Activity {
                 // push to network que
                 TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(currentTrade, UserSingleton.getInstance().getUser(), getApplicationContext());
 
-                Intent intent = new Intent(EditTradeActivity.this, TradeHistoryActivity.class);
+                Intent intent = new Intent(CreateTradeActivity.this, TradeHistoryActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -178,7 +177,7 @@ public class EditTradeActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(EditTradeActivity.this, SettingActivity.class);
+            Intent intent = new Intent(CreateTradeActivity.this, SettingActivity.class);
             startActivity(intent);
         }
 
@@ -209,6 +208,8 @@ public class EditTradeActivity extends Activity {
             Log.d("trade", data.getStringExtra("offeredItem"));
             Log.d("title", offer.getTitle());
             mobileArray1.add(offer.getTitle());
+            createTradeController.borrowerAddGame(currentTrade, offer);
+
             Log.d("arraysize", ""+mobileArray1.size());
             Log.d("array",mobileArray1.get(0));
             adapter1.notifyDataSetChanged();

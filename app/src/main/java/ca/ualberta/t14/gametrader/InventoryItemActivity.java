@@ -120,7 +120,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             offerItem.setVisibility(View.VISIBLE);
             offerItem.setOnClickListener(new Button.OnClickListener() {
                 public void onClick(View v) {
-                    Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
+                    Intent myIntent = new Intent(InventoryItemActivity.this, CreateTradeActivity.class);
                     myIntent.putExtra("offeredItem", gson.toJson(game));
 
                     ObjParseSingleton.getInstance().popObject("isInTrade");
@@ -139,7 +139,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
                     ObjParseSingleton.getInstance().addObject("tradegame", game);
                     ObjParseSingleton.getInstance().addObject("tradeGameOwner", ownerProfile);
 
-                    Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
+                    Intent myIntent = new Intent(InventoryItemActivity.this, CreateTradeActivity.class);
 
                     startActivity(myIntent);
                 }

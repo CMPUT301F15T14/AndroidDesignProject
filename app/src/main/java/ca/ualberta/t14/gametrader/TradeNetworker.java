@@ -48,6 +48,7 @@ public class TradeNetworker extends FileIO {
         String id = manager.addItemToTrack(tradeCreator, "trd");
         trade.setTradeId(id);
         this.tradeIdToUpload.add(trade);
+        saveJson(TradeNetworkId, context);
     }
 
     public ArrayList<Trade> getTradeToRemove() {
@@ -56,5 +57,6 @@ public class TradeNetworker extends FileIO {
 
     public void addTradeToRemoveList(Trade trade, Context context) {
         this.tradeIdToRemove.add(trade);
+        saveJson(TradeNetworkId, context);
     }
 }

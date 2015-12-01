@@ -9,14 +9,14 @@ import java.util.ArrayList;
 /**
  * Created by sboulet on 11/19/15.
  */
-public class TradingController {
+public class TradingEditController {
 
     private Context context;
     private Activity activity;
 
     private Trade model;
 
-    public TradingController(Trade trade, Context context, Activity activity) {
+    public TradingEditController(Trade trade, Context context, Activity activity) {
         model = trade;
         this.context = context;
         this.activity = activity;

@@ -20,17 +20,14 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class TradeHistoryActivity extends Activity {
@@ -61,6 +58,14 @@ public class TradeHistoryActivity extends Activity {
         trade1.addBorrowerGame(sonic);
 
         myTrades = new ArrayList<Trade>();
+
+        // first list all trades that have yet to be pushed to the network
+        ArrayList<Trade> toPushTrades = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getTradeToUpload();
+        for(Trade each : toPushTrades) {
+            myTrades.add(each);
+        }
+
+        // the test trade
         myTrades.add(trade1);
 
         tradeName.clear();
@@ -81,7 +86,7 @@ public class TradeHistoryActivity extends Activity {
                 Trade trade = myTrades.get(position);
                 ObjParseSingleton.getInstance().addObject("trade", trade);
 
-                Intent myIntent = new Intent(TradeHistoryActivity.this, TradeActivity.class);
+                Intent myIntent = new Intent(TradeHistoryActivity.this, TradeEditActivity.class);
 
                 startActivity(myIntent);
             }
