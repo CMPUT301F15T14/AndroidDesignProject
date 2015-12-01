@@ -122,13 +122,13 @@ public class EditTradeActivity extends Activity {
         adapter1=new ArrayAdapter<String>(this,R.layout.text_view,R.id.GameList,mobileArray1);
         GameOfferList.setAdapter(adapter1);
 
-
         offerGameButton = (Button) findViewById(R.id.offerGame);
         offerGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(EditTradeActivity.this, InventoryListActivity.class);
                 ObjParseSingleton.getInstance().addObject("User", UserSingleton.getInstance().getUser());
+                ObjParseSingleton.getInstance().addObject("isInTrade", new Boolean(Boolean.TRUE));
                 startActivityForResult(intent, 2);
             }
         });
