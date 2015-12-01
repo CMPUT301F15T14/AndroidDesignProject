@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -138,10 +139,8 @@ public class CreateTradeActivity extends Activity {
             public void onClick(View v) {
                 // push to network que
                 TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(currentTrade, UserSingleton.getInstance().getUser(), getApplicationContext());
-
-                Intent intent = new Intent(CreateTradeActivity.this, TradeHistoryActivity.class);
+                Toast.makeText(getApplicationContext(), "Trade submitted!", Toast.LENGTH_SHORT).show();
                 finish();
-                startActivity(intent);
 
             }
         });
