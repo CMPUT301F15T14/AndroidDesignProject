@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.IOException;
@@ -34,30 +35,42 @@ import java.util.ArrayList;
 
 public class TradeHistoryActivity extends Activity {
 
-    private ArrayList<String> tradeName;
+    private ArrayList<String> tradeName = new ArrayList<String>();
     private ArrayList<Trade> myTrades;
     private ListView tradePendingList;
     private ArrayAdapter<String> adapter;
     private NetworkController controller;
-    private User user;
+    private User user1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_history);
 
-        user = new User();
+        user1 = new User();
 
-        controller = new NetworkController();
-//        myTrades = controller.GetMyTrades(user.getAndroidID());
-        new GetTrades().execute(user.getAndroidID());
+        User user2 = new User();
 
-        tradeName = new ArrayList<String>();
+        Game mario = new Game();
+        mario.setTitle("Mario Kart 64");
+
+        Game sonic = new Game();
+        sonic.setTitle("Sonic Genesis");
+
+        final Trade trade1 = new Trade(mario, user1, user2);
+        trade1.addBorrowerGame(sonic);
+
+        myTrades = new ArrayList<Trade>();
+        myTrades.add(trade1);
+
         tradeName.clear();
         for(Trade each : myTrades) {
             tradeName.add(each.getTradeName());
         }
 
+//        controller = new NetworkController();
+//        myTrades = controller.GetMyTrades(user.getAndroidID());
+//        new GetTrades().execute(user.getAndroidID());
         tradePendingList = (ListView)findViewById(R.id.tradePendingList);
         //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
         tradePendingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,9 +89,9 @@ public class TradeHistoryActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
+         public void onStart() {
         super.onStart();
-        adapter = new ArrayAdapter<String>(this, R.layout.text_view,R.id.tradePendingList,tradeName);
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item,R.id.listText,tradeName);
         tradePendingList.setAdapter(adapter);
     }
 
@@ -105,7 +118,7 @@ public class TradeHistoryActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class GetTrades extends AsyncTask<String, Integer, ArrayList<Trade>> {
+/*    private class GetTrades extends AsyncTask<String, Integer, ArrayList<Trade>> {
         @Override
         protected ArrayList<Trade> doInBackground(String... params) {
             NetworkController nc = new NetworkController();
@@ -120,6 +133,6 @@ public class TradeHistoryActivity extends Activity {
             super.onPostExecute(result);
             myTrades = result;
         }
-    }
+    } */
 }
 

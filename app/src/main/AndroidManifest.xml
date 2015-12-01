@@ -100,6 +100,14 @@
             android:label="@string/title_activity_game_image_remover"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".CheatTradeActivity"
+            android:label="@string/title_activity_cheat_trade" >
+        </activity>
+        <activity
+            android:name=".CheatEditTradeActivity"
+            android:label="@string/title_activity_cheat_edit_trade" >
+        </activity>
     </application>
 
 </manifest>
