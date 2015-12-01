@@ -27,7 +27,8 @@ public class CreateTradeController {
         trade.addBorrowerGame(game);
     }
 
-    public void ownerAddGame(Trade trade, Game game) {
-        trade.addOwnerGame(game);
+    public void setOwnerComment(Trade trade, String comment) {
+        trade.setOwnersComment(comment);
     }
+
 }

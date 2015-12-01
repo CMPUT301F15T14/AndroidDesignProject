@@ -39,7 +39,6 @@ public class TradeEditActivity extends Activity {
 
         trade = (Trade) ObjParseSingleton.getInstance().popObject("trade");
         tradingEditController = new TradingEditController(trade, getApplicationContext(), this);
-        TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(trade, UserSingleton.getInstance().getUser(), getApplicationContext());
 
         ownerGame = new ArrayList<String>();
         ownerGame.clear();
