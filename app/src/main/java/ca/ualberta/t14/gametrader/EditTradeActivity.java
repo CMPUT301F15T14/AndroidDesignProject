@@ -18,6 +18,7 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -133,18 +134,29 @@ public class EditTradeActivity extends Activity {
             }
         });
 
-
         offerTradeButton = (Button) findViewById(R.id.makeTrade);
         offerTradeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // push to network que
+                TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(currentTrade, UserSingleton.getInstance().getUser(), getApplicationContext());
+
                 Intent intent = new Intent(EditTradeActivity.this, TradeHistoryActivity.class);
                 startActivity(intent);
-
+                finish();
             }
         });
 
-
+        Button cancelTradeButton = (Button) findViewById(R.id.cancelTrade);
+        cancelTradeButton.setOnClickListener( new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(ObjParseSingleton.getInstance().keywordExists("isInTrade")) {
+                    ObjParseSingleton.getInstance().popObject("isInTrade");
+                }
+                finish();
+            }
+        });
 
     }
 
