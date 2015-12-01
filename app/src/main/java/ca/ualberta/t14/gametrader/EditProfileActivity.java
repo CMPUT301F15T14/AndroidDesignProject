@@ -1,17 +1,109 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.LoginFilter;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import java.io.IOException;
 
+// Offers a set controls to change a user's information.
 public class EditProfileActivity extends Activity {
+
+    public EditText getProfileText() {
+        return profileText;
+    }
+
+    private EditText profileText;
+
+    public EditText getPhoneText() {
+        return phoneText;
+    }
+
+    private EditText phoneText;
+
+    public EditText getEmailText() {
+        return emailText;
+    }
+
+    private EditText emailText;
+
+    public EditText getAddressText() {
+        return addressText;
+    }
+
+    private EditText addressText;
+
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+
+    private Button saveButton;
+    private Button cancelEditProfileButton;
+
+    ProfileController profileController; // we need to instantiate this with an intent
+
+    public User getUser() { return user; }
+
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+        // Load user from JSON. The user contains Inventory.
+        user = UserSingleton.getInstance().getUser();
+
+        profileController = new ProfileController(user, this.getApplicationContext());
+
+        phoneText = (EditText) findViewById(R.id.phone);
+
+        profileText = (EditText) findViewById(R.id.profile);
+        emailText = (EditText) findViewById(R.id.email);
+        addressText = (EditText) findViewById(R.id.address);
+
+
+        profileText.setText(user.getUserName());
+        phoneText.setText(user.getPhoneNumber());
+        emailText.setText(user.getEmail());
+        addressText.setText(user.getAddress());
+
+        profileText.setMaxLines(1);
+        profileText.setLines(1);
+        InputFilter[] a = { new InputFilter.LengthFilter(14), new LoginFilter.UsernameFilterGeneric()};
+        profileText.setFilters(a);
+
+        saveButton = (Button) findViewById(R.id.saveProfileButton);
+        saveButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                profileController.SaveProfileEdits(profileText.getText().toString(),
+                        emailText.getText().toString(),
+                        addressText.getText().toString(),
+                        phoneText.getText().toString());
+                finish();
+
+                Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+
+        }
+        });
+
+        cancelEditProfileButton = (Button) findViewById(R.id.cancelButton);
+        cancelEditProfileButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
 
@@ -31,9 +123,11 @@ public class EditProfileActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(EditProfileActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
     }
+
 }

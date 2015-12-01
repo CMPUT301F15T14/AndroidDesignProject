@@ -7,32 +7,82 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 
 public class ProfileActivity extends Activity {
+    TextView userNameView;
+    TextView phoneView;
+    TextView emailView;
+    TextView addressView;
+
+    private Button editprof;
+
+    public Button getEditprofButton() {
+        return editprof;
+    }
+
+    private Button inventory;
+
+    public Button getInventoryButton() {
+        return inventory;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        Button editprof = (Button) findViewById(R.id.editProfile);
+        addressView = (TextView) findViewById(R.id.addressDisplay);
+        emailView = (TextView) findViewById(R.id.emailDisplay);
+        phoneView = (TextView) findViewById(R.id.phoneDisplay);
+        userNameView = (TextView) findViewById(R.id.userNameDisplay);
+
+        user = (User) ObjParseSingleton.getInstance().popObject("userProfile");
+
+        if(user == null){
+            throw new RuntimeException("ProfileActivity received null user.");
+        }
+
+        addressView.setText(user.getAddress());
+        emailView.setText(user.getEmail());
+        phoneView.setText(user.getPhoneNumber());
+        userNameView.setText(user.getUserName());
+
+        //Toast.makeText(this, mainUser.getAddress(), Toast.LENGTH_SHORT).show();
+
+
+        editprof = (Button) findViewById(R.id.editProfile);
         editprof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
-        Button inventory = (Button) findViewById(R.id.viewInventory);
+        inventory = (Button) findViewById(R.id.viewInventory);
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ObjParseSingleton.getInstance().addObject("User", user);
                 Intent intent = new Intent(ProfileActivity.this, InventoryListActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
+
+
     }
 
 
@@ -52,8 +102,8 @@ public class ProfileActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
-        }
+            Intent intent = new Intent(ProfileActivity.this, SettingActivity.class);
+            startActivity(intent);        }
 
         return super.onOptionsItemSelected(item);
     }

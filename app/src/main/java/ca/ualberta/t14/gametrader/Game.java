@@ -18,8 +18,12 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -38,7 +42,7 @@ public class Game implements AppObservable {
     /**
      * An enumeration of all the different video game consoles a game can be in this app.
      */
-    public enum Platform { PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
+    public enum Platform { PC, PLAYSTATION1, PLAYSTATION2, PLAYSTATION3, PLAYSTATION4,
         XBOX, XBOX360, XBOXONE, WII, WIIU, OTHER }
 
     /**
@@ -53,14 +57,25 @@ public class Game implements AppObservable {
     private String title;
     private Boolean sharableStatus;
     private String additionalInfo;
-    private Bitmap picture;
+
+
+    // TODO: many pictures to 1 item... see eclass prof. hindle's response:
+    //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
+    //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
+    //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
+    volatile transient private Bitmap picture;
+    private ArrayList<String> pictureId;
+
     private int quantities;
 
     // volatile because GSON shouldn't store this.
-    private volatile ArrayList<AppObserver> observers;
+    private transient volatile ArrayList<AppObserver> observers;
+
+    private static final String SEARCH_URL = "http://cmput301.softwareprocess.es:8080/cmput301f15t14/game/_search";
+
 
     /**
-     * Constructor for the Game class.Initializes its variables.
+     * Constructor for the Game class. Initializes variables to a default value..
      */
     public Game() {
         platform = Platform.OTHER;
@@ -69,11 +84,59 @@ public class Game implements AppObservable {
         sharableStatus = Boolean.FALSE;
         additionalInfo = "";
         picture = null;
+        pictureId = new ArrayList<String>();
+        quantities = 0;
+        observers = new ArrayList<AppObserver>();
+        notifyAllObservers();
+    }
+
+    /**
+     * Clone/copy constructor game for game class.
+     */
+    public Game(Game game, Context context) {
+        this.platform = game.getPlatform();
+        this.condition = game.getCondition();
+        this.title = game.getTitle();
+        this.sharableStatus = game.isShared();
+        this.additionalInfo = game.getAdditionalInfo();
+        this.picture = null;
+        ArrayList<String> imgIds = game.getPictureIds();
+        this.pictureId = new ArrayList<String>();
+        if(imgIds != null) {
+            for(String each : imgIds) {
+                String json = PictureManager.loadImageJsonFromJsonFile(each, context);
+                User deviceUser = UserSingleton.getInstance().getUser();
+                PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
+                String newId = pm.addImageToJsonFile(json, deviceUser, context);
+                this.pictureId.add(newId);
+            }
+        }
+
+        this.quantities = game.getQuantities();
+        this.observers = new ArrayList<AppObserver>();
+        notifyAllObservers();
+    }
+
+    /**
+     * Overridden constructor to set the title upon instantiation. Useful for testing inventory search
+     * without too much bloat.
+     * @param title the String used to instantiate the game's title
+     */
+    public Game(String title) {
+        platform = Platform.OTHER;
+        condition = Condition.NEW;
+        this.title = title;
+        sharableStatus = Boolean.FALSE;
+        additionalInfo = "";
+        picture = null;
         quantities = 0;
         observers = new ArrayList<AppObserver>();
     }
 
+
     /**
+     * The tag for the game of which platform it runs on.
+     * To be used in a View, e.g. to display what platform this game runs on.
      * Returns the platform the game was intended to run on.
      * @return the enumeration of target platform of the game.
      */
@@ -82,6 +145,8 @@ public class Game implements AppObservable {
     }
 
     /**
+     * The tag for the game of which platform it runs on.
+     * Should be used in a Controller where the user can set the Platform of the item.
      * Set the platform the game was intended to primarily run on.
      * @param platform the proper platform enumeration for the game. Use Platform.OTHER if it isn't listed.
      */
@@ -91,6 +156,8 @@ public class Game implements AppObservable {
     }
 
     /**
+     * The tag to find out what kind of condition this game is in.
+     * To be used in a View, e.g. to display the condition of the game.
      * Returns what condition the game is in.
      * @return the enumeration of the condition of the game.
      */
@@ -99,6 +166,8 @@ public class Game implements AppObservable {
     }
 
     /**
+     * The tag to find out what kind of condition this game is in.
+     * Should be used in a Controller where the user sets the condition of the item.
      * Set the condition the game is in.
      * @param condition the enumeration of the condition of the game.
      */
@@ -109,6 +178,8 @@ public class Game implements AppObservable {
 
     /**
      * Returns the title of the given game.
+     * Should be used when something wants to retrieve the title of the game item.
+     * To be used in a View, e.g. to display the title of the game.
      * @return a String containing the title.
      */
     public String getTitle() {
@@ -117,6 +188,7 @@ public class Game implements AppObservable {
 
     /**
      * Set the title of the game: the game's name.
+     * Should be used in a Controller where the user sets the title of the game.
      * @param title a String containing the game's name.
      */
     public void setTitle(String title) {
@@ -125,7 +197,8 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Returns a flag of whether or not the game is listed/shared.
+     * Returns a flag of whether or not the game is to be listed/shared.
+     * Should be used by the View or model to determine to show this or not or store it in a public list or not..
      * @return a Boolean if the game is listed/shared or not.
      */
     public Boolean isShared() {
@@ -133,7 +206,8 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Set the sharable flag of the game.
+     * Set the sharable flag of the game, whether the game will be listed/shared or not.
+     * Should be used by a Controller so the user can change the sharable flag.
      * @param sharableStatus the Boolean if TRUE then the game will be listed & shared.
      */
     public void setShared(Boolean sharableStatus) {
@@ -143,6 +217,7 @@ public class Game implements AppObservable {
 
     /**
      * Returns any additional info or description the game may have.
+     * Used by View so the additional information can be retrieved and displayed.
      * @return a String containing additional info or just an empty String if no info..
      */
     public String getAdditionalInfo() {
@@ -151,6 +226,7 @@ public class Game implements AppObservable {
 
     /**
      * Sets any additional info or description of the game.
+     * To be used in a Controller so the user can make changes to the additional information.
      * @param additionalInfo
      */
     public void setAdditionalInfo(String additionalInfo) {
@@ -160,6 +236,7 @@ public class Game implements AppObservable {
 
     /**
      * Returns the number of available copies of the game.
+     * To be used by a view to display the number of copies the owner has of this game.
      * @return the quantity available.
      */
     public int getQuantities() {
@@ -168,6 +245,7 @@ public class Game implements AppObservable {
 
     /**
      * Sets the numbner of available copies of the game.
+     * To be used in a Controller so the user can change the available copies they have of the game.
      * @param quantities the quantity available.
      */
     public void setQuantities(int quantities) {
@@ -177,6 +255,7 @@ public class Game implements AppObservable {
 
     /**
      * Get the picture of the game.
+     * To be used in a view so the picture (if any) can be displayed.
      * @return a Bitmap picture of the game.
      */
     public Bitmap getPicture() {
@@ -184,13 +263,81 @@ public class Game implements AppObservable {
     }
 
     /**
-     * Sets a picture for the game.
-     * @param image a Bitmap picture of the game.
+     * Get the picture identity of the first image, he picture identity is the filename of the image json on elastic search.
+     * To be used by the model so this picture can be identified and put in a JSON and put online.
+     * @return a string containing the picture identity that the filename is named as, or empty if no such image is set for this game.
      */
-    public void setPicture(Bitmap image) {
-        picture = image;
-        notifyAllObservers();
+    public String getFirstPictureId() {
+        if(!pictureId.isEmpty())
+            return pictureId.get(0);
+        return "";
     }
+
+    public ArrayList<String> getPictureIds() {
+        return pictureId;
+    }
+
+    public Boolean pictureIdIsEmpty() { return pictureId.isEmpty(); }
+
+    public Boolean hasPictureId(String id){
+        return pictureId.contains(id);
+    }
+
+    public Boolean removePictureId(String idToRemove, Context context) {
+        Boolean success = Boolean.FALSE;
+        if(!pictureId.isEmpty() && pictureId.contains(idToRemove)) {
+            // TODO get current picture id and remove it from the elastic search, (add to quene into network option that pushes pulls/updates the elastic search).
+            // remove from local files
+            success = PictureManager.removeFile(idToRemove, context);
+            pictureId.remove(idToRemove);
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToRemove(idToRemove, context);
+            picture = null;
+        }
+        notifyAllObservers();
+        return success;
+    }
+
+    /**
+     * sets the Bitmap of the game object to the json-able image given.
+     * To be used by a view when using game items from the network to retrieve the picture (if any) from the JSON format.
+     * @param jsonBitmap a string containing the byteArray of the bitmap encoded as a string in Base64.
+     * @return a Boolean: whether or not the image data could be decoded.
+     */
+    public Boolean setPictureFromJson(String jsonBitmap) {
+        picture = PictureManager.getBitmapFromJson(jsonBitmap);
+        notifyAllObservers();
+        return picture != null;
+    }
+
+    /**
+     * Sets a picture for the game.
+     * To be used by a Controller so the user can add an image to the game item.
+     * If image given is bigger than 65536 bytes it will be scaled down to with longest edge becoming 500, the aspect ratio is kept same.
+     * If image still is bigger than 65536 bytes, it will keep scaling it down by 25 pixels with longest edge, until the file size is strictly less than 65536 bytes.
+     * It also compresses the Bitmap to JPG with 85% compression quality so its JSON-able and stores the JSON to the game object.
+     * @param image a Bitmap picture of the game.
+     * @return a Boolean whether the image was set or not. If false, the provided Bitmap is invalid: has a dimension that is 0.
+     */
+    public Boolean setPicture(Bitmap image, Context context) {
+        if( image.getWidth() <=0 || image.getHeight() <= 0) {
+            return Boolean.FALSE;
+        } else {
+            // preserve aspect ratio of image and make it smaller if its bigger than 65.536KB
+            picture = PictureManager.makeImageSmaller(image);
+        }
+
+        String pictureJsonable = PictureManager.getStringFromBitmap(picture);
+        PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
+        String newIdImage = pm.addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
+        pictureId.add(newIdImage);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToUpload(newIdImage, context);
+
+        setPictureFromJson(PictureManager.loadImageJsonFromJsonFile(getFirstPictureId(), context));
+
+        notifyAllObservers();
+        return Boolean.TRUE;
+    }
+
 
     /**
      * The Game Model is observable thus anything wanting to obsserve can be added to the watch list.
@@ -200,10 +347,21 @@ public class Game implements AppObservable {
         observers.add(observer);
     }
 
-    private void notifyAllObservers() {
+    @Override
+    public void deleteObserver(AppObserver o) {
+        observers.remove(o);
+    }
+
+
+    public void notifyAllObservers() {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
+    }
+
+
+    public String getSearchUrl() {
+        return SEARCH_URL;
     }
 
 }

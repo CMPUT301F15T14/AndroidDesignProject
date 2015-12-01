@@ -1,17 +1,40 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Spinner;
 
 
 public class SearchPageActivity extends Activity {
+
+    private Spinner gameConsole;
+    private Game g;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_page);
+
+        gameConsole = (Spinner) findViewById(R.id.gameConsole);
+
+        g = (Game) ObjParseSingleton.getInstance().popObject("game");
+        if( g == null) {
+            g = new Game();
+        }
+
+        int i = 0;
+        for(Game.Platform p: Game.Platform.values()) {
+            if(p.equals(g.getPlatform())) {
+                break;
+            }
+            i += 1;
+        }
+        gameConsole.setSelection(i);
+
+
     }
 
 
@@ -31,7 +54,8 @@ public class SearchPageActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            Intent intent = new Intent(SearchPageActivity.this, SettingActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
