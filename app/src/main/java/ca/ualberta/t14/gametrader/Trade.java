@@ -36,7 +36,7 @@ import java.util.ArrayList;
  */
 public class Trade extends FileIO implements AppObservable{
 
-    private transient ArrayList<AppObserver> observers;
+    private volatile transient ArrayList<AppObserver> observers;
 
     @Override
     public void addObserver(AppObserver observer) {
@@ -50,6 +50,11 @@ public class Trade extends FileIO implements AppObservable{
 
 
     public void notifyAllObservers() {
+        // Since it's stored somewhere, and observers is transient,
+        // the constructor might not be called, resulting observers to be null.
+        if(observers == null) {
+            observers = new ArrayList<AppObserver>();
+        }
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }

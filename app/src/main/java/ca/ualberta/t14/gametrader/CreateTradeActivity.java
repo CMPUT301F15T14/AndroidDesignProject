@@ -67,6 +67,18 @@ public class CreateTradeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade);
 
+        createTradeController = new CreateTradeController(getApplicationContext(), this);
+
+        //  Array reserved for storing names of game.
+        mobileArray = new ArrayList<String>();
+        // later add observer observing the inventory:
+        mobileArray.clear();
+
+        //  Array reserved for storing names of game.
+        mobileArray1 = new ArrayList<String>();
+        // later add observer observing the inventory:
+        mobileArray1.clear();
+
         Trade trade = (Trade) ObjParseSingleton.getInstance().popObject("trade");
         if (trade == null) {
             g1 = (Game) ObjParseSingleton.getInstance().popObject("tradegame");
@@ -79,35 +91,27 @@ public class CreateTradeActivity extends Activity {
                 throw new RuntimeException("Trade activity was not passed a user.");
             }
             currentTrade = new Trade(g1, new User(), new User());
+            mobileArray.add(g1.getTitle());
             try {
                 currentTrade.loadJson("currentTrade", getBaseContext());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (currentTrade == null) {
-
-            }
+            createTradeController.setOwnerToTrade(currentTrade, tradingWith);
+            createTradeController.setBorrowerToTrade(currentTrade, UserSingleton.getInstance().getUser());
         }
         else {
             currentTrade = trade;
-            g1 = currentTrade.getOwnerOffers().get(0);
-            g2 = currentTrade.getBorrowerOffers().get(0);
+            // Get all Owners' offers
+            for (Game each: trade.getOwnerOffers()) {
+                mobileArray.add(each.getTitle());
+            }
+            // Get all Borrowser's offers
+            for (Game each: trade.getBorrowerOffers()) {
+                mobileArray1.add(each.getTitle());
+            }
+
         }
-        createTradeController = new CreateTradeController(getApplicationContext(), this);
-
-        createTradeController.setOwnerToTrade(currentTrade, tradingWith);
-        createTradeController.setBorrowerToTrade(currentTrade, UserSingleton.getInstance().getUser());
-
-        //  Array reserved for storing names of game.
-        mobileArray = new ArrayList<String>();
-        // later add observer observing the inventory:
-        mobileArray.clear();
-        mobileArray.add(g1.getTitle());
-
-        //  Array reserved for storing names of game.
-        mobileArray1 = new ArrayList<String>();
-        // later add observer observing the inventory:
-        mobileArray1.clear();
 
         GameAskList=(ListView)findViewById(R.id.tradeFor);
         GameOfferList =(ListView)findViewById(R.id.tradeOffer);
