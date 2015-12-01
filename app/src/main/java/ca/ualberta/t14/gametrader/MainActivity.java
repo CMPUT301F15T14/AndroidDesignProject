@@ -83,8 +83,6 @@ public class MainActivity extends Activity {
         networkConnectivity = new NetworkConnectivity(getApplicationContext());
         isInternetPresent = networkConnectivity.isConnectingToInternet();
 
-
-
         profileButton = (Button) findViewById(R.id.myProfile);
         profileButton.setOnClickListener(new View.OnClickListener() {
             @Override

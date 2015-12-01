@@ -39,7 +39,8 @@ public class TradeActivity extends Activity {
         tradeOffer = (ListView)findViewById(R.id.tradeOffer);
 
         trade = (Trade) ObjParseSingleton.getInstance().popObject("trade");
-        tradingController = new TradingController(trade);
+        tradingController = new TradingController(trade, getApplicationContext(), this);
+        TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(trade, UserSingleton.getInstance().getUser(), getApplicationContext());
 
         ownerGame = new ArrayList<String>();
         ownerGame.clear();

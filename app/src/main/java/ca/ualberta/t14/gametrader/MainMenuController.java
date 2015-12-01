@@ -14,6 +14,7 @@ public class MainMenuController {
     SettingsMode settingsMode = new SettingsMode();
     NetworkController netCtrl = new NetworkController();
     PictureNetworker pn = new PictureNetworker();
+    TradeNetworker tn = new TradeNetworker();
 
     /**
      * Initializes all singletons upon program start so that they are accessible by all activities
@@ -58,6 +59,14 @@ public class MainMenuController {
         try {
             pn = (PictureNetworker) pn.loadJson(PictureNetworker.PictureNetworkId, context);
             PictureNetworkerSingleton.getInstance().setPicNetMangager(pn);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Try to load this device's Trade Networker.
+        try {
+            tn = (TradeNetworker) tn.loadJson(TradeNetworker.TradeNetworkId, context);
+            TradeNetworkerSingleton.getInstance().setTradeNetMangager(tn);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -36,7 +36,7 @@ import java.util.ArrayList;
  */
 public class Trade extends FileIO implements AppObservable{
 
-    private volatile ArrayList<AppObserver> observers;
+    private transient ArrayList<AppObserver> observers;
 
     @Override
     public void addObserver(AppObserver observer) {
@@ -73,6 +73,8 @@ public class Trade extends FileIO implements AppObservable{
 
     private String ownersComment;
     private TradeStatus status;
+
+    private String tradeId;
 
     /**
      * creates a trade using a Game passed by the activity, adding it to ownerOffers.
@@ -237,5 +239,13 @@ public class Trade extends FileIO implements AppObservable{
     public void setStatus(TradeStatus status) {
         this.status = status;
         notifyAllObservers();
+    }
+
+    public String getTradeId() {
+        return tradeId;
+    }
+
+    public void setTradeId(String tradeId) {
+        this.tradeId = tradeId;
     }
 }
