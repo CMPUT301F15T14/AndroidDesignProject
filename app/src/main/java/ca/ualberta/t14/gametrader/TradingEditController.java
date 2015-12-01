@@ -1,16 +1,25 @@
 package ca.ualberta.t14.gametrader;
 
+import android.app.Activity;
+import android.content.Context;
+
+import java.lang.reflect.AccessibleObject;
 import java.util.ArrayList;
 
 /**
  * Created by sboulet on 11/19/15.
  */
-public class TradingController {
+public class TradingEditController {
+
+    private Context context;
+    private Activity activity;
 
     private Trade model;
 
-    public TradingController(Trade trade) {
+    public TradingEditController(Trade trade, Context context, Activity activity) {
         model = trade;
+        this.context = context;
+        this.activity = activity;
     }
 
     public Boolean isOwner(User user) {
@@ -41,6 +50,7 @@ public class TradingController {
     }
 
     public void deleteTrade(Trade trade) {
-        //delete trade from network
+        TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToRemoveList(trade, context);
+
     }
 }

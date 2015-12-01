@@ -110,36 +110,46 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         } else {
             imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
         }
-        Button tradeItem  = (Button)findViewById(R.id.tradeButton);
-        tradeItem.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
 
-                ObjParseSingleton.getInstance().addObject("tradegame", game);
+        Boolean isInTrade = ObjParseSingleton.getInstance().keywordExists("isInTrade");
+        Button tradeItem = (Button) findViewById(R.id.tradeButton);
+        Button offerItem = (Button) findViewById(R.id.offerMyItemButton);
 
-                Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
+        if(UserSingleton.getInstance().getUser().getInventory().contains(game) && isInTrade) {
+            // Show offerItem ONLY if game belongs to device user AND currently in a trade session.
+            offerItem.setVisibility(View.VISIBLE);
+            offerItem.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(InventoryItemActivity.this, CreateTradeActivity.class);
+                    myIntent.putExtra("offeredItem", gson.toJson(game));
 
-                startActivity(myIntent);
+                    ObjParseSingleton.getInstance().popObject("isInTrade");
+                    setResult(offerItemSelected, myIntent);
+                    finish();
 
-//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivityForResult(myIntent, 1);
+                    //TODO: add item back if trade is cancelled
+                }
+            });
+            tradeItem.setVisibility(View.INVISIBLE);
+        } else if (ownerProfile != UserSingleton.getInstance().getUser()){
+            // Trade item ONLY if the game currently viewing is not the current device user.
+            tradeItem.setVisibility(View.VISIBLE);
+            tradeItem.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    ObjParseSingleton.getInstance().addObject("tradegame", game);
+                    ObjParseSingleton.getInstance().addObject("tradeGameOwner", ownerProfile);
 
-            }
-        });
+                    Intent myIntent = new Intent(InventoryItemActivity.this, CreateTradeActivity.class);
 
-        Button offerItem  = (Button)findViewById(R.id.offerMyItemButton);
-        offerItem.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-
-                Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
-                myIntent.putExtra("offeredItem",gson.toJson(game));
-
-                setResult(offerItemSelected, myIntent);
-                finish();
-
-                //TODO: add item back if trade is cancelled
-            }
-        });
+                    startActivity(myIntent);
+                }
+            });
+            offerItem.setVisibility(View.INVISIBLE);
+        } else {
+            // not in a trading or friendInventory session at all.
+            tradeItem.setVisibility(View.INVISIBLE);
+            offerItem.setVisibility(View.INVISIBLE);
+        }
 
         editGame = (Button)findViewById(R.id.buttonEditItem);
         if (!inventorycontroller.clonable(ownerProfile)){
