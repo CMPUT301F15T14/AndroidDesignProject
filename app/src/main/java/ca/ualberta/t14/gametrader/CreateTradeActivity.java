@@ -95,7 +95,7 @@ public class CreateTradeActivity extends Activity {
         }
         createTradeController = new CreateTradeController(getApplicationContext(), this);
 
-        createTradeController.setOwnerToTrade(currentTrade,tradingWith);
+        createTradeController.setOwnerToTrade(currentTrade, tradingWith);
         createTradeController.setBorrowerToTrade(currentTrade, UserSingleton.getInstance().getUser());
 
         //  Array reserved for storing names of game.
@@ -141,8 +141,9 @@ public class CreateTradeActivity extends Activity {
                 TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(currentTrade, UserSingleton.getInstance().getUser(), getApplicationContext());
 
                 Intent intent = new Intent(CreateTradeActivity.this, TradeHistoryActivity.class);
-                startActivity(intent);
                 finish();
+                startActivity(intent);
+
             }
         });
 

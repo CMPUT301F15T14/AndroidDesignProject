@@ -57,6 +57,10 @@ public class TradeHistoryActivity extends Activity {
         final Trade trade1 = new Trade(mario, user1, user2);
         trade1.addBorrowerGame(sonic);
 
+        if(adapter != null) {
+            adapter.clear();
+        }
+
         myTrades = new ArrayList<Trade>();
 
         // first list all trades that have yet to be pushed to the network
