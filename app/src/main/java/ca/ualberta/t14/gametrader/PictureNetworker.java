@@ -29,7 +29,6 @@ public class PictureNetworker extends FileIO {
     private PictureManager pm;
     public static final String PictureNetworkId = "PictureManagerAndNetworker";
 
-    private static transient PictureNetworker instance;
     private ArrayList<String> imageFileToUpload;
     private ArrayList<String> imageFileToRemove;
 

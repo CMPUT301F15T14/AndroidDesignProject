@@ -12,9 +12,13 @@ import java.io.IOException;
 public class MainMenuController {
     User user = new User();
     SettingsMode settingsMode = new SettingsMode();
-    NetworkController netCtrl = new NetworkController();
+    NetworkController netCtrl;
     PictureNetworker pn = new PictureNetworker();
     TradeNetworker tn = new TradeNetworker();
+
+    public MainMenuController(Context context) {
+        netCtrl = new NetworkController();
+    }
 
     /**
      * Initializes all singletons upon program start so that they are accessible by all activities
@@ -70,6 +74,7 @@ public class MainMenuController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        tn.setContext(context);
 
         final Context c = context;
 

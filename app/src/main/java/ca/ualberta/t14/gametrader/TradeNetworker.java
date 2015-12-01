@@ -19,28 +19,58 @@
 package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 
 /**
  * Created by Ryan on 2015-11-30.
  */
-public class TradeNetworker extends FileIO {
+public class TradeNetworker extends FileIO implements AppObservable {
     public static final String TradeNetworkId = "TradeManagerAndNetworker";
 
-    private static transient TradeNetworker instance;
     private ArrayList<Trade> tradeIdToUpload;
     private ArrayList<Trade> tradeIdToRemove;
+    private ArrayList<Trade> allTradesOnNet;
     private Manager manager;
+    private transient Context context;
+    private transient ArrayList<TradeNetworkerListener> listeners;
+    private transient ArrayList<AppObserver> observers;
+    public static final int PULL_TRADES = 123;
+    public static final int PUSH_TRADES = 124;
+    public static final int PUSH_TRADES_TO_DELETE = 126;
+
+    // update all stuff first, then pull.
 
     public TradeNetworker() {
         tradeIdToUpload = new ArrayList<Trade>();
         tradeIdToRemove = new ArrayList<Trade>();
+        allTradesOnNet = new ArrayList<Trade>();
+        observers = new ArrayList<AppObserver>();
         manager = new Manager();
+    }
+
+    public  void setContext(Context context) {
+        this.context = context;
     }
 
     public ArrayList<Trade> getTradeToUpload() {
         return tradeIdToUpload;
+    }
+
+    public ArrayList<Trade> getAllTradesOnNet(Boolean downloadNow) {
+        if(allTradesOnNet == null) {
+            allTradesOnNet = new ArrayList<Trade>();
+        }
+        if(downloadNow) {
+            notifyAllListeners(PULL_TRADES);
+        }
+        return allTradesOnNet;
+    }
+
+    public void setAllTradesOnNet(ArrayList<Trade> allTradesGot) {
+        this.allTradesOnNet = allTradesGot;
+        notifyAllObservers();
     }
 
     public void addTradeToUploadList(Trade trade, User tradeCreator, Context context) {
@@ -49,6 +79,7 @@ public class TradeNetworker extends FileIO {
         trade.setTradeId(id);
         this.tradeIdToUpload.add(trade);
         saveJson(TradeNetworkId, context);
+        notifyAllListeners(PUSH_TRADES);
     }
 
     public ArrayList<Trade> getTradeToRemove() {
@@ -58,5 +89,54 @@ public class TradeNetworker extends FileIO {
     public void addTradeToRemoveList(Trade trade, Context context) {
         this.tradeIdToRemove.add(trade);
         saveJson(TradeNetworkId, context);
+        notifyAllListeners(PUSH_TRADES_TO_DELETE);
     }
+
+    public void saveTradeNetworker() {
+        saveJson(TradeNetworkId, context);
+    }
+
+    public void addListener(TradeNetworkerListener listener) {
+        if(listeners == null) {
+            listeners = new ArrayList<TradeNetworkerListener>();
+        }
+        listeners.add(listener);
+    }
+
+    public void deletelisteners(TradeNetworkerListener listener) {
+        if(listeners != null) {
+            listeners.remove(listener);
+        }
+    }
+
+    public void addObserver(AppObserver observer) {
+        if(observers == null) {
+            observers = new ArrayList<AppObserver>();
+        }
+        this.observers.add(observer);
+    }
+    public void deleteObserver(AppObserver observer) {
+        if(observer != null) {
+            observers.remove(observer);
+        }
+    }
+    public void notifyAllObservers() {
+        if(observers != null) {
+            for(AppObserver each : observers) {
+                each.appNotify(this);
+            }
+        }
+    }
+
+    /**
+     * Called to notify all observers that the model has been updated.
+     */
+    public void notifyAllListeners(int commandCode) {
+        if(listeners != null) {
+            for (TradeNetworkerListener obs : listeners) {
+                obs.listenerNotify(commandCode);
+            }
+        }
+    }
+
 }

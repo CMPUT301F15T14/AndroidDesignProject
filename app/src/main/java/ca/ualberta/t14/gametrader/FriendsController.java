@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,8 +36,9 @@ public class FriendsController {
     public void LoadFriends(Context context) {
         try {
             model.loadJson("myFriends", context);
-        }
-        catch (IOException e) {
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

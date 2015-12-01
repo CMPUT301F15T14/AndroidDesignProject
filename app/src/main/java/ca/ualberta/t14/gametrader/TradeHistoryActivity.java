@@ -21,6 +21,7 @@ package ca.ualberta.t14.gametrader;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,7 +31,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class TradeHistoryActivity extends Activity {
+public class TradeHistoryActivity extends Activity implements AppObserver {
 
     private ArrayList<String> tradeName = new ArrayList<String>();
     private ArrayList<Trade> myTrades;
@@ -44,38 +45,9 @@ public class TradeHistoryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_history);
 
-        user1 = new User();
+        TradeNetworkerSingleton.getInstance().getTradeNetMangager().addObserver(this);
 
-        User user2 = new User();
-
-        Game mario = new Game();
-        mario.setTitle("Mario Kart 64");
-
-        Game sonic = new Game();
-        sonic.setTitle("Sonic Genesis");
-
-        final Trade trade1 = new Trade(mario, user1, user2);
-        trade1.addBorrowerGame(sonic);
-
-        if(adapter != null) {
-            adapter.clear();
-        }
-
-        myTrades = new ArrayList<Trade>();
-
-        // first list all trades that have yet to be pushed to the network
-        ArrayList<Trade> toPushTrades = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getTradeToUpload();
-        for(Trade each : toPushTrades) {
-            myTrades.add(each);
-        }
-
-        // the test trade
-        myTrades.add(trade1);
-
-        tradeName.clear();
-        for(Trade each : myTrades) {
-            tradeName.add(each.getTradeName());
-        }
+        updateAdapterLists(Boolean.TRUE);
 
 //        controller = new NetworkController();
 //        myTrades = controller.GetMyTrades(user.getAndroidID());
@@ -95,6 +67,29 @@ public class TradeHistoryActivity extends Activity {
                 startActivity(myIntent);
             }
         });
+    }
+
+    private void updateAdapterLists(Boolean downloadNow) {
+        myTrades = new ArrayList<Trade>();
+
+        // first list all trades that have yet to be pushed to the network
+        ArrayList<Trade> toPushTrades = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getTradeToUpload();
+        for(Trade each : toPushTrades) {
+            myTrades.add(each);
+        }
+
+        ArrayList<Trade> tradesOnline = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getAllTradesOnNet(downloadNow);
+        if(tradesOnline != null) {
+            myTrades.addAll(tradesOnline);
+        }
+
+        tradeName.clear();
+        for(Trade each : myTrades) {
+            tradeName.add(each.getTradeName());
+        }
+
+        //adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -125,6 +120,11 @@ public class TradeHistoryActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void appNotify(AppObservable observable) {
+        updateAdapterLists(Boolean.FALSE);
     }
 
 /*    private class GetTrades extends AsyncTask<String, Integer, ArrayList<Trade>> {

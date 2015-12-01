@@ -1,6 +1,8 @@
 package ca.ualberta.t14.gametrader;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -29,7 +31,7 @@ import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
  * Stole a lot of code from ESDemo
  * Created by jjohnsto on 11/26/15.
  */
-public class NetworkController implements AppObserver {
+public class NetworkController implements AppObserver, TradeNetworkerListener {
 
 
     private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
@@ -39,6 +41,10 @@ public class NetworkController implements AppObserver {
 
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();
+
+    public NetworkController() {
+        TradeNetworkerSingleton.getInstance().getTradeNetMangager().addListener(this);
+    }
 
     public ArrayList<User> SearchByUserName(String str) throws IOException {
         HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
@@ -175,7 +181,7 @@ public class NetworkController implements AppObserver {
         return user;
     }
 
-    public void PostTrade(Trade trade) {
+    public Boolean PostTrade(Trade trade) {
         HttpPost httpPost = new HttpPost(tradesLocation + trade.getOwner().getAndroidID());
 
         StringEntity stringentity = null;
@@ -184,6 +190,7 @@ public class NetworkController implements AppObserver {
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return Boolean.FALSE;
         }
         httpPost.setHeader("Accept","application/json");
 
@@ -194,9 +201,11 @@ public class NetworkController implements AppObserver {
         } catch (ClientProtocolException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return Boolean.FALSE;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            return Boolean.FALSE;
         }
 
         String status = response.getStatusLine().toString();
@@ -214,11 +223,13 @@ public class NetworkController implements AppObserver {
         }
         catch (IOException e){
             e.printStackTrace();
+            return Boolean.FALSE;
         }
+        return Boolean.TRUE;
     }
 
     public ArrayList<Trade> GetMyTrades(String id) {
-        HttpPost searchRequest = new HttpPost(tradesLocation + id + "_search?pretty=1");
+        HttpPost searchRequest = new HttpPost(tradesLocation + "_search?pretty=1");
 
         searchRequest.setHeader("Accept","application/json");
 
@@ -230,16 +241,18 @@ public class NetworkController implements AppObserver {
 
             String json = getEntityContent(response);
 
-            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<User>>() {
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<Trade>>() {
             }.getType();
             ElasticSearchSearchResponse<Trade> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
-            System.err.println(esResponse);
+            //System.err.println(esResponse);
 
-            ArrayList<Trade> returnValue = new ArrayList<Trade>();
+            ArrayList < Trade > returnValue = new ArrayList<Trade>();
             if (esResponse.getHits() != null) {
                 for (ElasticSearchResponse<Trade> r : esResponse.getHits()) {
                     Trade result = r.getSource();
-                    returnValue.add(result);
+                    if(result.getOwner().getAndroidID().compareTo(id) == 0) {
+                        returnValue.add(result);
+                    }
                 }
 
                 return returnValue;
@@ -304,4 +317,44 @@ public class NetworkController implements AppObserver {
         System.err.println("JSON:"+json);
         return json;
     }
+
+    @Override
+    public void listenerNotify(int commandRequest) {
+        final int command = commandRequest;
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+        TradeNetworker tradeNetworker = TradeNetworkerSingleton.getInstance().getTradeNetMangager();
+        switch(command) {
+            case TradeNetworker.PULL_TRADES:
+                ArrayList<Trade> tradingsOnline = GetMyTrades(UserSingleton.getInstance().getUser().getAndroidID());
+                tradeNetworker.setAllTradesOnNet(tradingsOnline);
+                break;
+            case TradeNetworker.PUSH_TRADES:
+                ArrayList<Trade> trades = new ArrayList<Trade>(tradeNetworker.getTradeToUpload());
+                for(Trade each : trades) {
+                    Trade aTrade = each;
+                    System.out.println("Trade adding...");
+                    PostTrade(aTrade);
+
+                    tradeNetworker.getTradeToUpload().remove(each);
+                    // Warning, this becomes really slow when lots of items...
+                    // But want to keep it in sync, so no duplicates get uploaded.
+                    // TODO: make this faster? Try to "update item" if it exists, or something like that.
+                    tradeNetworker.saveTradeNetworker();
+                }
+                break;
+            case TradeNetworker.PUSH_TRADES_TO_DELETE:
+                //TODO: use curl to remove all trades online that match this trades ID
+                break;
+
+        }
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }

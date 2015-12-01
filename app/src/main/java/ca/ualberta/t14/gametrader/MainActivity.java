@@ -20,8 +20,8 @@ public class MainActivity extends Activity {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> updatesList = new ArrayList<String>();
 
-    MainMenuController mainMenuController = new MainMenuController();
 
+    MainMenuController mainMenuController;
     private Button profileButton;
 
     public Button getProfileButton() {
@@ -67,6 +67,8 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        mainMenuController = new MainMenuController(getApplicationContext());
 
         mainMenuController.preLoadAllSingletons(getApplicationContext());
 
