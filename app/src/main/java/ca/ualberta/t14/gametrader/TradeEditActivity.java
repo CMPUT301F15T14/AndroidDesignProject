@@ -57,6 +57,7 @@ public class TradeEditActivity extends Activity {
             public void onClick(View v) {
                 ObjParseSingleton.getInstance().addObject("trade", trade);
                 Intent myIntent = new Intent(TradeEditActivity.this, CreateTradeActivity.class);
+                finish();
                 startActivity(myIntent);
             }
         });

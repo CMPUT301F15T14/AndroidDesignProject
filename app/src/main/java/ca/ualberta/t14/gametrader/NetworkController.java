@@ -251,10 +251,10 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
                 for (ElasticSearchResponse<Trade> r : esResponse.getHits()) {
                     Trade result = r.getSource();
                     //TODO: fix this. Make so the borrower and owner only can see their trades. This way here below causes some errors...
-                    //if(result.getOwner().getAndroidID().compareTo(id) == 0
-                    //        || result.getBorrower().getAndroidID().compareTo(id) == 0) {
+                    if(result.getOwner().getAndroidID().compareTo(id) == 0
+                            || result.getBorrower().getAndroidID().compareTo(id) == 0) {
                         returnValue.add(result);
-                    //}
+                    }
                 }
 
                 return returnValue;
