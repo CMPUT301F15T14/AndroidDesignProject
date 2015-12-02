@@ -69,9 +69,9 @@ public class Trade extends FileIO implements AppObservable{
      */
     public enum TradeStatus {OWNERAPPROVAL,BORROWERAPPROVAL,COMPLETE}
 
-    private User borrower;
+    private String borrowerAndroidId;
     private ArrayList<Game> borrowerOffers;
-    private User owner;
+    private String ownerAndroidId;
     private ArrayList<Game> ownerOffers;
 
     private String borrowerID;
@@ -92,8 +92,8 @@ public class Trade extends FileIO implements AppObservable{
      * @param game
      */
     public Trade(Game game, User owner, User borrower) {
-        this.owner = owner;
-        this.borrower = borrower;
+        this.ownerAndroidId = owner.getAndroidID();
+        this.borrowerAndroidId = borrower.getAndroidID();
         borrowerOffers = new ArrayList<Game>();
         ownerOffers = new ArrayList<Game>();
         ownerOffers.add(game);
@@ -116,10 +116,10 @@ public class Trade extends FileIO implements AppObservable{
     /**
      * A getter of the creator of the trade.
      *
-     * @return User who first offered the trade (borrower)
+     * @return User's AndroidId who first offered the trade (borrower)
      */
-    public User getBorrower() {
-        return borrower;
+    public String getBorrower() {
+        return borrowerAndroidId;
     }
 
     /**
@@ -129,7 +129,7 @@ public class Trade extends FileIO implements AppObservable{
      * @param borrower
      */
     public void setBorrower(User borrower) {
-        this.borrower = borrower;
+        this.borrowerAndroidId = borrower.getAndroidID();
         notifyAllObservers();
     }
 
@@ -164,10 +164,10 @@ public class Trade extends FileIO implements AppObservable{
     /**
      * A getter of the receiver of the trade offer
      *
-     * @return the User who gets offered the trade (owner)
+     * @return the User's AndroidId who gets offered the trade (owner)
      */
-    public User getOwner() {
-        return owner;
+    public String getOwner() {
+        return ownerAndroidId;
     }
 
     /**
@@ -177,7 +177,7 @@ public class Trade extends FileIO implements AppObservable{
      * @param owner
      */
     public void setOwner(User owner) {
-        this.owner = owner;
+        this.ownerAndroidId = owner.getAndroidID();
         notifyAllObservers();
     }
 
