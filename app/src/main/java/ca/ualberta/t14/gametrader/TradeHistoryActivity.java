@@ -94,7 +94,9 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
         }
 
         // TODO: adapter in trade history crashes too for some reason. If this commented out, then to update it is u have to go back and open the activity again..
-        //adapter.notifyDataSetChanged();
+        if(adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
 
     }
 
@@ -123,7 +125,15 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
 
     @Override
     public void appNotify(AppObservable observable) {
-        updateAdapterLists(Boolean.FALSE);
+        // This appNotify gets called by an async elastic search query.
+        // Adapter notifyDataSetChanged Has to be run on ui activity! Else errors.
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                updateAdapterLists(Boolean.FALSE);
+            }
+        };
+        runOnUiThread(r);
     }
 
 /*    private class GetTrades extends AsyncTask<String, Integer, ArrayList<Trade>> {
