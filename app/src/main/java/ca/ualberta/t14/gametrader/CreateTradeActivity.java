@@ -50,6 +50,7 @@ public class CreateTradeActivity extends Activity {
     private Trade currentTrade;
     private CreateTradeController createTradeController;
     private User tradingWith;
+    private Boolean isEdit;
     Game game;
     Game g1;
     Game g2;
@@ -67,6 +68,8 @@ public class CreateTradeActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade);
+
+        isEdit = new Boolean(Boolean.FALSE);
 
         createTradeController = new CreateTradeController(getApplicationContext(), this);
 
@@ -100,9 +103,10 @@ public class CreateTradeActivity extends Activity {
             }
             createTradeController.setOwnerToTrade(currentTrade, tradingWith);
             createTradeController.setBorrowerToTrade(currentTrade, UserSingleton.getInstance().getUser());
-        }
-        else {
+        } else {
+            // assume if trade is passed, then this is an edit.
             currentTrade = trade;
+            isEdit = Boolean.TRUE;
             // Get all Owners' offers
             for (Game each: trade.getOwnerOffers()) {
                 mobileArray.add(each.getTitle());
@@ -138,7 +142,13 @@ public class CreateTradeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 // push to network que
-                TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(currentTrade, UserSingleton.getInstance().getUser(), getApplicationContext());
+                if(isEdit) {
+                    TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(currentTrade, getApplicationContext());
+                } else {
+                    String newId = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getTradeId(UserSingleton.getInstance().getUser());
+                    currentTrade.setTradeId(newId);
+                    TradeNetworkerSingleton.getInstance().getTradeNetMangager().addTradeToUploadList(currentTrade, getApplicationContext());
+                }
                 Toast.makeText(getApplicationContext(), "Trade submitted!", Toast.LENGTH_SHORT).show();
                 finish();
 

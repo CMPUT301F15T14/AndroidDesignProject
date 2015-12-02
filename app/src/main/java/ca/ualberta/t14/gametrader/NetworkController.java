@@ -182,7 +182,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
     }
 
     public Boolean PostTrade(Trade trade) {
-        HttpPost httpPost = new HttpPost(tradesLocation + trade.getOwner().getAndroidID());
+        HttpPost httpPost = new HttpPost(tradesLocation + trade.getTradeId());
 
         StringEntity stringentity = null;
         try {

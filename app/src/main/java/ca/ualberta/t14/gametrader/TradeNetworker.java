@@ -73,10 +73,11 @@ public class TradeNetworker extends FileIO implements AppObservable {
         notifyAllObservers();
     }
 
-    public void addTradeToUploadList(Trade trade, User tradeCreator, Context context) {
-        // stamp the trade with an id.
-        String id = manager.addItemToTrack(tradeCreator, "trd");
-        trade.setTradeId(id);
+    public void addTradeToUploadList(Trade trade, Context context) {
+
+        replaceSame(trade, tradeIdToUpload);
+
+        // now add the trade
         this.tradeIdToUpload.add(trade);
         saveJson(TradeNetworkId, context);
         notifyAllListeners(PUSH_TRADES);
@@ -87,9 +88,24 @@ public class TradeNetworker extends FileIO implements AppObservable {
     }
 
     public void addTradeToRemoveList(Trade trade, Context context) {
+        replaceSame(trade, tradeIdToRemove);
         this.tradeIdToRemove.add(trade);
         saveJson(TradeNetworkId, context);
         notifyAllListeners(PUSH_TRADES_TO_DELETE);
+    }
+
+    // check and remove trade with same tradeID because this would be the update version
+    private void replaceSame(Trade trd, ArrayList<Trade> trds) {
+        Trade replace = null;
+        for(Trade each : trds) {
+            if(each.getTradeId().compareTo(trd.getTradeId()) == 0) {
+                replace = each;
+                break;
+            }
+        }
+        if(replace != null) {
+            trds.remove(replace);
+        }
     }
 
     public void saveTradeNetworker() {
@@ -107,6 +123,11 @@ public class TradeNetworker extends FileIO implements AppObservable {
         if(listeners != null) {
             listeners.remove(listener);
         }
+    }
+
+    public String getTradeId(User tradeCreator) {
+        // stamp the trade with an id.
+        return manager.addItemToTrack(tradeCreator, "trd");
     }
 
     public void addObserver(AppObserver observer) {
