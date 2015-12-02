@@ -29,9 +29,11 @@ import java.util.ArrayList;
 public class TradeNetworker extends FileIO implements AppObservable {
     public static final String TradeNetworkId = "TradeManagerAndNetworker";
 
+    // Local copy of database.
+    private ArrayList<Trade> allTradesOnNet;
+
     private ArrayList<Trade> tradeIdToUpload;
     private ArrayList<Trade> tradeIdToRemove;
-    private ArrayList<Trade> allTradesOnNet;
     private Manager manager;
     private transient Context context;
     private transient ArrayList<TradeNetworkerListener> listeners;

@@ -29,34 +29,45 @@ public class PictureNetworker extends FileIO {
     private PictureManager pm;
     public static final String PictureNetworkId = "PictureManagerAndNetworker";
 
-    private ArrayList<String> imageFileToUpload;
-    private ArrayList<String> imageFileToRemove;
+    // Keeps track of all the local/downloaded images.
+    private ArrayList<String> localCopyOfImageIds;
+
+    private ArrayList<String> imageIdsToUpload;
+    private ArrayList<String> imageIdsToRemove;
 
     public PictureNetworker() {
         pm = new PictureManager();
-        imageFileToUpload = new ArrayList<String>();
-        imageFileToRemove = new ArrayList<String>();
+        imageIdsToUpload = new ArrayList<String>();
+        imageIdsToRemove = new ArrayList<String>();
     }
 
     public PictureManager getPictureManager() {
         return pm;
     }
 
+    public ArrayList<String> getLocalCopyOfImageIds() {
+        return localCopyOfImageIds;
+    }
+
+    public void setLocalCopyOfImageIds(ArrayList<String> localCopyOfImageIds) {
+        this.localCopyOfImageIds = localCopyOfImageIds;
+    }
+
     public ArrayList<String> getImageFileToUpload() {
-        return imageFileToUpload;
+        return imageIdsToUpload;
     }
 
     public void setImageFileToUpload(String imageFileToUpload, Context context) {
         saveJson(PictureNetworkId, context);
-        this.imageFileToUpload.add(imageFileToUpload);
+        this.imageIdsToUpload.add(imageFileToUpload);
     }
 
     public ArrayList<String> getImageFileToRemove() {
-        return imageFileToRemove;
+        return imageIdsToRemove;
     }
 
     public void setImageFileToRemove(String imageFileToRemove, Context context) {
         saveJson(PictureNetworkId, context);
-        this.imageFileToRemove.add(imageFileToRemove);
+        this.imageIdsToRemove.add(imageFileToRemove);
     }
 }

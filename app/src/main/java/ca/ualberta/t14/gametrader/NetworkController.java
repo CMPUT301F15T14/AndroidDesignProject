@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
@@ -37,6 +38,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
 
     private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
     private final String tradesLocation = "http://cmput301.softwareprocess.es:8080/t14/Trades/";
+    private final String imagesLocation = "http://cmput301.softwareprocess.es:8080/t14/Images/";
 
     Boolean isInternetPresent;
 
@@ -258,7 +260,6 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             if (esResponse.getHits() != null) {
                 for (ElasticSearchResponse<Trade> r : esResponse.getHits()) {
                     Trade result = r.getSource();
-                    //TODO: fix this. Make so the borrower and owner only can see their trades. This way here below causes some errors...
                     if(result.getOwner().compareTo(id) == 0
                             || result.getBorrower().compareTo(id) == 0) {
                         returnValue.add(result);
@@ -275,6 +276,119 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         }
 
         return null;
+    }
+
+    /**
+     * Code taken from the ES Demo project.
+     * @throws IOException
+     */
+    public void deleteGeneric(String removeUrl) {
+        HttpDelete httpDelete = new HttpDelete(removeUrl);
+        httpDelete.addHeader("Accept", "application/json");
+
+        try {
+            HttpResponse response = httpclient.execute(httpDelete);
+
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
+
+            HttpEntity entity = response.getEntity();
+            BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
+            String output;
+            System.err.println("Output from Server -> ");
+            while ((output = br.readLine()) != null) {
+                System.err.println(output);
+            }
+            response.getEntity().consumeContent();
+            entity.consumeContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean PostImages(String imageId, String json) {
+        HttpPost httpPost = new HttpPost(imagesLocation + imageId);
+
+        StringEntity stringentity = null;
+        try {
+            stringentity = new StringEntity(gson.toJson(json));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return Boolean.FALSE;
+        }
+        httpPost.setHeader("Accept","application/json");
+
+        httpPost.setEntity(stringentity);
+        HttpResponse response = null;
+        try {
+            response = httpclient.execute(httpPost);
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return Boolean.FALSE;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return Boolean.FALSE;
+        }
+
+        String status = response.getStatusLine().toString();
+        System.out.println(status);
+        HttpEntity entity = response.getEntity();
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
+
+            String output;
+            System.err.println("Output from Server -> ");
+
+            while ((output = br.readLine()) != null) {
+                System.err.println(output);
+            }
+            httpPost.getEntity().consumeContent();
+            response.getEntity().consumeContent();
+            entity.consumeContent();
+
+        }
+        catch (IOException e){
+            e.printStackTrace();
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
+    }
+
+    public void GetImages(String imageId, Context context) {
+        String searchCommand = "_search?pretty=1&q=";
+        HttpPost searchRequest = new HttpPost(imagesLocation + searchCommand + imageId);
+        searchRequest.setHeader("Accept", "application/json");
+
+        try {
+            HttpResponse response = httpclient.execute(searchRequest);
+
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
+
+            String json = getEntityContent(response);
+
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<String>>() {
+            }.getType();
+            ElasticSearchSearchResponse<String> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
+            //System.err.println(esResponse);
+
+            if (esResponse.getHits() != null) {
+                for (ElasticSearchResponse<String> r : esResponse.getHits()) {
+                    String resultJson = r.getSource();
+                    // save gotten image to disk.
+                    PictureManager.saveJsonWithObject(resultJson, imageId, context);
+                }
+            }
+            searchRequest.getEntity().consumeContent();
+            response.getEntity().consumeContent();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
@@ -326,36 +440,8 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             System.err.println(output);
             json += output;
         }
-        System.err.println("JSON:"+json);
+        System.err.println("JSON:" + json);
         return json;
-    }
-
-    /**
-     * Code taken from the ES Demo project.
-     * @throws IOException
-     */
-    public void deleteGeneric(String removeUrl) {
-        HttpDelete httpDelete = new HttpDelete(removeUrl);
-        httpDelete.addHeader("Accept","application/json");
-
-        try {
-            HttpResponse response = httpclient.execute(httpDelete);
-
-            String status = response.getStatusLine().toString();
-            System.out.println(status);
-
-            HttpEntity entity = response.getEntity();
-            BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
-            String output;
-            System.err.println("Output from Server -> ");
-            while ((output = br.readLine()) != null) {
-                System.err.println(output);
-            }
-            response.getEntity().consumeContent();
-            entity.consumeContent();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
