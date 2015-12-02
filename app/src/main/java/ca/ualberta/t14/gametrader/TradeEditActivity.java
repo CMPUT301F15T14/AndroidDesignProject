@@ -62,13 +62,23 @@ public class TradeEditActivity extends Activity {
             }
         });
 
-
         deleteTrade = (Button)findViewById(R.id.deleteTrade);
         deleteTrade.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 tradingEditController.deleteTrade(trade);
             }
         });
+
+        // show buttons for approriate users only
+        // US04.06.01 As a borrower, when composing a trade or counter-trade I can delete the trade
+        // US04.05.01 As a borrower or owner, when composing a trade or counter-trade I can edit the trade.
+        if(trade.getBorrower().compareTo(UserSingleton.getInstance().getUser().getAndroidID()) == 0) {
+            editTrade.setVisibility(View.VISIBLE);
+            deleteTrade.setVisibility(View.VISIBLE);
+        } else {
+            editTrade.setVisibility(View.INVISIBLE);
+            deleteTrade.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
