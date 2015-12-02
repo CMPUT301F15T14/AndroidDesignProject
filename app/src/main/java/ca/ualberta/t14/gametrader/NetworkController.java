@@ -11,6 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -51,9 +52,8 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";
         StringEntity stringentity = new StringEntity(query);
 
-        searchRequest.setHeader("Accept","application/json");
+        searchRequest.setHeader("Accept", "application/json");
         searchRequest.setEntity(stringentity);
-
         HttpResponse response = httpclient.execute(searchRequest);
         String status = response.getStatusLine().toString();
         System.out.println(status);
@@ -318,6 +318,33 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         }
         System.err.println("JSON:"+json);
         return json;
+    }
+
+    /**
+     * Code taken from the ES Demo project.
+     * @throws IOException
+     */
+    public void deleteGeneric(String removeUrl) throws IOException {
+        HttpDelete httpDelete = new HttpDelete(removeUrl);
+        httpDelete.addHeader("Accept","application/json");
+
+        HttpResponse response = httpclient.execute(httpDelete);
+
+        String status = response.getStatusLine().toString();
+        System.out.println(status);
+
+        HttpEntity entity = response.getEntity();
+        BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
+        String output;
+        System.err.println("Output from Server -> ");
+        while ((output = br.readLine()) != null) {
+            System.err.println(output);
+        }
+
+        entity.consumeContent();
+
+        //EntityUtils.consume(entity);
+        //httpDelete.releaseConnection();
     }
 
     @Override
