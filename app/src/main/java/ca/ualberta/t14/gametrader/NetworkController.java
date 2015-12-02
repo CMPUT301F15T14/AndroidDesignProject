@@ -324,25 +324,28 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
      * Code taken from the ES Demo project.
      * @throws IOException
      */
-    public void deleteGeneric(String removeUrl) throws IOException {
+    public void deleteGeneric(String removeUrl) {
         HttpDelete httpDelete = new HttpDelete(removeUrl);
         httpDelete.addHeader("Accept","application/json");
 
-        HttpResponse response = httpclient.execute(httpDelete);
+        try {
+            HttpResponse response = httpclient.execute(httpDelete);
 
-        String status = response.getStatusLine().toString();
-        System.out.println(status);
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
 
-        HttpEntity entity = response.getEntity();
-        BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
-        String output;
-        System.err.println("Output from Server -> ");
-        while ((output = br.readLine()) != null) {
-            System.err.println(output);
+            HttpEntity entity = response.getEntity();
+            BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
+            String output;
+            System.err.println("Output from Server -> ");
+            while ((output = br.readLine()) != null) {
+                System.err.println(output);
+            }
+
+            entity.consumeContent();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        entity.consumeContent();
-
         //EntityUtils.consume(entity);
         //httpDelete.releaseConnection();
     }
@@ -361,6 +364,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             case TradeNetworker.PULL_TRADES:
                 ArrayList<Trade> tradingsOnline = GetMyTrades(identidyNetTrade);
                 tradeNetworker.setAllTradesOnNet(tradingsOnline);
+                tradeNetworker.notifyAllObservers();
                 break;
             case TradeNetworker.PUSH_TRADES:
                 ArrayList<Trade> trades = new ArrayList<Trade>(tradeNetworker.getTradeToUpload());
@@ -370,14 +374,23 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
                     PostTrade(aTrade);
 
                     tradeNetworker.getTradeToUpload().remove(each);
-                    // Warning, this becomes really slow when lots of items...
+                    // Warning, this can become really slow when lots of items...
                     // But want to keep it in sync, so no duplicates get uploaded.
-                    // TODO: make this faster? Try to "update item" if it exists, or something like that.
                     tradeNetworker.saveTradeNetworker();
+                    tradeNetworker.getAllTradesOnNet(Boolean.TRUE);
+                    tradeNetworker.notifyAllObservers();
                 }
                 break;
             case TradeNetworker.PUSH_TRADES_TO_DELETE:
-                //TODO: use curl to remove all trades online that match this trades ID
+                ArrayList<Trade> tradesRemove = new ArrayList<Trade>(tradeNetworker.getTradeToRemove());
+                for(Trade each : tradesRemove) {
+                    System.out.println("Trade removing...");
+                    String urlToRem = tradesLocation + each.getTradeId();
+                    deleteGeneric(urlToRem);
+                    tradeNetworker.getTradeToRemove().remove(each);
+                    tradeNetworker.getAllTradesOnNet(Boolean.TRUE);
+                    tradeNetworker.notifyAllObservers();
+                }
                 break;
 
         }

@@ -62,6 +62,7 @@ public class TradeNetworker extends FileIO implements AppObservable {
         if(allTradesOnNet == null) {
             allTradesOnNet = new ArrayList<Trade>();
         }
+        //TODO: remove this, not really needed now, since i call notify all listeners in networkController because its async and want to update only when that async task is done!
         if(downloadNow) {
             notifyAllListeners(PULL_TRADES);
         }
@@ -70,7 +71,6 @@ public class TradeNetworker extends FileIO implements AppObservable {
 
     public void setAllTradesOnNet(ArrayList<Trade> allTradesGot) {
         this.allTradesOnNet = allTradesGot;
-        notifyAllObservers();
     }
 
     public void addTradeToUploadList(Trade trade, Context context) {
@@ -92,6 +92,7 @@ public class TradeNetworker extends FileIO implements AppObservable {
         this.tradeIdToRemove.add(trade);
         saveJson(TradeNetworkId, context);
         notifyAllListeners(PUSH_TRADES_TO_DELETE);
+
     }
 
     // check and remove trade with same tradeID because this would be the update version
