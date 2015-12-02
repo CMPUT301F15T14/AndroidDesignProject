@@ -74,7 +74,7 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
         tradePendingList.setAdapter(adapter);
     }
 
-    private void updateAdapterLists(Boolean downloadNow) {
+    private void updateAdapterLists(Boolean updateLocalList) {
         myTrades = new ArrayList<Trade>();
 
         // first list all trades that have yet to be pushed to the network
@@ -83,7 +83,7 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
             myTrades.add(each);
         }
 
-        ArrayList<Trade> tradesOnline = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getAllTradesOnNet(downloadNow);
+        ArrayList<Trade> tradesOnline = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getAllTradesOnNet(updateLocalList);
         if(tradesOnline != null) {
             myTrades.addAll(tradesOnline);
         }

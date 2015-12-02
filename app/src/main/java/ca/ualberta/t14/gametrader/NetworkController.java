@@ -11,6 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -51,9 +52,8 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";
         StringEntity stringentity = new StringEntity(query);
 
-        searchRequest.setHeader("Accept","application/json");
+        searchRequest.setHeader("Accept", "application/json");
         searchRequest.setEntity(stringentity);
-
         HttpResponse response = httpclient.execute(searchRequest);
         String status = response.getStatusLine().toString();
         System.out.println(status);
@@ -79,6 +79,8 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
                 returnValue.add(ret);
             }
         }
+        searchRequest.getEntity().consumeContent();
+        response.getEntity().consumeContent();
 
         return returnValue;
     }
@@ -133,8 +135,8 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         while ((output = br.readLine()) != null) {
             System.err.println(output);
         }
-
-        //httpPost.releaseConnection();
+        httpPost.getEntity().consumeContent();
+        response.getEntity().consumeContent();
     }
 
     /**
@@ -167,6 +169,8 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             user = esResponse.getSource();
 
             System.out.println(user.toString());
+
+            response.getEntity().consumeContent();
 
             return user;
         } catch (ClientProtocolException e) {
@@ -220,6 +224,10 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             while ((output = br.readLine()) != null) {
                 System.err.println(output);
             }
+            httpPost.getEntity().consumeContent();
+            response.getEntity().consumeContent();
+            entity.consumeContent();
+
         }
         catch (IOException e){
             e.printStackTrace();
@@ -231,7 +239,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
     public ArrayList<Trade> GetMyTrades(String id) {
         HttpPost searchRequest = new HttpPost(tradesLocation + "_search?pretty=1");
 
-        searchRequest.setHeader("Accept","application/json");
+        searchRequest.setHeader("Accept", "application/json");
 
         try {
             HttpResponse response = httpclient.execute(searchRequest);
@@ -259,6 +267,8 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
 
                 return returnValue;
             }
+            searchRequest.getEntity().consumeContent();
+            response.getEntity().consumeContent();
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -320,6 +330,34 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         return json;
     }
 
+    /**
+     * Code taken from the ES Demo project.
+     * @throws IOException
+     */
+    public void deleteGeneric(String removeUrl) {
+        HttpDelete httpDelete = new HttpDelete(removeUrl);
+        httpDelete.addHeader("Accept","application/json");
+
+        try {
+            HttpResponse response = httpclient.execute(httpDelete);
+
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
+
+            HttpEntity entity = response.getEntity();
+            BufferedReader br = new BufferedReader(new InputStreamReader(entity.getContent()));
+            String output;
+            System.err.println("Output from Server -> ");
+            while ((output = br.readLine()) != null) {
+                System.err.println(output);
+            }
+            response.getEntity().consumeContent();
+            entity.consumeContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void listenerNotify(int commandRequest) {
         final int command = commandRequest;
@@ -334,6 +372,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             case TradeNetworker.PULL_TRADES:
                 ArrayList<Trade> tradingsOnline = GetMyTrades(identidyNetTrade);
                 tradeNetworker.setAllTradesOnNet(tradingsOnline);
+                tradeNetworker.notifyAllObservers();
                 break;
             case TradeNetworker.PUSH_TRADES:
                 ArrayList<Trade> trades = new ArrayList<Trade>(tradeNetworker.getTradeToUpload());
@@ -343,14 +382,24 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
                     PostTrade(aTrade);
 
                     tradeNetworker.getTradeToUpload().remove(each);
-                    // Warning, this becomes really slow when lots of items...
-                    // But want to keep it in sync, so no duplicates get uploaded.
-                    // TODO: make this faster? Try to "update item" if it exists, or something like that.
-                    tradeNetworker.saveTradeNetworker();
+                    tradeNetworker.getAllTradesOnNetLocalArray().add(each);
                 }
+                tradeNetworker.saveTradeNetworker();
+                tradeNetworker.notifyAllObservers();
                 break;
             case TradeNetworker.PUSH_TRADES_TO_DELETE:
-                //TODO: use curl to remove all trades online that match this trades ID
+                ArrayList<Trade> tradesRemove = new ArrayList<Trade>(tradeNetworker.getTradeToRemove());
+                for(Trade each : tradesRemove) {
+                    System.out.println("Trade removing...");
+                    String urlToRem = tradesLocation + each.getTradeId();
+                    deleteGeneric(urlToRem);
+                    // in case it was not uploaded remove it from ToUpload.
+                    tradeNetworker.getTradeToUpload().remove(each);
+                    tradeNetworker.getTradeToRemove().remove(each);
+                    tradeNetworker.getAllTradesOnNetLocalArray().remove(each);
+                }
+                tradeNetworker.saveTradeNetworker();
+                tradeNetworker.notifyAllObservers();
                 break;
 
         }

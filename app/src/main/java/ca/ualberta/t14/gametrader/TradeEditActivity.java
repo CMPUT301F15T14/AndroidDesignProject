@@ -66,6 +66,7 @@ public class TradeEditActivity extends Activity {
         deleteTrade.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 tradingEditController.deleteTrade(trade);
+                finish();
             }
         });
 

@@ -70,11 +70,11 @@ public class MainMenuController {
         // Try to load this device's Trade Networker.
         try {
             tn = (TradeNetworker) tn.loadJson(TradeNetworker.TradeNetworkId, context);
-            TradeNetworkerSingleton.getInstance().setTradeNetMangager(tn);
         } catch (IOException e) {
             e.printStackTrace();
         }
         tn.setContext(context);
+        TradeNetworkerSingleton.getInstance().setTradeNetMangager(tn);
 
         final Context c = context;
 

@@ -58,11 +58,11 @@ public class TradeNetworker extends FileIO implements AppObservable {
         return tradeIdToUpload;
     }
 
-    public ArrayList<Trade> getAllTradesOnNet(Boolean downloadNow) {
+    public ArrayList<Trade> getAllTradesOnNet(Boolean updateLocalList) {
         if(allTradesOnNet == null) {
             allTradesOnNet = new ArrayList<Trade>();
         }
-        if(downloadNow) {
+        if(updateLocalList) {
             notifyAllListeners(PULL_TRADES);
         }
         return allTradesOnNet;
@@ -70,7 +70,10 @@ public class TradeNetworker extends FileIO implements AppObservable {
 
     public void setAllTradesOnNet(ArrayList<Trade> allTradesGot) {
         this.allTradesOnNet = allTradesGot;
-        notifyAllObservers();
+    }
+
+    public ArrayList<Trade> getAllTradesOnNetLocalArray() {
+        return allTradesOnNet;
     }
 
     public void addTradeToUploadList(Trade trade, Context context) {
@@ -92,6 +95,7 @@ public class TradeNetworker extends FileIO implements AppObservable {
         this.tradeIdToRemove.add(trade);
         saveJson(TradeNetworkId, context);
         notifyAllListeners(PUSH_TRADES_TO_DELETE);
+
     }
 
     // check and remove trade with same tradeID because this would be the update version
