@@ -15,7 +15,7 @@ public class Manager {
 
     String addItemToTrack(User userToGetInstallationId, String prefixName) {
         // Name Format: <prefix>_<InstId>_<itemId>
-        String id = prefixName + "_" + userToGetInstallationId.getInstallationId() + "_" + managerAdderIdCount.toString();
+        String id = prefixName + "_" + userToGetInstallationId.getAndroidID() + "_" + managerAdderIdCount.toString();
         managerAdderIdCount += 1;
         return id;
     }
