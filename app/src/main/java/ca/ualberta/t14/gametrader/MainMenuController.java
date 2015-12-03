@@ -64,6 +64,7 @@ public class MainMenuController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                PictureNetworkerSingleton.getInstance().getPicNetMangager().setActivity(activity);
                 PictureNetworkerSingleton.getInstance().getPicNetMangager().saveJson(PictureNetworker.PictureNetworkId, c);
 
                 // Try to load this device's Trade Networker.

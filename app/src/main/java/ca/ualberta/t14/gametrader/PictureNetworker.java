@@ -18,6 +18,7 @@
 
 package ca.ualberta.t14.gametrader;
 
+import android.app.Activity;
 import android.content.Context;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
  */
 public class PictureNetworker extends FileIO implements AppObservable, NetworkerCommander {
     private PictureManager pm;
+    transient private Activity activity;
     public static final String PictureNetworkId = "PictureManagerAndNetworker";
 
     // Keeps track of all the local/downloaded images.
@@ -37,9 +39,9 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     private ArrayList<String> imageIdsToUpload;
     private ArrayList<String> imageIdsToRemove;
 
-    private ArrayList<AppObserver> observers;
+    private transient ArrayList<AppObserver> observers;
+    private transient ArrayList<NetworkerListener> listeners;
 
-    private ArrayList<NetworkerListener> listeners;
     public static final int PULL_IMAGES = 128;
     public static final int PUSH_IMAGE = 129;
     public static final int PUSH_IMAGES_TO_DELETE = 130;
@@ -51,6 +53,14 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
         localCopyOfImageIds = new ArrayList<String>();
         imagesToDownload = new ArrayList<String>();
         observers = new ArrayList<AppObserver>();
+    }
+
+    public Activity getActivity() {
+        return activity;
+    }
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
     }
 
     public PictureManager getPictureManager() {
@@ -66,9 +76,8 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     }
 
     public void addImageToDownload(String imageToDownload, Context context) {
-        saveJson(PictureNetworkId, context);
         imagesToDownload.add(imageToDownload);
-        saveJson(PictureNetworkId, context);
+        //saveJson(PictureNetworkId, context);
         notifyAllListeners(PULL_IMAGES);
     }
 
@@ -81,9 +90,8 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     }
 
     public void addImageFileToUpload(String imageFileToUpload, Context context) {
-        saveJson(PictureNetworkId, context);
         imageIdsToUpload.add(imageFileToUpload);
-        saveJson(PictureNetworkId, context);
+        //saveJson(PictureNetworkId, context);
         notifyAllListeners(PUSH_IMAGE);
     }
 
@@ -92,9 +100,8 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     }
 
     public void addImageFileToRemove(String imageFileToRemove, Context context) {
-        saveJson(PictureNetworkId, context);
         this.imageIdsToRemove.add(imageFileToRemove);
-        saveJson(PictureNetworkId, context);
+        //saveJson(PictureNetworkId, context);
         notifyAllListeners(PUSH_IMAGES_TO_DELETE);
     }
 
@@ -107,9 +114,16 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     }
 
     public void notifyAllObservers() {
-        for(AppObserver obs : observers) {
-            obs.appNotify(this);
-        }
+        final AppObservable thisThing = this;
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                for(AppObserver obs : observers) {
+                    obs.appNotify(thisThing);
+                }
+            }
+        };
+        activity.runOnUiThread(r);
     }
 
     public void addListener(NetworkerListener listener) {

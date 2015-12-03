@@ -47,6 +47,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
 
     public NetworkController(Context context) {
         TradeNetworkerSingleton.getInstance().getTradeNetMangager().addListener(this);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addListener(this);
         this.context = context;
     }
 
@@ -310,15 +311,20 @@ public class NetworkController implements AppObserver, NetworkerListener {
     public Boolean postImages(String imageId, String json) {
         HttpPost httpPost = new HttpPost(imagesLocation + imageId);
 
+        System.out.println(imagesLocation + imageId);
+
         StringEntity stringentity = null;
         try {
-            stringentity = new StringEntity(gson.toJson(json));
+            stringentity = new StringEntity(json);
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return Boolean.FALSE;
         }
-        httpPost.setHeader("Accept","application/json");
+        //http://stackoverflow.com/questions/11017543/elasticsearch-parse-exception-error-when-attempting-to-index-pdf
+        // todo just wrap json string into an "image class" that contaains string??
+        httpPost.setHeader("Accept-Encoding","base64");
+        httpPost.addHeader("Content-Type","image/*");
 
         httpPost.setEntity(stringentity);
         HttpResponse response = null;
@@ -349,6 +355,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
             httpPost.getEntity().consumeContent();
             response.getEntity().consumeContent();
             entity.consumeContent();
+            stringentity.consumeContent();
 
         }
         catch (IOException e){
@@ -535,26 +542,31 @@ public class NetworkController implements AppObserver, NetworkerListener {
     private void pushImages(PictureNetworker picNetworker) {
         ArrayList<String> imgIds = new ArrayList<String>(picNetworker.getImageFilesToUpload());
         for (String each : imgIds) {
-            System.out.println("Trade adding...");
+            System.out.println("Pic adding...");
             String json  = new String();
             try {
                 json = PictureManager.loadImageJsonFromJsonFile(each, context);
+                System.out.println("loaded image " + each);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+            System.out.println("AAAAAAA3");
             postImages(each, json);
+            System.out.println("AAAAAAA4");
 
             picNetworker.getImageFilesToUpload().remove(each);
             picNetworker.getLocalCopyOfImageIds().add(each);
         }
+        System.out.println("AAAAAAA5");
         picNetworker.saveJson(PictureNetworker.PictureNetworkId, context);
+        System.out.println("AAAAAAA6");
         picNetworker.notifyAllObservers();
     }
 
     private void pushDeleteImages(PictureNetworker picNetworker) {
         ArrayList<String> tradesRemove = new ArrayList<String>(picNetworker.getImageFilesToRemove());
         for (String each : tradesRemove) {
-            System.out.println("Trade removing...");
+            System.out.println("Pic removing...");
             String urlToRem = imagesLocation + each;
             deleteGeneric(urlToRem);
             // in case it was not uploaded remove it from ToUpload.
