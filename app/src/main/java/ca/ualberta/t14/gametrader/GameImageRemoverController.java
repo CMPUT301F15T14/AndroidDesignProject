@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -64,7 +66,14 @@ public class GameImageRemoverController {
 
     private void createTheContent() {
         for(String each : imageIdList) {
-            String imgJson = PictureManager.loadImageJsonFromJsonFile(each, context);
+            String imgJson = new String();
+            try {
+                imgJson = PictureManager.loadImageJsonFromJsonFile(each, context);
+
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+
             Bitmap showImage = PictureManager.getBitmapFromJson(imgJson);
 
             addToViews(showImage, checkboxIds);

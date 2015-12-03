@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.FileNotFoundException;
+
 /*
  * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
  *
@@ -79,6 +81,8 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
         game.addObserver(this);
 
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addObserver(this);
+
         ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
         if(ownerProfile == null) {
             throw new RuntimeException("Received null User for game owner.");
@@ -103,7 +107,13 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         // Important, have to load bitmap from it's json first! Because bitmap is volatile.
-        String imageJson = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        String imageJson  = new String();
+        try {
+            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         if(!imageJson.isEmpty()) {
             game.setPictureFromJson(imageJson);
             imageButton.setImageBitmap(game.getPicture());
@@ -179,6 +189,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             }
         });
 
+        inventorycontroller.tryDownloadImages(game, getApplicationContext());
 
     }
 
@@ -205,9 +216,14 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         phone.setText(ownerProfile.getPhoneNumber());
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!jsonStr.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        String imageJson  = new String();
+        try {
+            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(!imageJson.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(imageJson));
         } else {
             imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
         }
@@ -243,9 +259,14 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
 
     public void appNotify(AppObservable observable) {
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!jsonStr.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
+        String imageJson  = new String();
+        try {
+            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(!imageJson.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(imageJson));
         } else {
             imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
         }

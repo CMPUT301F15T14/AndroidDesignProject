@@ -24,8 +24,8 @@ import java.util.ArrayList;
  * Created by satyabra on 11/27/15.
  */
 public class FriendsListController {
-    final FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
-
+    FriendsController fc;
+    Context context;
     private final int EDIT_TEXT_ID = 1337;
 
     private Button addFriend;
@@ -41,11 +41,13 @@ public class FriendsListController {
     // 2 states, if false, no input text and clicking it will open a text box. True then clicking it will submit that text and remove that editText.
     private Boolean addFriendButtonState;
 
-    FriendsListController() {
+    FriendsListController(Context context) {
         addFriendButtonState = Boolean.FALSE;
+        this.context = context;
+        fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), context);
     }
 
-    void initButonOnClickListeners(Activity activity, final Context context) {
+    void initButonOnClickListeners(Activity activity) {
 
         final Context c = context;
         final Activity a = activity;

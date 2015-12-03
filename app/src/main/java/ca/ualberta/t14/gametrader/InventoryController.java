@@ -45,6 +45,16 @@ public class InventoryController {
     public InventoryController(Inventory inventory){
         this.stock=inventory;
     }
+
+    public void tryDownloadImages(Game game, Context context) {
+        if(SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()) {
+            PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+            for(String each : game.getPictureIds()) {
+                pn.addImageToDownload(each, context);
+            }
+        }
+    }
+
     public void addItem(Game game){
         stock.add(game);
     }

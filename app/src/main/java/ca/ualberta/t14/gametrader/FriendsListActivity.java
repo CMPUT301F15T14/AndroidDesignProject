@@ -22,7 +22,7 @@ public class FriendsListActivity extends Activity implements AppObserver {
 
     private ListView friendsListView;
 
-    private FriendsListController friendsListController = new FriendsListController();
+    private FriendsListController friendsListController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,9 @@ public class FriendsListActivity extends Activity implements AppObserver {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
-        friendsListController.initButonOnClickListeners(this, getApplicationContext());
+        friendsListController = new FriendsListController(getApplicationContext());
+
+        friendsListController.initButonOnClickListeners(this);
 
         friendsListView = (ListView) findViewById(R.id.friendsList);
 
@@ -102,7 +104,7 @@ public class FriendsListActivity extends Activity implements AppObserver {
         }
         adapter.notifyDataSetChanged();
 
-        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
         //fc.WriteFriends(getApplicationContext());
     }
 }

@@ -58,15 +58,11 @@ public class PictureManager extends FileIO {
     }
 
     // @return a string containing the byteArray of the bitmap encoded as a string in Base64.
-    public static String loadImageJsonFromJsonFile(String fileName, Context context) {
+    public static String loadImageJsonFromJsonFile(String fileName, Context context) throws FileNotFoundException {
         String imageJson = "";
         // Load file here as IO.
-        // TODO: check if it exists locally, and if not pull the image from elastic search.
-        // TODO: BUT check here if allowDownloadPhoto setting is true, and if not ask if manually want to download this photo.
         try {
             imageJson = (String) loadJsonGivenObject(fileName, context, new String());
-        } catch(FileNotFoundException e){
-            e.printStackTrace();
         } catch(IOException e) {
             e.printStackTrace();
         }

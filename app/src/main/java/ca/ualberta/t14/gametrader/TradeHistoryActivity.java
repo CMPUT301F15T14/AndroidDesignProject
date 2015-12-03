@@ -54,7 +54,7 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
         updateAdapterLists(Boolean.TRUE);
 
 //        controller = new NetworkController();
-//        myTrades = controller.GetMyTrades(user.getAndroidID());
+//        myTrades = controller.getMyTrades(user.getAndroidID());
 //        new GetTrades().execute(user.getAndroidID());
         tradePendingList = (ListView)findViewById(R.id.tradePendingList);
         //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
@@ -142,7 +142,7 @@ public class TradeHistoryActivity extends Activity implements AppObserver {
             NetworkController nc = new NetworkController();
             String userid = params[0];
 
-            ArrayList<Trade> results = nc.GetMyTrades(userid);
+            ArrayList<Trade> results = nc.getMyTrades(userid);
 
             return results;
         }

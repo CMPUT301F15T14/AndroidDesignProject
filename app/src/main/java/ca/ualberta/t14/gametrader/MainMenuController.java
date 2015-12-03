@@ -1,7 +1,9 @@
 package ca.ualberta.t14.gametrader;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.provider.Settings;
 
 import java.io.IOException;
@@ -17,66 +19,17 @@ public class MainMenuController {
     TradeNetworker tn = new TradeNetworker();
 
     public MainMenuController(Context context) {
-        netCtrl = new NetworkController();
+        netCtrl = new NetworkController(context);
     }
 
     /**
      * Initializes all singletons upon program start so that they are accessible by all activities
      * @param context is the context of the caller necessary for certain API calls
      */
-    void preLoadAllSingletons(Context context) {
-        // Try setting the user singleton to the loaded user.
-        try {
-            user = (User) user.loadJson("MainUserProfile", context);
-            UserSingleton.getInstance().setUser(user);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        UserSingleton.getInstance().getUser().setAndroidID(Settings.Secure.getString(context.getContentResolver(),
-                Settings.Secure.ANDROID_ID));
-        System.out.println(Settings.Secure.getString(context.getContentResolver(),
-                Settings.Secure.ANDROID_ID));
-        System.out.println("Does this print?");
-
-        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
-        fc.LoadFriends(context);
-
-        // Try to load the user's settings.
-        try {
-            settingsMode = (SettingsMode) settingsMode.loadJson(SettingsMode.SETTINGS_FILE, context);
-            SettingsSingleton.getInstance().setSettings(settingsMode);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Check if the unique installation identity exists, and add one if there is none.
-        if (UserSingleton.getInstance().getUser().getInstallationId() == null) {
-            // Retrieve/Create unique installation identity.
-            InstallationIdGenerator iIdG = new InstallationIdGenerator();
-            String installationIdStr = iIdG.id(context);
-
-            // Set the unique installation identity if user has none.
-            UserSingleton.getInstance().getUser().setInstallationId(installationIdStr);
-        }
-
-        // Try to load this device's Picture Manager and Networker.
-        try {
-            pn = (PictureNetworker) pn.loadJson(PictureNetworker.PictureNetworkId, context);
-            PictureNetworkerSingleton.getInstance().setPicNetMangager(pn);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Try to load this device's Trade Networker.
-        try {
-            tn = (TradeNetworker) tn.loadJson(TradeNetworker.TradeNetworkId, context);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        tn.setContext(context);
-        TradeNetworkerSingleton.getInstance().setTradeNetMangager(tn);
+    void preLoadAllSingletons(Context context, final Activity activity) {
 
         final Context c = context;
+        final Activity activityFinal = activity;
 
         // Inside a runnable because put in a new thread, it won't freeze the UI that way.
         Runnable r = new Runnable() {
@@ -89,11 +42,39 @@ public class MainMenuController {
                     UserSingleton.getInstance().setUser(user);
                 } catch (IOException e) {
                     e.printStackTrace();
+
+                    Intent intent = new Intent(activityFinal, EditProfileActivity.class);
+                    activityFinal.startActivity(intent);
                 }
 
+                UserSingleton.getInstance().getUser().setAndroidID(Settings.Secure.getString(c.getContentResolver(),
+                        Settings.Secure.ANDROID_ID));
+                System.out.println(Settings.Secure.getString(c.getContentResolver(),
+                        Settings.Secure.ANDROID_ID));
+                System.out.println("Does this print?");
+
                 UserSingleton.getInstance().getUser().addObserver(netCtrl);
-                FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+                FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), c);
                 fc.LoadFriends(c);
+
+                // Try to load this device's Picture Manager and Networker.
+                try {
+                    pn = (PictureNetworker) pn.loadJson(PictureNetworker.PictureNetworkId, c);
+                    PictureNetworkerSingleton.getInstance().setPicNetMangager(pn);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                PictureNetworkerSingleton.getInstance().getPicNetMangager().saveJson(PictureNetworker.PictureNetworkId, c);
+
+                // Try to load this device's Trade Networker.
+                try {
+                    tn = (TradeNetworker) tn.loadJson(TradeNetworker.TradeNetworkId, c);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                tn.setContext(c);
+                TradeNetworkerSingleton.getInstance().setTradeNetMangager(tn);
+                TradeNetworkerSingleton.getInstance().getTradeNetMangager().saveTradeNetworker();
 
                 // Try to load the user's settings.
                 try {
@@ -102,6 +83,7 @@ public class MainMenuController {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                SettingsSingleton.getInstance().getSettings().saveJson(SettingsMode.SETTINGS_FILE, c);
 
                 // Check if the unique installation identity exists, and add one if there is none.
                 if (UserSingleton.getInstance().getUser().getInstallationId() == null) {

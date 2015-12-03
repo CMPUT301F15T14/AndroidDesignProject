@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
 
         mainMenuController = new MainMenuController(getApplicationContext());
 
-        mainMenuController.preLoadAllSingletons(getApplicationContext());
+        mainMenuController.preLoadAllSingletons(getApplicationContext(), this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -180,7 +180,7 @@ public class MainActivity extends Activity {
 
     private class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
         protected ArrayList<String> doInBackground(String... params) {
-            FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+            FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
             fc.UpdateFriends();
 
             ArrayList<String> foundUpdates = new ArrayList<String>();

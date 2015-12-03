@@ -2,7 +2,6 @@ package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,12 +17,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
@@ -33,8 +32,9 @@ import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
  * Stole a lot of code from ESDemo
  * Created by jjohnsto on 11/26/15.
  */
-public class NetworkController implements AppObserver, TradeNetworkerListener {
-
+public class NetworkController implements AppObserver, NetworkerListener {
+    
+    transient Context context;
 
     private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
     private final String tradesLocation = "http://cmput301.softwareprocess.es:8080/t14/Trades/";
@@ -45,11 +45,12 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();
 
-    public NetworkController() {
+    public NetworkController(Context context) {
         TradeNetworkerSingleton.getInstance().getTradeNetMangager().addListener(this);
+        this.context = context;
     }
 
-    public ArrayList<User> SearchByUserName(String str) throws IOException {
+    public ArrayList<User> searchByUserName(String str) throws IOException {
         HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
         String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";
         StringEntity stringentity = new StringEntity(query);
@@ -95,7 +96,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
      * @throws IllegalStateException
      * @throws IOException
      */
-    public void AddUser(User user) throws IllegalStateException, IOException {
+    public void addUser(User user) throws IllegalStateException, IOException {
         HttpPost httpPost = new HttpPost(netLocation+user.getAndroidID());
 
         System.out.println("Trying to write user to: " + netLocation+user.getAndroidID());
@@ -148,7 +149,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
      * @param id is the android device id used to index users in the elastic search server.
      * @return a User object filled with the relevent profile/inventory data.
      */
-    public User LoadUser(String id) {
+    public User loadUser(String id) {
         User user = null;
 
         try{
@@ -187,7 +188,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         return user;
     }
 
-    public Boolean PostTrade(Trade trade) {
+    public Boolean postTrade(Trade trade) {
         HttpPost httpPost = new HttpPost(tradesLocation + trade.getTradeId());
 
         StringEntity stringentity = null;
@@ -198,7 +199,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
             e.printStackTrace();
             return Boolean.FALSE;
         }
-        httpPost.setHeader("Accept","application/json");
+        httpPost.setHeader("Accept", "application/json");
 
         httpPost.setEntity(stringentity);
         HttpResponse response = null;
@@ -238,7 +239,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         return Boolean.TRUE;
     }
 
-    public ArrayList<Trade> GetMyTrades(String id) {
+    public ArrayList<Trade> getMyTrades(String id) {
         HttpPost searchRequest = new HttpPost(tradesLocation + "_search?pretty=1");
 
         searchRequest.setHeader("Accept", "application/json");
@@ -306,7 +307,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         }
     }
 
-    public Boolean PostImages(String imageId, String json) {
+    public Boolean postImages(String imageId, String json) {
         HttpPost httpPost = new HttpPost(imagesLocation + imageId);
 
         StringEntity stringentity = null;
@@ -357,11 +358,11 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         return Boolean.TRUE;
     }
 
-    public void GetImages(String imageId, Context context) {
+    public String getImages(String imageId, Context context) {
         String searchCommand = "_search?pretty=1&q=";
         HttpPost searchRequest = new HttpPost(imagesLocation + searchCommand + imageId);
         searchRequest.setHeader("Accept", "application/json");
-
+        String resultJson = new String();
         try {
             HttpResponse response = httpclient.execute(searchRequest);
 
@@ -377,18 +378,19 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
 
             if (esResponse.getHits() != null) {
                 for (ElasticSearchResponse<String> r : esResponse.getHits()) {
-                    String resultJson = r.getSource();
+                    resultJson = r.getSource();
                     // save gotten image to disk.
                     PictureManager.saveJsonWithObject(resultJson, imageId, context);
                 }
             }
             searchRequest.getEntity().consumeContent();
             response.getEntity().consumeContent();
+            return resultJson;
         }
         catch(IOException e) {
             e.printStackTrace();
         }
-
+        return resultJson;
     }
 
     /**
@@ -408,7 +410,7 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
                 public void run() {
                     try {
                         System.out.println("Updating user...");
-                        AddUser(test);
+                        addUser(test);
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -444,56 +446,124 @@ public class NetworkController implements AppObserver, TradeNetworkerListener {
         return json;
     }
 
-    @Override
-    public void listenerNotify(int commandRequest) {
+    public void netListenerNotify(int commandRequest) {
         final int command = commandRequest;
-        final String identidyNetTrade = UserSingleton.getInstance().getUser().getAndroidID();
+        final String identityNetTrade = UserSingleton.getInstance().getUser().getAndroidID();
         final TradeNetworker tradeNetworker = TradeNetworkerSingleton.getInstance().getTradeNetMangager();
+        final PictureNetworker pictureNetworker = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
 
-        switch(command) {
-            case TradeNetworker.PULL_TRADES:
-                ArrayList<Trade> tradingsOnline = GetMyTrades(identidyNetTrade);
-                tradeNetworker.setAllTradesOnNet(tradingsOnline);
-                tradeNetworker.notifyAllObservers();
-                break;
-            case TradeNetworker.PUSH_TRADES:
-                ArrayList<Trade> trades = new ArrayList<Trade>(tradeNetworker.getTradeToUpload());
-                for(Trade each : trades) {
-                    Trade aTrade = each;
-                    System.out.println("Trade adding...");
-                    PostTrade(aTrade);
+                    switch (command) {
+                        case TradeNetworker.PULL_TRADES:
+                            pullTrades(tradeNetworker, identityNetTrade);
+                            break;
+                        case TradeNetworker.PUSH_TRADES:
+                            pushTrades(tradeNetworker);
+                            break;
+                        case TradeNetworker.PUSH_TRADES_TO_DELETE:
+                            pushDeleteTrades(tradeNetworker);
+                            break;
+                        case PictureNetworker.PULL_IMAGES:
+                            pullImages(pictureNetworker);
+                            break;
+                        case PictureNetworker.PUSH_IMAGE:
+                            pushImages(pictureNetworker);
+                            break;
+                        case PictureNetworker.PUSH_IMAGES_TO_DELETE:
+                            pushDeleteImages(pictureNetworker);
+                            break;
 
-                    tradeNetworker.getTradeToUpload().remove(each);
-                    tradeNetworker.getAllTradesOnNetLocalArray().add(each);
-                }
-                tradeNetworker.saveTradeNetworker();
-                tradeNetworker.notifyAllObservers();
-                break;
-            case TradeNetworker.PUSH_TRADES_TO_DELETE:
-                ArrayList<Trade> tradesRemove = new ArrayList<Trade>(tradeNetworker.getTradeToRemove());
-                for(Trade each : tradesRemove) {
-                    System.out.println("Trade removing...");
-                    String urlToRem = tradesLocation + each.getTradeId();
-                    deleteGeneric(urlToRem);
-                    // in case it was not uploaded remove it from ToUpload.
-                    tradeNetworker.getTradeToUpload().remove(each);
-                    tradeNetworker.getTradeToRemove().remove(each);
-                    tradeNetworker.getAllTradesOnNetLocalArray().remove(each);
-                }
-                tradeNetworker.saveTradeNetworker();
-                tradeNetworker.notifyAllObservers();
-                break;
-
-        }
+                    }
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    private void pullTrades(TradeNetworker tradeNetworker, String identityNetTrade) {
+        ArrayList<Trade> tradingsOnline = getMyTrades(identityNetTrade);
+        tradeNetworker.setAllTradesOnNet(tradingsOnline);
+        tradeNetworker.notifyAllObservers();
+    }
+
+    private void pushTrades(TradeNetworker tradeNetworker) {
+        ArrayList<Trade> trades = new ArrayList<Trade>(tradeNetworker.getTradeToUpload());
+        for (Trade each : trades) {
+            Trade aTrade = each;
+            System.out.println("Trade adding...");
+            postTrade(aTrade);
+
+            tradeNetworker.getTradeToUpload().remove(each);
+            tradeNetworker.getAllTradesOnNetLocalArray().add(each);
+        }
+        tradeNetworker.saveTradeNetworker();
+        tradeNetworker.notifyAllObservers();
+    }
+
+    private void pushDeleteTrades(TradeNetworker tradeNetworker) {
+        ArrayList<Trade> tradesRemove = new ArrayList<Trade>(tradeNetworker.getTradeToRemove());
+        for (Trade each : tradesRemove) {
+            System.out.println("Trade removing...");
+            String urlToRem = tradesLocation + each.getTradeId();
+            deleteGeneric(urlToRem);
+            // in case it was not uploaded remove it from ToUpload.
+            tradeNetworker.getTradeToUpload().remove(each);
+            tradeNetworker.getTradeToRemove().remove(each);
+            tradeNetworker.getAllTradesOnNetLocalArray().remove(each);
+        }
+        tradeNetworker.saveTradeNetworker();
+        tradeNetworker.notifyAllObservers();
+    }
+
+    private void pullImages(PictureNetworker picNetworker) {
+        ArrayList<String> imgDl = new ArrayList<String>(picNetworker.getImagesToDownload());
+        for(String each : imgDl) {
+            String downloadedPicIds = getImages(each, context);
+            if (!downloadedPicIds.isEmpty()) {
+                picNetworker.getLocalCopyOfImageIds().add(downloadedPicIds);
+            }
+            picNetworker.getImagesToDownload().remove(each);
+        }
+        picNetworker.notifyAllObservers();
+    }
+
+    private void pushImages(PictureNetworker picNetworker) {
+        ArrayList<String> imgIds = new ArrayList<String>(picNetworker.getImageFilesToUpload());
+        for (String each : imgIds) {
+            System.out.println("Trade adding...");
+            String json  = new String();
+            try {
+                json = PictureManager.loadImageJsonFromJsonFile(each, context);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            postImages(each, json);
+
+            picNetworker.getImageFilesToUpload().remove(each);
+            picNetworker.getLocalCopyOfImageIds().add(each);
+        }
+        picNetworker.saveJson(PictureNetworker.PictureNetworkId, context);
+        picNetworker.notifyAllObservers();
+    }
+
+    private void pushDeleteImages(PictureNetworker picNetworker) {
+        ArrayList<String> tradesRemove = new ArrayList<String>(picNetworker.getImageFilesToRemove());
+        for (String each : tradesRemove) {
+            System.out.println("Trade removing...");
+            String urlToRem = imagesLocation + each;
+            deleteGeneric(urlToRem);
+            // in case it was not uploaded remove it from ToUpload.
+            picNetworker.getImageFilesToUpload().remove(each);
+            picNetworker.getImageFilesToRemove().remove(each);
+            picNetworker.getLocalCopyOfImageIds().remove(each);
+        }
+        picNetworker.saveJson(PictureNetworker.PictureNetworkId, context);
+        picNetworker.notifyAllObservers();
     }
 
 }

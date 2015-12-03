@@ -22,23 +22,35 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
+
 /**
  * Created by Ryan on 2015-11-30.
  */
-public class PictureNetworker extends FileIO {
+public class PictureNetworker extends FileIO implements AppObservable, NetworkerCommander {
     private PictureManager pm;
     public static final String PictureNetworkId = "PictureManagerAndNetworker";
 
     // Keeps track of all the local/downloaded images.
     private ArrayList<String> localCopyOfImageIds;
+    private ArrayList<String> imagesToDownload;
 
     private ArrayList<String> imageIdsToUpload;
     private ArrayList<String> imageIdsToRemove;
+
+    private ArrayList<AppObserver> observers;
+
+    private ArrayList<NetworkerListener> listeners;
+    public static final int PULL_IMAGES = 128;
+    public static final int PUSH_IMAGE = 129;
+    public static final int PUSH_IMAGES_TO_DELETE = 130;
 
     public PictureNetworker() {
         pm = new PictureManager();
         imageIdsToUpload = new ArrayList<String>();
         imageIdsToRemove = new ArrayList<String>();
+        localCopyOfImageIds = new ArrayList<String>();
+        imagesToDownload = new ArrayList<String>();
+        observers = new ArrayList<AppObserver>();
     }
 
     public PictureManager getPictureManager() {
@@ -49,25 +61,79 @@ public class PictureNetworker extends FileIO {
         return localCopyOfImageIds;
     }
 
+    public ArrayList<String> getImagesToDownload() {
+        return imagesToDownload;
+    }
+
+    public void addImageToDownload(String imageToDownload, Context context) {
+        saveJson(PictureNetworkId, context);
+        imagesToDownload.add(imageToDownload);
+        saveJson(PictureNetworkId, context);
+        notifyAllListeners(PULL_IMAGES);
+    }
+
     public void setLocalCopyOfImageIds(ArrayList<String> localCopyOfImageIds) {
         this.localCopyOfImageIds = localCopyOfImageIds;
     }
 
-    public ArrayList<String> getImageFileToUpload() {
+    public ArrayList<String> getImageFilesToUpload() {
         return imageIdsToUpload;
     }
 
-    public void setImageFileToUpload(String imageFileToUpload, Context context) {
+    public void addImageFileToUpload(String imageFileToUpload, Context context) {
         saveJson(PictureNetworkId, context);
-        this.imageIdsToUpload.add(imageFileToUpload);
+        imageIdsToUpload.add(imageFileToUpload);
+        saveJson(PictureNetworkId, context);
+        notifyAllListeners(PUSH_IMAGE);
     }
 
-    public ArrayList<String> getImageFileToRemove() {
+    public ArrayList<String> getImageFilesToRemove() {
         return imageIdsToRemove;
     }
 
-    public void setImageFileToRemove(String imageFileToRemove, Context context) {
+    public void addImageFileToRemove(String imageFileToRemove, Context context) {
         saveJson(PictureNetworkId, context);
         this.imageIdsToRemove.add(imageFileToRemove);
+        saveJson(PictureNetworkId, context);
+        notifyAllListeners(PUSH_IMAGES_TO_DELETE);
     }
+
+    public void addObserver(AppObserver observer) {
+        observers.add(observer);
+    }
+
+    public void deleteObserver(AppObserver observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyAllObservers() {
+        for(AppObserver obs : observers) {
+            obs.appNotify(this);
+        }
+    }
+
+    public void addListener(NetworkerListener listener) {
+        if(listeners == null) {
+            listeners = new ArrayList<NetworkerListener>();
+        }
+        listeners.add(listener);
+    }
+
+    public void deletelisteners(NetworkerListener listener) {
+        if(listeners != null) {
+            listeners.remove(listener);
+        }
+    }
+
+    /**
+     * Called to notify all observers that the model has been updated.
+     */
+    public void notifyAllListeners(int commandCode) {
+        if(listeners != null) {
+            for (NetworkerListener obs : listeners) {
+                obs.netListenerNotify(commandCode);
+            }
+        }
+    }
+
 }

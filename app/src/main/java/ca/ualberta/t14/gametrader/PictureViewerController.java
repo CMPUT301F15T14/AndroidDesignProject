@@ -1,7 +1,9 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
@@ -10,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.io.FileNotFoundException;
 
 /**
  * Created by satyabra on 11/28/15.
@@ -33,12 +37,43 @@ public class PictureViewerController {
         });
         }
 
-    public void putImages(Game game) {
+    public void putImages(Game game, Boolean askDownload) {
 
         if(!game.pictureIdIsEmpty()) {
             for(String eachId : game.getPictureIds()) {
-                String loadedJson = PictureManager.loadImageJsonFromJsonFile(eachId, context);
-                setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
+                try {
+                    String loadedJson = PictureManager.loadImageJsonFromJsonFile(eachId, context);
+                    setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
+                } catch(FileNotFoundException e) {
+                    if (SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()) {
+                        for (String each : game.getPictureIds()) {
+                            PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(each, context);
+                        }
+                    } else {
+                        if(askDownload) {
+                            final Game g = game;
+                            AlertDialog SinglePrompt = new AlertDialog.Builder(activity).create();
+                            SinglePrompt.setTitle("Warning");
+                            SinglePrompt.setMessage("Would you like to download all photos for " + g.getTitle() + "?");
+                            SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            for (String each : g.getPictureIds()) {
+                                                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(each, context);
+                                            }
+                                            dialog.dismiss();
+                                        }
+                                    }
+                            );
+                            SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }
+                            );
+                            SinglePrompt.show();
+                        }
+                    }
+                }
             }
         } else {
             setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));

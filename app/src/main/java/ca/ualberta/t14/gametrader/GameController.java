@@ -26,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.ImageButton;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -90,7 +91,13 @@ public class GameController {
     }
 
     public Bitmap setPreviewImage(String imageId, Context context) {
-        return PictureManager.getBitmapFromJson(PictureManager.loadImageJsonFromJsonFile(imageId, context));
+        String json  = new String();
+        try {
+            json = PictureManager.loadImageJsonFromJsonFile(imageId, context);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return PictureManager.getBitmapFromJson(json);
     }
 
     public Bitmap setPreviewUriImage(Uri uri, ContentResolver contentResolver) {
