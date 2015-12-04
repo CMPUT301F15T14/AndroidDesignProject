@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
+import ca.ualberta.t14.gametrader.es.data.ImagePackage;
 
 /**
  * Talks to the elastic search user. Supports adding, loading, and updating users.
@@ -312,19 +313,19 @@ public class NetworkController implements AppObserver, NetworkerListener {
         HttpPost httpPost = new HttpPost(imagesLocation + imageId);
 
         System.out.println(imagesLocation + imageId);
+        ImagePackage imagePackage = new ImagePackage();
+        imagePackage.setImageId(imageId);
+        imagePackage.setImageDataUrl(json);
 
         StringEntity stringentity = null;
         try {
-            stringentity = new StringEntity(json);
+            stringentity = new StringEntity(gson.toJson(imagePackage));
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return Boolean.FALSE;
         }
-        //http://stackoverflow.com/questions/11017543/elasticsearch-parse-exception-error-when-attempting-to-index-pdf
-        // todo just wrap json string into an "image class" that contaains string??
-        httpPost.setHeader("Accept-Encoding","base64");
-        httpPost.addHeader("Content-Type","image/*");
+        httpPost.setHeader("Accept", "application/json");
 
         httpPost.setEntity(stringentity);
         HttpResponse response = null;
@@ -365,11 +366,11 @@ public class NetworkController implements AppObserver, NetworkerListener {
         return Boolean.TRUE;
     }
 
-    public String getImages(String imageId, Context context) {
+    public ImagePackage getImages(String imageId, Context context) {
         String searchCommand = "_search?pretty=1&q=";
         HttpPost searchRequest = new HttpPost(imagesLocation + searchCommand + imageId);
         searchRequest.setHeader("Accept", "application/json");
-        String resultJson = new String();
+        ImagePackage resultImagePackage = new ImagePackage();
         try {
             HttpResponse response = httpclient.execute(searchRequest);
 
@@ -378,26 +379,26 @@ public class NetworkController implements AppObserver, NetworkerListener {
 
             String json = getEntityContent(response);
 
-            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<String>>() {
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<ImagePackage>>() {
             }.getType();
-            ElasticSearchSearchResponse<String> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
+            ElasticSearchSearchResponse<ImagePackage> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
             //System.err.println(esResponse);
 
             if (esResponse.getHits() != null) {
-                for (ElasticSearchResponse<String> r : esResponse.getHits()) {
-                    resultJson = r.getSource();
+                for (ElasticSearchResponse<ImagePackage> r : esResponse.getHits()) {
+                    resultImagePackage = r.getSource();
                     // save gotten image to disk.
-                    PictureManager.saveJsonWithObject(resultJson, imageId, context);
+                    PictureManager.saveJsonWithObject(resultImagePackage.getImageDataUrl(), imageId, context);
                 }
             }
             searchRequest.getEntity().consumeContent();
             response.getEntity().consumeContent();
-            return resultJson;
+            return resultImagePackage;
         }
         catch(IOException e) {
             e.printStackTrace();
         }
-        return resultJson;
+        return resultImagePackage;
     }
 
     /**
@@ -529,10 +530,11 @@ public class NetworkController implements AppObserver, NetworkerListener {
 
     private void pullImages(PictureNetworker picNetworker) {
         ArrayList<String> imgDl = new ArrayList<String>(picNetworker.getImagesToDownload());
+        ImagePackage downloadedPicIds = null;
         for(String each : imgDl) {
-            String downloadedPicIds = getImages(each, context);
-            if (!downloadedPicIds.isEmpty()) {
-                picNetworker.getLocalCopyOfImageIds().add(downloadedPicIds);
+            downloadedPicIds = getImages(each, context);
+            if (downloadedPicIds != null) {
+                picNetworker.getLocalCopyOfImageIds().add(downloadedPicIds.getImageId());
             }
             picNetworker.getImagesToDownload().remove(each);
         }
