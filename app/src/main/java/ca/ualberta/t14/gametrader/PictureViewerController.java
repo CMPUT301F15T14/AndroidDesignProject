@@ -42,23 +42,30 @@ public class PictureViewerController {
         if (!SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()
                 && !pn.getLocalCopyOfImageIds().containsAll(game.getPictureIds())) {
             askManualDownloadImages(game, askDownload);
-        } else {
+        } else if(!pn.getLocalCopyOfImageIds().containsAll(game.getPictureIds())) {
             downloadImages(game);
+        } else {
+            for (String eachId : game.getPictureIds()) {
+                loadImages(eachId);
+            }
         }
     }
 
     private void downloadImages(Game game) {
         if (!game.pictureIdIsEmpty()) {
             for (String eachId : game.getPictureIds()) {
-                try {
-                    String loadedJson = PictureManager.loadImageJsonFromJsonFile(eachId, context);
-                    setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
-                } catch (FileNotFoundException e) {
-                    for (String each : game.getPictureIds()) {
-                        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(each, context);
-                    }
-                }
+                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(eachId, context);
+                loadImages(eachId);
             }
+        }
+    }
+
+    private void loadImages(String imageId) {
+        try {
+            String loadedJson = PictureManager.loadImageJsonFromJsonFile(imageId, context);
+            setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 

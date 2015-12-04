@@ -575,6 +575,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
             picNetworker.getImageFilesToUpload().remove(each);
             picNetworker.getImageFilesToRemove().remove(each);
             picNetworker.getLocalCopyOfImageIds().remove(each);
+            FileIO.removeFile(each, context);
         }
         picNetworker.saveJson(PictureNetworker.PictureNetworkId, context);
         picNetworker.notifyAllObservers();

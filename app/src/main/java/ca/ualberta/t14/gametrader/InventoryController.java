@@ -35,8 +35,12 @@ package ca.ualberta.t14.gametrader;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.widget.ImageButton;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 // Controller class of Inventory Class.
@@ -47,13 +51,39 @@ public class InventoryController {
     }
 
     public void tryDownloadImages(Game game, Context context) {
-        if(SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()) {
-            PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
-            for(String each : game.getPictureIds()) {
-                pn.addImageToDownload(each, context);
-            }
+        PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+        if(SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()
+                && !pn.getLocalCopyOfImageIds().containsAll(game.getPictureIds())) {
+            final Game g = game;
+            final Context c = context;
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+                    for(String each : g.getPictureIds()) {
+                        pn.addImageToDownload(each, c);
+                    }
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
         }
     }
+
+    public void setImageToImageButtons(Game game, ImageButton imageButton, Activity activity) {
+        String imageJson  = new String();
+        try {
+            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), activity.getApplicationContext());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(!imageJson.isEmpty()) {
+            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(imageJson));
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
+        }
+    }
+
 
     public void addItem(Game game){
         stock.add(game);

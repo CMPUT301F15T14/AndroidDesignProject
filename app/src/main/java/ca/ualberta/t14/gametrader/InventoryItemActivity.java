@@ -112,13 +112,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }
-
-        if(!imageJson.isEmpty()) {
-            game.setPictureFromJson(imageJson);
-            imageButton.setImageBitmap(game.getPicture());
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().getLocalCopyOfImageIds().remove(game.getFirstPictureId());
         }
 
         Boolean isInTrade = ObjParseSingleton.getInstance().keywordExists("isInTrade");
@@ -190,7 +184,11 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         });
 
         inventorycontroller.tryDownloadImages(game, getApplicationContext());
-
+        if(!imageJson.isEmpty()) {
+            inventorycontroller.setImageToImageButtons(game, imageButton, this);
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
     @Override
@@ -200,33 +198,6 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             finish();
         }
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // todo: these should be observers shouldnt they?
-
-        // When coming back to the activity and the data were updated.
-        gameTitle.setText(game.getTitle());
-        platform.setText(game.getPlatform().toString());
-        condition.setText(game.getCondition().toString());
-        owner.setText(ownerProfile.getUserName());
-        phone.setText(ownerProfile.getPhoneNumber());
-        address.setText(ownerProfile.getAddress());
-        additionalInfo.setText(game.getAdditionalInfo());
-        String imageJson  = new String();
-        try {
-            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        if(!imageJson.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(imageJson));
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
-        }
     }
 
     @Override
@@ -259,17 +230,14 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
 
     public void appNotify(AppObservable observable) {
-        String imageJson  = new String();
-        try {
-            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        if(!imageJson.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(imageJson));
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
-        }
+        inventorycontroller.setImageToImageButtons(game, imageButton, this);
+        gameTitle.setText(game.getTitle());
+        platform.setText(game.getPlatform().toString());
+        condition.setText(game.getCondition().toString());
+        owner.setText(ownerProfile.getUserName());
+        phone.setText(ownerProfile.getPhoneNumber());
+        address.setText(ownerProfile.getAddress());
+        additionalInfo.setText(game.getAdditionalInfo());
     }
 
 }
