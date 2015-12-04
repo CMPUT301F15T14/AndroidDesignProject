@@ -110,8 +110,13 @@ public class Game implements AppObservable {
                 }
                 User deviceUser = UserSingleton.getInstance().getUser();
                 PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
-                String newId = pm.addImageToJsonFile(json, deviceUser, context);
-                this.pictureId.add(newId);
+                if(!json.isEmpty()) {
+                    String newId = pm.addImageToJsonFile(json, deviceUser, context);
+                    this.pictureId.add(newId);
+                    PictureNetworkerSingleton.getInstance().getPicNetMangager().getLocalCopyOfImageIds().add(newId);
+                    PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newId, context);
+
+                }
             }
         }
 
