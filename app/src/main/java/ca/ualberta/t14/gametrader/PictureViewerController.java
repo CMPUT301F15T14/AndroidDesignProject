@@ -38,47 +38,52 @@ public class PictureViewerController {
         }
 
     public void putImages(Game game, Boolean askDownload) {
+        PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+        if (!SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()
+                && !pn.getLocalCopyOfImageIds().containsAll(game.getPictureIds())) {
+            askManualDownloadImages(game, askDownload);
+        } else {
+            downloadImages(game);
+        }
+    }
 
-        if(!game.pictureIdIsEmpty()) {
-            for(String eachId : game.getPictureIds()) {
+    private void downloadImages(Game game) {
+        if (!game.pictureIdIsEmpty()) {
+            for (String eachId : game.getPictureIds()) {
                 try {
                     String loadedJson = PictureManager.loadImageJsonFromJsonFile(eachId, context);
                     setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
-                } catch(FileNotFoundException e) {
-                    if (SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()) {
-                        for (String each : game.getPictureIds()) {
-                            PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(each, context);
-                        }
-                    } else {
-                        if(askDownload) {
-                            final Game g = game;
-                            AlertDialog SinglePrompt = new AlertDialog.Builder(activity).create();
-                            SinglePrompt.setTitle("Warning");
-                            SinglePrompt.setMessage("Would you like to download all photos for " + g.getTitle() + "?");
-                            SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            for (String each : g.getPictureIds()) {
-                                                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(each, context);
-                                            }
-                                            dialog.dismiss();
-                                        }
-                                    }
-                            );
-                            SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    }
-                            );
-                            SinglePrompt.show();
-                        }
+                } catch (FileNotFoundException e) {
+                    for (String each : game.getPictureIds()) {
+                        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(each, context);
                     }
                 }
             }
-        } else {
-            setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
         }
+    }
 
+    private void askManualDownloadImages(Game game, Boolean askDownload) {
+        if(askDownload) {
+            final Game g = game;
+            AlertDialog SinglePrompt = new AlertDialog.Builder(activity).create();
+            SinglePrompt.setTitle("Warning");
+            SinglePrompt.setMessage("Would you like to download all photos for " + g.getTitle() + "?");
+            SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            downloadImages(g);
+                            dialog.dismiss();
+                        }
+                    }
+            );
+            SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
+                            dialog.dismiss();
+                        }
+                    }
+            );
+            SinglePrompt.show();
+        }
     }
 
     private void setImageBitmap(Bitmap img) {

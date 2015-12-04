@@ -29,16 +29,8 @@ public class InventoryItemPictureViewer extends Activity implements AppObserver 
 
         pictureViewerController = new PictureViewerController(getApplicationContext(), this);
 
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
         pictureViewerController.putImages(game, Boolean.TRUE);
         pictureViewerController.setButtonClickers();
-
     }
 
     public void appNotify(AppObservable observable) {

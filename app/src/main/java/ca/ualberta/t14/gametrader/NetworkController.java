@@ -391,8 +391,12 @@ public class NetworkController implements AppObserver, NetworkerListener {
                     PictureManager.saveJsonWithObject(resultImagePackage.getImageDataUrl(), imageId, context);
                 }
             }
-            searchRequest.getEntity().consumeContent();
-            response.getEntity().consumeContent();
+
+            if(response != null && response.getEntity() != null)
+                response.getEntity().consumeContent();
+            if(searchRequest != null && searchRequest.getEntity() != null)
+                searchRequest.getEntity().consumeContent();
+
             return resultImagePackage;
         }
         catch(IOException e) {
@@ -552,16 +556,12 @@ public class NetworkController implements AppObserver, NetworkerListener {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            System.out.println("AAAAAAA3");
             postImages(each, json);
-            System.out.println("AAAAAAA4");
 
             picNetworker.getImageFilesToUpload().remove(each);
             picNetworker.getLocalCopyOfImageIds().add(each);
         }
-        System.out.println("AAAAAAA5");
         picNetworker.saveJson(PictureNetworker.PictureNetworkId, context);
-        System.out.println("AAAAAAA6");
         picNetworker.notifyAllObservers();
     }
 
