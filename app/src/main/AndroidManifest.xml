@@ -82,10 +82,11 @@
             android:label="@string/title_activity_trade"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name=".CreateTradeActivity"
+        <activity
+            android:name=".CreateTradeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_edit_trade"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name=".InventoryItemPictureViewer"
@@ -104,6 +105,10 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_game_image_remover"
             android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".CountTradeActivity"
+            android:label="@string/title_activity_count_trade" >
         </activity>
     </application>
 

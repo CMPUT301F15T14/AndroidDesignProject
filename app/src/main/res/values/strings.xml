@@ -107,5 +107,6 @@
     <string name="title_activity_item_picture_viewer">Photos</string>
     <string name="title_activity_game_image_adder">Add Images</string>
     <string name="title_activity_game_image_remover">GameImageRemover</string>
+    <string name="title_activity_count_trade">CountTrade</string>
 
 </resources>

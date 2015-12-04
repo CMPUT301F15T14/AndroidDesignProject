@@ -12,7 +12,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class TradeEditActivity extends Activity {
+public class CountTradeActivity extends Activity {
 
     private TradingEditController tradingEditController;
 
@@ -56,7 +56,7 @@ public class TradeEditActivity extends Activity {
         editTrade.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 ObjParseSingleton.getInstance().addObject("trade", trade);
-                Intent myIntent = new Intent(TradeEditActivity.this, CreateTradeActivity.class);
+                Intent myIntent = new Intent(CountTradeActivity.this, CreateTradeActivity.class);
                 finish();
                 startActivity(myIntent);
             }
@@ -69,17 +69,6 @@ public class TradeEditActivity extends Activity {
                 finish();
             }
         });
-
-        // show buttons for approriate users only
-        // US04.06.01 As a borrower, when composing a trade or counter-trade I can delete the trade
-        // US04.05.01 As a borrower or owner, when composing a trade or counter-trade I can edit the trade.
-        if (trade.getBorrower().compareTo(UserSingleton.getInstance().getUser().getAndroidID()) == 0) {
-            editTrade.setVisibility(View.VISIBLE);
-            deleteTrade.setVisibility(View.VISIBLE);
-        } else {
-            editTrade.setText("Accept");
-            deleteTrade.setText("Declined");
-        }
     }
 
 
@@ -92,11 +81,13 @@ public class TradeEditActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
+        //need change here==============================>
         tradeForAdapter = new ArrayAdapter<String>(this, R.layout.text_view,R.id.GameList,ownerGame);
         tradeFor.setAdapter(tradeForAdapter);
 
         tradeOfferAdapter = new ArrayAdapter<String>(this, R.layout.text_view,R.id.GameList,borrowerGame);
         tradeOffer.setAdapter(tradeOfferAdapter);
+        //============================================>
     }
 
     @Override
