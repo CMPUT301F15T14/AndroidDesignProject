@@ -19,22 +19,23 @@
 package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.ArrayList;
 
 /**
  * Created by Ryan on 2015-11-30.
  */
-public class TradeNetworker extends FileIO implements AppObservable {
+public class TradeNetworker extends FileIO implements AppObservable, NetworkerCommander {
     public static final String TradeNetworkId = "TradeManagerAndNetworker";
+
+    // Local copy of database.
+    private ArrayList<Trade> allTradesOnNet;
 
     private ArrayList<Trade> tradeIdToUpload;
     private ArrayList<Trade> tradeIdToRemove;
-    private ArrayList<Trade> allTradesOnNet;
     private Manager manager;
     private transient Context context;
-    private transient ArrayList<TradeNetworkerListener> listeners;
+    private transient ArrayList<NetworkerListener> listeners;
     private transient ArrayList<AppObserver> observers;
     public static final int PULL_TRADES = 123;
     public static final int PUSH_TRADES = 124;
@@ -116,14 +117,14 @@ public class TradeNetworker extends FileIO implements AppObservable {
         saveJson(TradeNetworkId, context);
     }
 
-    public void addListener(TradeNetworkerListener listener) {
+    public void addListener(NetworkerListener listener) {
         if(listeners == null) {
-            listeners = new ArrayList<TradeNetworkerListener>();
+            listeners = new ArrayList<NetworkerListener>();
         }
         listeners.add(listener);
     }
 
-    public void deletelisteners(TradeNetworkerListener listener) {
+    public void deletelisteners(NetworkerListener listener) {
         if(listeners != null) {
             listeners.remove(listener);
         }
@@ -145,6 +146,7 @@ public class TradeNetworker extends FileIO implements AppObservable {
             observers.remove(observer);
         }
     }
+
     public void notifyAllObservers() {
         if(observers != null) {
             for(AppObserver each : observers) {
@@ -158,8 +160,8 @@ public class TradeNetworker extends FileIO implements AppObservable {
      */
     public void notifyAllListeners(int commandCode) {
         if(listeners != null) {
-            for (TradeNetworkerListener obs : listeners) {
-                obs.listenerNotify(commandCode);
+            for (NetworkerListener obs : listeners) {
+                obs.netListenerNotify(commandCode);
             }
         }
     }

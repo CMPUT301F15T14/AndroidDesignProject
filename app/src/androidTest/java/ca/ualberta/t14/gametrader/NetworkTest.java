@@ -12,13 +12,13 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
     public NetworkTest(){super(ca.ualberta.t14.gametrader.MainActivity.class);}
 
     public void testSearchUsers() {
-        NetworkController nc = new NetworkController();
+        NetworkController nc = new NetworkController(getActivity().getApplicationContext());
 
         try {
-            ArrayList<User> searchUsers = nc.SearchByUserName("Fred");
+            ArrayList<User> searchUsers = nc.searchByUserName("Fred");
             assertFalse(searchUsers.isEmpty());
             assertEquals(searchUsers.get(0).getUserName(), "Fred");
-            searchUsers = nc.SearchByUserName("DoesNotExist");
+            searchUsers = nc.searchByUserName("DoesNotExist");
             assertTrue(searchUsers.isEmpty());
 
         }
@@ -29,7 +29,7 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
     }
 
     public void testCreateUser() {
-        NetworkController netCtrl = new NetworkController();
+        NetworkController netCtrl = new NetworkController(getActivity().getApplicationContext());
 
         User testUser = new User();
         testUser.setAddress("The Land of Oz2");
@@ -47,7 +47,7 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
 
 
         try {
-            netCtrl.AddUser(testUser);
+            netCtrl.addUser(testUser);
         }
         catch(IllegalStateException e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
             e.printStackTrace();
         }
 
-        User testLoadUser = netCtrl.LoadUser("testusr");
+        User testLoadUser = netCtrl.loadUser("testusr");
 
         assertFalse(testLoadUser == null);
         assertEquals(testLoadUser.getAddress(), "The Land of Oz2");

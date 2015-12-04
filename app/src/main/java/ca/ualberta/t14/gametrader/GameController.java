@@ -26,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.widget.ImageButton;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -90,7 +91,13 @@ public class GameController {
     }
 
     public Bitmap setPreviewImage(String imageId, Context context) {
-        return PictureManager.getBitmapFromJson(PictureManager.loadImageJsonFromJsonFile(imageId, context));
+        String json  = new String();
+        try {
+            json = PictureManager.loadImageJsonFromJsonFile(imageId, context);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return PictureManager.getBitmapFromJson(json);
     }
 
     public Bitmap setPreviewUriImage(Uri uri, ContentResolver contentResolver) {
@@ -116,6 +123,7 @@ public class GameController {
     }
 
     public Boolean removePhotos(Game game, String imageId, Context context) {
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(imageId, context);
         return game.removePictureId(imageId, context);
     }
 
@@ -136,6 +144,10 @@ public class GameController {
      */
     public void removeGame(Game game, User user, Context context) {
         if(isOwner(game, user)) {
+            ArrayList<String> imageIds = game.getPictureIds();
+            for(String each : imageIds) {
+                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(each, context);
+            }
             user.getInventory().remove(game, context);
         }
     }

@@ -2,22 +2,19 @@ package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 /**
  * Created by jjohnsto on 11/28/15.
  */
 public class FriendsController {
     Friends model;
+    transient Context context;
 
     public PriorityQueue<String> getMostRecentUpdates() {
         return MostRecentUpdates;
@@ -25,8 +22,9 @@ public class FriendsController {
 
     public PriorityQueue<String> MostRecentUpdates = new PriorityQueue<String>();
 
-    FriendsController(Friends friends) {
+    FriendsController(Friends friends, Context context) {
         model = friends;
+        this.context = context;
     }
 
     public void WriteFriends(Context context) {
@@ -49,12 +47,12 @@ public class FriendsController {
      */
     private class AddFriendThread extends AsyncTask<String, Integer, User> {
         protected User doInBackground(String... params) {
-            NetworkController nc = new NetworkController();
+            NetworkController nc = new NetworkController(context);
 
             String userName = params[0];
 
             try{
-                ArrayList<User> results = nc.SearchByUserName(userName);
+                ArrayList<User> results = nc.searchByUserName(userName);
 
                 if(!results.isEmpty()) {
                     return results.get(0);
@@ -110,11 +108,11 @@ public class FriendsController {
      * by his friends.
      */
     void UpdateFriends(){
-        NetworkController nc = new NetworkController();
+        NetworkController nc = new NetworkController(context);
         String date = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
 
         for(User friend : model.GetFriends()) {
-            User serverFriend = nc.LoadUser(friend.getAndroidID());
+            User serverFriend = nc.loadUser(friend.getAndroidID());
             if(!friend.equals(serverFriend)) { // if the server copy does not match our local copy
                 // figure out what was updated
                 if(friend.getInventory() != serverFriend.getInventory()) {

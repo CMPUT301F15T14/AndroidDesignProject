@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.io.FileNotFoundException;
+
 /*
  * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
  *
@@ -79,6 +81,8 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
         game.addObserver(this);
 
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addObserver(this);
+
         ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
         if(ownerProfile == null) {
             throw new RuntimeException("Received null User for game owner.");
@@ -103,12 +107,12 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         // Important, have to load bitmap from it's json first! Because bitmap is volatile.
-        String imageJson = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!imageJson.isEmpty()) {
-            game.setPictureFromJson(imageJson);
-            imageButton.setImageBitmap(game.getPicture());
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        String imageJson  = new String();
+        try {
+            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().getLocalCopyOfImageIds().remove(game.getFirstPictureId());
         }
 
         Boolean isInTrade = ObjParseSingleton.getInstance().keywordExists("isInTrade");
@@ -179,7 +183,12 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             }
         });
 
-
+        inventorycontroller.tryDownloadImages(game, getApplicationContext());
+        if(!imageJson.isEmpty()) {
+            inventorycontroller.setImageToImageButtons(game, imageButton, this);
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
     @Override
@@ -189,28 +198,6 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             finish();
         }
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // todo: these should be observers shouldnt they?
-
-        // When coming back to the activity and the data were updated.
-        gameTitle.setText(game.getTitle());
-        platform.setText(game.getPlatform().toString());
-        condition.setText(game.getCondition().toString());
-        owner.setText(ownerProfile.getUserName());
-        phone.setText(ownerProfile.getPhoneNumber());
-        address.setText(ownerProfile.getAddress());
-        additionalInfo.setText(game.getAdditionalInfo());
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!jsonStr.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
-        }
     }
 
     @Override
@@ -243,12 +230,14 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
 
     public void appNotify(AppObservable observable) {
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!jsonStr.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
-        }
+        inventorycontroller.setImageToImageButtons(game, imageButton, this);
+        gameTitle.setText(game.getTitle());
+        platform.setText(game.getPlatform().toString());
+        condition.setText(game.getCondition().toString());
+        owner.setText(ownerProfile.getUserName());
+        phone.setText(ownerProfile.getPhoneNumber());
+        address.setText(ownerProfile.getAddress());
+        additionalInfo.setText(game.getAdditionalInfo());
     }
 
 }

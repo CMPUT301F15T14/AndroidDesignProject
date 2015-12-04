@@ -20,10 +20,8 @@ package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 
-import java.lang.reflect.Array;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -104,11 +102,21 @@ public class Game implements AppObservable {
         this.pictureId = new ArrayList<String>();
         if(imgIds != null) {
             for(String each : imgIds) {
-                String json = PictureManager.loadImageJsonFromJsonFile(each, context);
+                String json  = new String();
+                try {
+                    json = PictureManager.loadImageJsonFromJsonFile(each, context);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 User deviceUser = UserSingleton.getInstance().getUser();
                 PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
-                String newId = pm.addImageToJsonFile(json, deviceUser, context);
-                this.pictureId.add(newId);
+                if(!json.isEmpty()) {
+                    String newId = pm.addImageToJsonFile(json, deviceUser, context);
+                    this.pictureId.add(newId);
+                    PictureNetworkerSingleton.getInstance().getPicNetMangager().getLocalCopyOfImageIds().add(newId);
+                    PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newId, context);
+
+                }
             }
         }
 
@@ -290,7 +298,7 @@ public class Game implements AppObservable {
             // remove from local files
             success = PictureManager.removeFile(idToRemove, context);
             pictureId.remove(idToRemove);
-            PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToRemove(idToRemove, context);
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(idToRemove, context);
             picture = null;
         }
         notifyAllObservers();
@@ -305,7 +313,7 @@ public class Game implements AppObservable {
      */
     public Boolean setPictureFromJson(String jsonBitmap) {
         picture = PictureManager.getBitmapFromJson(jsonBitmap);
-        notifyAllObservers();
+        //notifyAllObservers();
         return picture != null;
     }
 
@@ -330,9 +338,9 @@ public class Game implements AppObservable {
         PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
         String newIdImage = pm.addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
         pictureId.add(newIdImage);
-        PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToUpload(newIdImage, context);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newIdImage, context);
 
-        setPictureFromJson(PictureManager.loadImageJsonFromJsonFile(getFirstPictureId(), context));
+        picture = PictureManager.getBitmapFromJson(pictureJsonable);
 
         notifyAllObservers();
         return Boolean.TRUE;
