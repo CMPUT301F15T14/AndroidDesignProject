@@ -53,7 +53,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         this.context = context;
     }
 
-    public synchronized ArrayList<User> searchByUserName(String str) throws IOException {
+    public ArrayList<User> searchByUserName(String str) throws IOException {
         HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
         String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";
         StringEntity stringentity = new StringEntity(query);
@@ -99,7 +99,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
      * @throws IllegalStateException
      * @throws IOException
      */
-    public synchronized void addUser(User user) throws IllegalStateException, IOException {
+    public void addUser(User user) throws IllegalStateException, IOException {
         HttpPost httpPost = new HttpPost(netLocation+user.getAndroidID());
 
         System.out.println("Trying to write user to: " + netLocation+user.getAndroidID());
@@ -152,7 +152,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
      * @param id is the android device id used to index users in the elastic search server.
      * @return a User object filled with the relevent profile/inventory data.
      */
-    public synchronized User loadUser(String id) {
+    public User loadUser(String id) {
         User user = null;
 
         try{
@@ -497,13 +497,13 @@ public class NetworkController implements AppObserver, NetworkerListener {
         });
     }
 
-    private synchronized void pullTrades(TradeNetworker tradeNetworker, String identityNetTrade) {
+    private void pullTrades(TradeNetworker tradeNetworker, String identityNetTrade) {
         ArrayList<Trade> tradingsOnline = getMyTrades(identityNetTrade);
         tradeNetworker.setAllTradesOnNet(tradingsOnline);
         tradeNetworker.notifyAllObservers();
     }
 
-    private synchronized void pushTrades(TradeNetworker tradeNetworker) {
+    private void pushTrades(TradeNetworker tradeNetworker) {
         ArrayList<Trade> trades = new ArrayList<Trade>(tradeNetworker.getTradeToUpload());
         for (Trade each : trades) {
             Trade aTrade = each;
@@ -517,7 +517,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         tradeNetworker.notifyAllObservers();
     }
 
-    private synchronized void pushDeleteTrades(TradeNetworker tradeNetworker) {
+    private void pushDeleteTrades(TradeNetworker tradeNetworker) {
         ArrayList<Trade> tradesRemove = new ArrayList<Trade>(tradeNetworker.getTradeToRemove());
         for (Trade each : tradesRemove) {
             System.out.println("Trade removing...");
@@ -532,7 +532,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         tradeNetworker.notifyAllObservers();
     }
 
-    private synchronized void pullImages(PictureNetworker picNetworker) {
+    private void pullImages(PictureNetworker picNetworker) {
         ArrayList<String> imgDl = new ArrayList<String>(picNetworker.getImagesToDownload());
         ImagePackage downloadedPicIds = null;
         for(String each : imgDl) {
@@ -541,12 +541,12 @@ public class NetworkController implements AppObserver, NetworkerListener {
                 picNetworker.getLocalCopyOfImageIds().add(downloadedPicIds.getImageId());
             }
             picNetworker.getImagesToDownload().remove(each);
-            picNetworker.savePictureNetworker();
-            picNetworker.notifyAllObservers();
         }
+        picNetworker.savePictureNetworker();
+        picNetworker.notifyAllObservers();
     }
 
-    private synchronized void pushImages(PictureNetworker picNetworker) {
+    private void pushImages(PictureNetworker picNetworker) {
         ArrayList<String> imgIds = new ArrayList<String>(picNetworker.getImageFilesToUpload());
         for (String each : imgIds) {
             System.out.println("Pic adding...");
@@ -566,7 +566,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         picNetworker.notifyAllObservers();
     }
 
-    private synchronized void pushDeleteImages(PictureNetworker picNetworker) {
+    private void pushDeleteImages(PictureNetworker picNetworker) {
         ArrayList<String> tradesRemove = new ArrayList<String>(picNetworker.getImageFilesToRemove());
         for (String each : tradesRemove) {
             System.out.println("Pic removing...");

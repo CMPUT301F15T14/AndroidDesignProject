@@ -37,7 +37,7 @@ import java.io.FileNotFoundException;
 public class InventoryItemActivity extends Activity implements AppObserver {
 
     Game game;
-    InventoryItemController inventoryListController;
+    InventoryItemController inventoryItemController;
     User ownerProfile;
 
     public String getGameTitle() {
@@ -88,7 +88,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             throw new RuntimeException("Received null User for game owner.");
         }
 
-        inventoryListController = new InventoryItemController(ownerProfile.getInventory());
+        inventoryItemController = new InventoryItemController(ownerProfile.getInventory());
 
         gameTitle = (TextView) findViewById(R.id.gameInfoTitle);
         platform = (TextView) findViewById(R.id.gameInfoConsole);
@@ -156,19 +156,19 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         }
 
         editGame = (Button)findViewById(R.id.buttonEditItem);
-        if (!inventoryListController.clonable(ownerProfile)){
+        if (!inventoryItemController.clonable(ownerProfile)){
             editGame.setText("Edit");
         }else{
             editGame.setText("Clone");
         }
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                if (!inventoryListController.clonable(ownerProfile)){
+                if (!inventoryItemController.clonable(ownerProfile)){
                     ObjParseSingleton.getInstance().addObject("game", game);
                     Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
                     startActivityForResult(myIntent, 1);
                 }else{
-                    inventoryListController.clone(game,getApplicationContext());
+                    inventoryItemController.clone(game,getApplicationContext());
                     Toast.makeText(InventoryItemActivity.this, "Game has been cloned to your inventory!", Toast.LENGTH_SHORT).show();
 
                 };
@@ -183,9 +183,9 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             }
         });
 
-        inventoryListController.tryDownloadImages(game, getApplicationContext());
+        inventoryItemController.tryDownloadImages(game, getApplicationContext());
         if(!imageJson.isEmpty()) {
-            inventoryListController.setImageToImageButtons(game, imageButton, this);
+            inventoryItemController.setImageToImageButtons(game, imageButton, this);
         } else {
             imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
         }
@@ -230,7 +230,7 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
 
     public void appNotify(AppObservable observable) {
-        inventoryListController.setImageToImageButtons(game, imageButton, this);
+        inventoryItemController.setImageToImageButtons(game, imageButton, this);
         gameTitle.setText(game.getTitle());
         platform.setText(game.getPlatform().toString());
         condition.setText(game.getCondition().toString());

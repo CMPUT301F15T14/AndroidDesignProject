@@ -36,7 +36,7 @@ import java.util.ArrayList;
  */
 
 public class InventoryListActivity extends Activity {
-    User mainUser;
+    private User mainUser;
 
     private ArrayList<Game> extractedInventory;
     private ArrayList<String> mobileArray;
@@ -72,9 +72,13 @@ public class InventoryListActivity extends Activity {
         setContentView(R.layout.activity_inventory_list);
 
         // Load user from JSON. The user contains Inventory.
-        mainUser = (User)ObjParseSingleton.getInstance().popObject("User");
+        if(ObjParseSingleton.getInstance().keywordExists("User"))
+            mainUser = (User)ObjParseSingleton.getInstance().popObject("User");
         if(mainUser == null) {
-            throw new RuntimeException("InventoryListActivity was not passed a user");
+            //throw new RuntimeException("InventoryListActivity was not passed a user");
+            System.err.print("InventoryListActivity was NOT passed a user, somehow lost mainUser!");
+            finish();
+            return;
         }
 
         title = (TextView) findViewById(R.id.inventoryListText);

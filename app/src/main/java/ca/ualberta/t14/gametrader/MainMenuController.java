@@ -83,10 +83,10 @@ public class MainMenuController {
                 // Try to load the user's settings.
                 try {
                     settingsMode = (SettingsMode) settingsMode.loadJson(SettingsMode.SETTINGS_FILE, c);
-                    SettingsSingleton.getInstance().setSettings(settingsMode);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                SettingsSingleton.getInstance().setSettings(settingsMode);
                 SettingsSingleton.getInstance().getSettings().saveJson(SettingsMode.SETTINGS_FILE, c);
 
                 // Check if the unique installation identity exists, and add one if there is none.

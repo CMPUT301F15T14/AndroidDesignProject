@@ -79,6 +79,8 @@ public class InventoryItemController {
         }
         if(!imageJson.isEmpty()) {
             imageButton.setImageBitmap(PictureManager.getBitmapFromJson(imageJson));
+        } else if(PictureNetworkerSingleton.getInstance().getPicNetMangager().getImagesToDownload().contains(game.getFirstPictureId())) {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.saveimages));
         } else {
             imageButton.setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
         }

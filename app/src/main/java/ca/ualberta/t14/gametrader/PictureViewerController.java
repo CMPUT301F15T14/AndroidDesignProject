@@ -54,18 +54,20 @@ public class PictureViewerController {
     private void downloadImages(Game game) {
         if (!game.pictureIdIsEmpty()) {
             final Game g = game;
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int num = g.getPictureIds().size();
+                    for (int i = 0; i < num; i++) {
+                        setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.saveimages));
+                    }
+                }
+            });
             Runnable r = new Runnable() {
                 @Override
                 public void run() {
                     for (String eachId : g.getPictureIds()) {
                         PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(eachId);
-                        final String each = eachId;
-                        activity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                loadImages(each);
-                            }
-                        });
                     }
                 }
             };

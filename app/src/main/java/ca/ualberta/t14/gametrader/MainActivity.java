@@ -75,7 +75,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        hand.postDelayed(run, 60000);
         /**
          * Check Internet status
          * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
@@ -155,6 +154,9 @@ public class MainActivity extends Activity {
         super.onStart();
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, updatesList);
         updates.setAdapter(adapter);
+
+        // first run should be early
+        hand.postDelayed(run, 100);
     }
 
     @Override

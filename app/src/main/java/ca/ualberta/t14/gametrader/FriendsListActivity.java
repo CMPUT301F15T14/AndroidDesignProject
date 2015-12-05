@@ -37,6 +37,8 @@ public class FriendsListActivity extends Activity implements AppObserver {
 
         friendsListView = (ListView) findViewById(R.id.friendsList);
 
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item, friendsArrayList);
+        friendsListView.setAdapter(adapter);
 
         friendsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
@@ -45,25 +47,14 @@ public class FriendsListActivity extends Activity implements AppObserver {
                 // assuming the adapter view order is same as the array game list order
                 User u = UserSingleton.getInstance().getUser().getFriends().GetFriends().get(position);
 
-                ObjParseSingleton.getInstance().addObject("userProfile", u); // TODO: pass the right user, not just phone owner!
+                ObjParseSingleton.getInstance().addObject("userProfile", u);
                 Intent myIntent = new Intent(FriendsListActivity.this, ProfileActivity.class);
 
                 startActivityForResult(myIntent, 1);
 
             }
         });
-
-    }
-
-    @Override
-    protected void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-        adapter = new ArrayAdapter<String>(this, R.layout.list_item, friendsArrayList);
-        friendsListView.setAdapter(adapter);
-
         friendsArrayList.clear();
-
         for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
             friendsArrayList.add(friend.getUserName());
             Log.d("friend", "" + friendsArrayList.size());
@@ -71,7 +62,6 @@ public class FriendsListActivity extends Activity implements AppObserver {
         }
         adapter.notifyDataSetChanged();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
