@@ -181,7 +181,7 @@ public class MainActivity extends Activity {
     }
 
 
-    private class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
+    public class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
         protected ArrayList<String> doInBackground(String... params) {
             FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
             fc.UpdateFriends();
@@ -212,26 +212,7 @@ public class MainActivity extends Activity {
 
             if(isInternetPresent) {
                 new checkForUpdates().execute("GetFriendsUpdates");
-                // Trades updates
-                TradeNetworker tn = TradeNetworkerSingleton.getInstance().getTradeNetMangager();
-                if(!tn.getTradeToUpload().isEmpty()) {
-                    tn.notifyAllListeners(TradeNetworker.PUSH_TRADES);
-                }
-                if (!tn.getTradeToRemove().isEmpty()) {
-                    tn.notifyAllListeners(TradeNetworker.PUSH_TRADES_TO_DELETE);
-                }
-                tn.getAllTradesOnNet(Boolean.TRUE);
-                // Pictures update
-                PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
-                if(!pn.getImageFilesToUpload().isEmpty()) {
-                    pn.notifyAllListeners(PictureNetworker.PUSH_IMAGE);
-                }
-                if(!pn.getImageFilesToRemove().isEmpty()) {
-                    pn.notifyAllListeners(PictureNetworker.PUSH_IMAGES_TO_DELETE);
-                }
-                if(!pn.getImagesToDownload().isEmpty()) {
-                    pn.notifyAllListeners(PictureNetworker.PULL_IMAGES);
-                }
+                mainMenuController.updateChecker();
             }
             hand.postDelayed(run, 60000);
         }

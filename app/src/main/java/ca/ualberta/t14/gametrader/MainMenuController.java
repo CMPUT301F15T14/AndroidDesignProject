@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.provider.Settings;
 
 import java.io.IOException;
@@ -102,6 +103,44 @@ public class MainMenuController {
 
         Thread t = new Thread(r);
         t.start();
+    }
+
+    public synchronized void updateChecker() {
+        final NetworkController netc = netCtrl;
+        // Update device user
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    netc.addUser(UserSingleton.getInstance().getUser());
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+
+        // Trades updates
+        TradeNetworker tn = TradeNetworkerSingleton.getInstance().getTradeNetMangager();
+        if(!tn.getTradeToUpload().isEmpty()) {
+            tn.notifyAllListeners(TradeNetworker.PUSH_TRADES);
+        }
+        if (!tn.getTradeToRemove().isEmpty()) {
+            tn.notifyAllListeners(TradeNetworker.PUSH_TRADES_TO_DELETE);
+        }
+        tn.getAllTradesOnNet(Boolean.TRUE);
+        // Pictures update
+        PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+        if(!pn.getImageFilesToUpload().isEmpty()) {
+            pn.notifyAllListeners(PictureNetworker.PUSH_IMAGE);
+        }
+        if(!pn.getImageFilesToRemove().isEmpty()) {
+            pn.notifyAllListeners(PictureNetworker.PUSH_IMAGES_TO_DELETE);
+        }
+        if(!pn.getImagesToDownload().isEmpty()) {
+            pn.notifyAllListeners(PictureNetworker.PULL_IMAGES);
+        }
     }
 
 }

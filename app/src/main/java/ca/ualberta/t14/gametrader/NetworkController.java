@@ -53,7 +53,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         this.context = context;
     }
 
-    public ArrayList<User> searchByUserName(String str) throws IOException {
+    public synchronized ArrayList<User> searchByUserName(String str) throws IOException {
         HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
         String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";
         StringEntity stringentity = new StringEntity(query);
@@ -99,7 +99,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
      * @throws IllegalStateException
      * @throws IOException
      */
-    public void addUser(User user) throws IllegalStateException, IOException {
+    public synchronized void addUser(User user) throws IllegalStateException, IOException {
         HttpPost httpPost = new HttpPost(netLocation+user.getAndroidID());
 
         System.out.println("Trying to write user to: " + netLocation+user.getAndroidID());
@@ -152,7 +152,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
      * @param id is the android device id used to index users in the elastic search server.
      * @return a User object filled with the relevent profile/inventory data.
      */
-    public User loadUser(String id) {
+    public synchronized User loadUser(String id) {
         User user = null;
 
         try{
