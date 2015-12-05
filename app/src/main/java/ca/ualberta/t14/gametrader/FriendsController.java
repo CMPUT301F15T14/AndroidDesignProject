@@ -113,8 +113,8 @@ public class FriendsController {
     void UpdateFriends(){
         NetworkController nc = new NetworkController(context);
         String date = java.text.DateFormat.getDateTimeInstance().format(Calendar.getInstance().getTime());
-
-        for(User friend : model.GetFriends()) {
+        ArrayList<User> friendsToCheck = new ArrayList<User>(model.GetFriends());
+        for(User friend : friendsToCheck) {
             User serverFriend = nc.loadUser(friend.getAndroidID());
             if(!friend.equals(serverFriend)) { // if the server copy does not match our local copy
                 Boolean somethingUpdated = Boolean.FALSE;
