@@ -33,7 +33,9 @@ public class FriendsController {
 
     public void LoadFriends(Context context) {
         try {
-            model.loadJson("myFriends", context);
+            model = (Friends) model.loadJson("myFriends", context);
+            UserSingleton.getInstance().getUser().getFriends().setFriends(model.GetFriends());
+
         } catch (FileNotFoundException e){
             e.printStackTrace();
         } catch (IOException e) {
@@ -43,7 +45,6 @@ public class FriendsController {
 
     /**
      * Talks to the nextwork in another thread when adding a friend.
-     * @param friend is the User we wish to add.
      */
     private class AddFriendThread extends AsyncTask<String, Integer, User> {
         protected User doInBackground(String... params) {
@@ -74,7 +75,8 @@ public class FriendsController {
                     }
                 }
                 System.out.println("Adding: " + result.getUserName());
-                model.AddFriend(result);
+                UserSingleton.getInstance().getUser().getFriends().AddFriend(result);
+                WriteFriends(context);
             }
         }
     }
@@ -96,7 +98,8 @@ public class FriendsController {
         String id = friend.getAndroidID();
         for(User existingFriend : model.GetFriends()) {
             if( existingFriend.getAndroidID() == id ) {
-                model.RemoveFriend(existingFriend);
+                UserSingleton.getInstance().getUser().getFriends().RemoveFriend(existingFriend);
+                WriteFriends(context);
                 return;
             }
         }
@@ -114,28 +117,36 @@ public class FriendsController {
         for(User friend : model.GetFriends()) {
             User serverFriend = nc.loadUser(friend.getAndroidID());
             if(!friend.equals(serverFriend)) { // if the server copy does not match our local copy
-                // figure out what was updated
+                Boolean somethingUpdated = Boolean.FALSE;
+                // figure out what was updated, multiple updates at once too.
                 if(friend.getInventory() != serverFriend.getInventory()) {
-                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their inventory");
+                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their inventory.");
+                    somethingUpdated = Boolean.TRUE;
                 }
-                else if(friend.getUserName() != serverFriend.getUserName()) {
-                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their user name to " + serverFriend.getUserName());
+                if(friend.getUserName() != serverFriend.getUserName()) {
+                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their user name to: " + serverFriend.getUserName());
+                    somethingUpdated = Boolean.TRUE;
                 }
-                else if(friend.getAddress() != serverFriend.getAddress()) {
-                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their address to" + serverFriend.getAddress());
+                if(friend.getAddress() != serverFriend.getAddress()) {
+                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their address to: " + serverFriend.getAddress());
+                    somethingUpdated = Boolean.TRUE;
                 }
-                else if(friend.getEmail() != serverFriend.getEmail()) {
-                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their email to" + serverFriend.getEmail());
+                if (friend.getEmail() != serverFriend.getEmail()) {
+                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their email to: " + serverFriend.getEmail());
+                    somethingUpdated = Boolean.TRUE;
                 }
-                else if(friend.getPhoneNumber() != serverFriend.getPhoneNumber()) {
-                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their phone to" + serverFriend.getPhoneNumber());
+                if(friend.getPhoneNumber() != serverFriend.getPhoneNumber()) {
+                    MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their phone to: " + serverFriend.getPhoneNumber());
+                    somethingUpdated = Boolean.TRUE;
                 }
-                else { // no updates -- do nothing
+                if(somethingUpdated == Boolean.FALSE) {
+                    // no updates -- do nothing
                     return;
                 }
                 // update the our copy
-                model.RemoveFriend(friend);
-                model.AddFriend(serverFriend);
+                UserSingleton.getInstance().getUser().getFriends().RemoveFriend(friend);
+                UserSingleton.getInstance().getUser().getFriends().AddFriend(serverFriend);
+                WriteFriends(context);
             }
         }
     }

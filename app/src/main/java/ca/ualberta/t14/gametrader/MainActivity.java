@@ -109,6 +109,8 @@ public class MainActivity extends Activity {
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //check friends updates
+                new checkForUpdates().execute("not much");
                 Intent intent = new Intent(MainActivity.this, FriendsListActivity.class);
                 startActivity(intent);
             }
@@ -143,12 +145,11 @@ public class MainActivity extends Activity {
 
         updates = (ListView) findViewById(R.id.friendUpdates);
 
-        new checkForUpdates().execute("not much");
+        new checkForUpdates().execute("GetFriendsUpdates");
     }
 
     @Override
     protected void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, updatesList);
         updates.setAdapter(adapter);
@@ -205,6 +206,7 @@ public class MainActivity extends Activity {
         public void run() {
            // get Internet status
             isInternetPresent = networkConnectivity.isConnectingToInternet();
+            new checkForUpdates().execute("GetFriendsUpdates");
             hand.postDelayed(run, 60000);
         }
     };

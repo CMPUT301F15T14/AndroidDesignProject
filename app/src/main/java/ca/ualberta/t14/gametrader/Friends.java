@@ -9,7 +9,7 @@ import java.util.Observable;
  * Created by jjohnsto on 11/28/15.
  */
 public class Friends extends FileIO implements AppObservable {
-    private volatile ArrayList<AppObserver> observers = new ArrayList<AppObserver>();
+    private transient ArrayList<AppObserver> observers = new ArrayList<AppObserver>();
 
     @Override
     public void addObserver(AppObserver observer) {
@@ -28,7 +28,7 @@ public class Friends extends FileIO implements AppObservable {
         }
     }
 
-    ArrayList<User> friendList = new ArrayList<User>();
+    private ArrayList<User> friendList = new ArrayList<User>();
 
     public void AddFriend(User friend) {
         friendList.add(friend);
@@ -37,6 +37,10 @@ public class Friends extends FileIO implements AppObservable {
 
     public void RemoveFriend(User friend) {
         friendList.remove(friend);
+    }
+
+    public void setFriends(ArrayList<User> friendsList) {
+        this.friendList = friendsList;
     }
 
     public ArrayList<User> GetFriends() { return friendList; }

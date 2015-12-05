@@ -102,9 +102,11 @@ public class FriendsListActivity extends Activity implements AppObserver {
         for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
             friendsArrayList.add(friend.getUserName());
         }
-        adapter.notifyDataSetChanged();
-
-        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
-        //fc.WriteFriends(getApplicationContext());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }
