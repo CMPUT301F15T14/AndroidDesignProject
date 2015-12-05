@@ -110,7 +110,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 //check friends updates
-                new checkForUpdates().execute("not much");
+                if(isInternetPresent)
+                    new checkForUpdates().execute("not much");
                 Intent intent = new Intent(MainActivity.this, FriendsListActivity.class);
                 startActivity(intent);
             }
@@ -145,7 +146,8 @@ public class MainActivity extends Activity {
 
         updates = (ListView) findViewById(R.id.friendUpdates);
 
-        new checkForUpdates().execute("GetFriendsUpdates");
+        if(isInternetPresent)
+            new checkForUpdates().execute("GetFriendsUpdates");
     }
 
     @Override
@@ -206,7 +208,31 @@ public class MainActivity extends Activity {
         public void run() {
            // get Internet status
             isInternetPresent = networkConnectivity.isConnectingToInternet();
-            new checkForUpdates().execute("GetFriendsUpdates");
+            ObjParseSingleton.getInstance().addObject(NetworkConnectivity.IS_NETWORK_ONLINE,isInternetPresent);
+
+            if(isInternetPresent) {
+                new checkForUpdates().execute("GetFriendsUpdates");
+                // Trades updates
+                TradeNetworker tn = TradeNetworkerSingleton.getInstance().getTradeNetMangager();
+                if(!tn.getTradeToUpload().isEmpty()) {
+                    tn.notifyAllListeners(TradeNetworker.PUSH_TRADES);
+                }
+                if (!tn.getTradeToRemove().isEmpty()) {
+                    tn.notifyAllListeners(TradeNetworker.PUSH_TRADES_TO_DELETE);
+                }
+                tn.getAllTradesOnNet(Boolean.TRUE);
+                // Pictures update
+                PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+                if(!pn.getImageFilesToUpload().isEmpty()) {
+                    pn.notifyAllListeners(PictureNetworker.PUSH_IMAGE);
+                }
+                if(!pn.getImageFilesToRemove().isEmpty()) {
+                    pn.notifyAllListeners(PictureNetworker.PUSH_IMAGES_TO_DELETE);
+                }
+                if(!pn.getImagesToDownload().isEmpty()) {
+                    pn.notifyAllListeners(PictureNetworker.PULL_IMAGES);
+                }
+            }
             hand.postDelayed(run, 60000);
         }
     };

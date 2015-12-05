@@ -470,7 +470,6 @@ public class NetworkController implements AppObserver, NetworkerListener {
             @Override
             public void run() {
                 try {
-
                     switch (command) {
                         case TradeNetworker.PULL_TRADES:
                             pullTrades(tradeNetworker, identityNetTrade);
@@ -490,7 +489,6 @@ public class NetworkController implements AppObserver, NetworkerListener {
                         case PictureNetworker.PUSH_IMAGES_TO_DELETE:
                             pushDeleteImages(pictureNetworker);
                             break;
-
                     }
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
@@ -499,13 +497,13 @@ public class NetworkController implements AppObserver, NetworkerListener {
         });
     }
 
-    private void pullTrades(TradeNetworker tradeNetworker, String identityNetTrade) {
+    private synchronized void pullTrades(TradeNetworker tradeNetworker, String identityNetTrade) {
         ArrayList<Trade> tradingsOnline = getMyTrades(identityNetTrade);
         tradeNetworker.setAllTradesOnNet(tradingsOnline);
         tradeNetworker.notifyAllObservers();
     }
 
-    private void pushTrades(TradeNetworker tradeNetworker) {
+    private synchronized void pushTrades(TradeNetworker tradeNetworker) {
         ArrayList<Trade> trades = new ArrayList<Trade>(tradeNetworker.getTradeToUpload());
         for (Trade each : trades) {
             Trade aTrade = each;
@@ -519,7 +517,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         tradeNetworker.notifyAllObservers();
     }
 
-    private void pushDeleteTrades(TradeNetworker tradeNetworker) {
+    private synchronized void pushDeleteTrades(TradeNetworker tradeNetworker) {
         ArrayList<Trade> tradesRemove = new ArrayList<Trade>(tradeNetworker.getTradeToRemove());
         for (Trade each : tradesRemove) {
             System.out.println("Trade removing...");
@@ -534,7 +532,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         tradeNetworker.notifyAllObservers();
     }
 
-    private void pullImages(PictureNetworker picNetworker) {
+    private synchronized void pullImages(PictureNetworker picNetworker) {
         ArrayList<String> imgDl = new ArrayList<String>(picNetworker.getImagesToDownload());
         ImagePackage downloadedPicIds = null;
         for(String each : imgDl) {
@@ -548,7 +546,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         }
     }
 
-    private void pushImages(PictureNetworker picNetworker) {
+    private synchronized void pushImages(PictureNetworker picNetworker) {
         ArrayList<String> imgIds = new ArrayList<String>(picNetworker.getImageFilesToUpload());
         for (String each : imgIds) {
             System.out.println("Pic adding...");
@@ -568,7 +566,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         picNetworker.notifyAllObservers();
     }
 
-    private void pushDeleteImages(PictureNetworker picNetworker) {
+    private synchronized void pushDeleteImages(PictureNetworker picNetworker) {
         ArrayList<String> tradesRemove = new ArrayList<String>(picNetworker.getImageFilesToRemove());
         for (String each : tradesRemove) {
             System.out.println("Pic removing...");

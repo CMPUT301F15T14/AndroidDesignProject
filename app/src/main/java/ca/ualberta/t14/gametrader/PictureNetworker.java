@@ -87,7 +87,9 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     public void addImageToDownload(String imageToDownload) {
         imagesToDownload.add(imageToDownload);
         savePictureNetworker();
-        notifyAllListeners(PULL_IMAGES);
+        if(ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE)))
+            notifyAllListeners(PULL_IMAGES);
     }
 
     public void setLocalCopyOfImageIds(ArrayList<String> localCopyOfImageIds) {
@@ -101,7 +103,9 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     public void addImageFileToUpload(String imageFileToUpload) {
         imageIdsToUpload.add(imageFileToUpload);
         savePictureNetworker();
-        notifyAllListeners(PUSH_IMAGE);
+        if(ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE)))
+            notifyAllListeners(PUSH_IMAGE);
     }
 
     public ArrayList<String> getImageFilesToRemove() {
@@ -111,7 +115,9 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
     public void addImageFileToRemove(String imageFileToRemove) {
         this.imageIdsToRemove.add(imageFileToRemove);
         savePictureNetworker();
-        notifyAllListeners(PUSH_IMAGES_TO_DELETE);
+        if(ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE)))
+            notifyAllListeners(PUSH_IMAGES_TO_DELETE);
     }
 
     public void savePictureNetworker() {

@@ -63,7 +63,9 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         if(allTradesOnNet == null) {
             allTradesOnNet = new ArrayList<Trade>();
         }
-        if(updateLocalList) {
+        if(updateLocalList
+                && ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE))) {
             notifyAllListeners(PULL_TRADES);
         }
         return allTradesOnNet;
@@ -84,7 +86,9 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         // now add the trade
         this.tradeIdToUpload.add(trade);
         saveJson(TradeNetworkId, context);
-        notifyAllListeners(PUSH_TRADES);
+        if(ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE)))
+            notifyAllListeners(PUSH_TRADES);
     }
 
     public ArrayList<Trade> getTradeToRemove() {
@@ -95,7 +99,9 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         replaceSame(trade, tradeIdToRemove);
         this.tradeIdToRemove.add(trade);
         saveJson(TradeNetworkId, context);
-        notifyAllListeners(PUSH_TRADES_TO_DELETE);
+        if(ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE)))
+            notifyAllListeners(PUSH_TRADES_TO_DELETE);
 
     }
 
