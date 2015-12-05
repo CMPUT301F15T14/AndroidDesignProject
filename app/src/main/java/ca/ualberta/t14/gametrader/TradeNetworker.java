@@ -67,6 +67,7 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
                 && ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
                 && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE))) {
             notifyAllListeners(PULL_TRADES);
+            saveJson(TradeNetworkId, context);
         }
         return allTradesOnNet;
     }
