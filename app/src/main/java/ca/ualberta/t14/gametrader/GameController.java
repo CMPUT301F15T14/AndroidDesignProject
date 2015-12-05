@@ -123,7 +123,7 @@ public class GameController {
     }
 
     public Boolean removePhotos(Game game, String imageId, Context context) {
-        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(imageId, context);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(imageId);
         return game.removePictureId(imageId, context);
     }
 
@@ -146,7 +146,7 @@ public class GameController {
         if(isOwner(game, user)) {
             ArrayList<String> imageIds = game.getPictureIds();
             for(String each : imageIds) {
-                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(each, context);
+                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(each);
             }
             user.getInventory().remove(game, context);
         }

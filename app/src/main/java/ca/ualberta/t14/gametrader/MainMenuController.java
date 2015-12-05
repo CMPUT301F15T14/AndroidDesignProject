@@ -26,7 +26,7 @@ public class MainMenuController {
      * Initializes all singletons upon program start so that they are accessible by all activities
      * @param context is the context of the caller necessary for certain API calls
      */
-    void preLoadAllSingletons(Context context, final Activity activity) {
+    void preLoadAllSingletons(final Context context, final Activity activity) {
 
         final Context c = context;
         final Activity activityFinal = activity;
@@ -39,6 +39,7 @@ public class MainMenuController {
                 // Try setting the user singleton to the loaded user.
                 try {
                     user = (User) user.loadJson("MainUserProfile", c);
+                    user.getInventory().addObserver(user);
                     UserSingleton.getInstance().setUser(user);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -53,18 +54,19 @@ public class MainMenuController {
                         Settings.Secure.ANDROID_ID));
                 System.out.println("Does this print?");
 
-                UserSingleton.getInstance().getUser().addObserver(netCtrl);
+                // TODO: friends presistent
                 FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), c);
                 fc.LoadFriends(c);
 
                 // Try to load this device's Picture Manager and Networker.
                 try {
                     pn = (PictureNetworker) pn.loadJson(PictureNetworker.PictureNetworkId, c);
-                    PictureNetworkerSingleton.getInstance().setPicNetMangager(pn);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                PictureNetworkerSingleton.getInstance().getPicNetMangager().setActivity(activity);
+                pn.setContext(context);
+                pn.setActivity(activity);
+                PictureNetworkerSingleton.getInstance().setPicNetMangager(pn);
                 PictureNetworkerSingleton.getInstance().getPicNetMangager().saveJson(PictureNetworker.PictureNetworkId, c);
 
                 // Try to load this device's Trade Networker.

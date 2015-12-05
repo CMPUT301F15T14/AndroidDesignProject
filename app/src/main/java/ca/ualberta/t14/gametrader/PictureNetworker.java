@@ -30,6 +30,7 @@ import java.util.ArrayList;
 public class PictureNetworker extends FileIO implements AppObservable, NetworkerCommander {
     private PictureManager pm;
     transient private Activity activity;
+    transient private Context context;
     public static final String PictureNetworkId = "PictureManagerAndNetworker";
 
     // Keeps track of all the local/downloaded images.
@@ -55,6 +56,14 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
         observers = new ArrayList<AppObserver>();
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public Activity getActivity() {
         return activity;
     }
@@ -75,9 +84,9 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
         return imagesToDownload;
     }
 
-    public void addImageToDownload(String imageToDownload, Context context) {
+    public void addImageToDownload(String imageToDownload) {
         imagesToDownload.add(imageToDownload);
-        //saveJson(PictureNetworkId, context);
+        savePictureNetworker();
         notifyAllListeners(PULL_IMAGES);
     }
 
@@ -89,9 +98,9 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
         return imageIdsToUpload;
     }
 
-    public void addImageFileToUpload(String imageFileToUpload, Context context) {
+    public void addImageFileToUpload(String imageFileToUpload) {
         imageIdsToUpload.add(imageFileToUpload);
-        //saveJson(PictureNetworkId, context);
+        savePictureNetworker();
         notifyAllListeners(PUSH_IMAGE);
     }
 
@@ -99,10 +108,14 @@ public class PictureNetworker extends FileIO implements AppObservable, Networker
         return imageIdsToRemove;
     }
 
-    public void addImageFileToRemove(String imageFileToRemove, Context context) {
+    public void addImageFileToRemove(String imageFileToRemove) {
         this.imageIdsToRemove.add(imageFileToRemove);
-        //saveJson(PictureNetworkId, context);
+        savePictureNetworker();
         notifyAllListeners(PUSH_IMAGES_TO_DELETE);
+    }
+
+    public void savePictureNetworker() {
+        saveJson(PictureNetworkId, context);
     }
 
     public void addObserver(AppObserver observer) {

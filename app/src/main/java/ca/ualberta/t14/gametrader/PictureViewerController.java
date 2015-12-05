@@ -54,7 +54,7 @@ public class PictureViewerController {
     private void downloadImages(Game game) {
         if (!game.pictureIdIsEmpty()) {
             for (String eachId : game.getPictureIds()) {
-                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(eachId, context);
+                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(eachId);
                 loadImages(eachId);
             }
         }

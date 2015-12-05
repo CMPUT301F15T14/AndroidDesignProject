@@ -49,9 +49,6 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         // otherwise, create a new user file and prompt the user to create a user name
         observers = new ArrayList<AppObserver>();
         inventory = new Inventory();
-        inventory.addObserver(this);
-
-
         friends = new Friends();
     }
 

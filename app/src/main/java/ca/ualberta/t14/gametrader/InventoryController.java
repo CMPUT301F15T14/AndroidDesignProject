@@ -61,7 +61,7 @@ public class InventoryController {
                 public void run() {
                     PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
                     for(String each : g.getPictureIds()) {
-                        pn.addImageToDownload(each, c);
+                        pn.addImageToDownload(each);
                     }
                 }
             };
@@ -140,6 +140,8 @@ public class InventoryController {
         Game clonedGame = new Game(game, context);
         User deviceUser = UserSingleton.getInstance().getUser();
         deviceUser.getInventory().add(clonedGame);
+
+        //add notify network thingy that user has been updated and needs to be uploaded
         deviceUser.saveJson("MainUserProfile", context);
     }
 

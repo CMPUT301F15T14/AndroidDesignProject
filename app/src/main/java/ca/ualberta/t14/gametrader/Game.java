@@ -114,7 +114,7 @@ public class Game implements AppObservable {
                     String newId = pm.addImageToJsonFile(json, deviceUser, context);
                     this.pictureId.add(newId);
                     PictureNetworkerSingleton.getInstance().getPicNetMangager().getLocalCopyOfImageIds().add(newId);
-                    PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newId, context);
+                    PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newId);
 
                 }
             }
@@ -298,7 +298,7 @@ public class Game implements AppObservable {
             // remove from local files
             success = PictureManager.removeFile(idToRemove, context);
             pictureId.remove(idToRemove);
-            PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(idToRemove, context);
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(idToRemove);
             picture = null;
         }
         notifyAllObservers();
@@ -338,7 +338,7 @@ public class Game implements AppObservable {
         PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
         String newIdImage = pm.addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
         pictureId.add(newIdImage);
-        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newIdImage, context);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newIdImage);
 
         picture = PictureManager.getBitmapFromJson(pictureJsonable);
 

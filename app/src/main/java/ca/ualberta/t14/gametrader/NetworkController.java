@@ -49,6 +49,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
     public NetworkController(Context context) {
         TradeNetworkerSingleton.getInstance().getTradeNetMangager().addListener(this);
         PictureNetworkerSingleton.getInstance().getPicNetMangager().addListener(this);
+        UserSingleton.getInstance().getUser().addObserver(this);
         this.context = context;
     }
 
@@ -423,6 +424,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
                     try {
                         System.out.println("Updating user...");
                         addUser(test);
+                        //Todo: Should also pull all users from database?
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
@@ -541,8 +543,9 @@ public class NetworkController implements AppObserver, NetworkerListener {
                 picNetworker.getLocalCopyOfImageIds().add(downloadedPicIds.getImageId());
             }
             picNetworker.getImagesToDownload().remove(each);
+            picNetworker.savePictureNetworker();
+            picNetworker.notifyAllObservers();
         }
-        picNetworker.notifyAllObservers();
     }
 
     private void pushImages(PictureNetworker picNetworker) {
@@ -561,7 +564,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
             picNetworker.getImageFilesToUpload().remove(each);
             picNetworker.getLocalCopyOfImageIds().add(each);
         }
-        picNetworker.saveJson(PictureNetworker.PictureNetworkId, context);
+        picNetworker.savePictureNetworker();
         picNetworker.notifyAllObservers();
     }
 
@@ -577,7 +580,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
             picNetworker.getLocalCopyOfImageIds().remove(each);
             FileIO.removeFile(each, context);
         }
-        picNetworker.saveJson(PictureNetworker.PictureNetworkId, context);
+        picNetworker.savePictureNetworker();
         picNetworker.notifyAllObservers();
     }
 
