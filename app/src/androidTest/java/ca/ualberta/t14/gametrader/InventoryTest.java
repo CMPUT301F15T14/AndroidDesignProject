@@ -1,14 +1,6 @@
 package ca.ualberta.t14.gametrader;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Instrumentation;
-import android.content.DialogInterface;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -22,7 +14,7 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
     
     public void testSearch() {
         Inventory testInv = new Inventory();
-        InventoryController testInvCnt = new InventoryController(testInv);
+        InventoryListController testInvCnt = new InventoryListController(testInv);
 
         Game g1 = new Game("Halo: Combat Evolved");
         g1.setPlatform(Game.Platform.PC);

@@ -55,7 +55,7 @@ public class Inventory implements AppObservable {
     }
 
     /**
-     * Add Games to gameCollections. Must be called from InventoryController.
+     * Add Games to gameCollections. Must be called from InventoryListController.
      * @param game
      */
     public void add(Game game){
@@ -64,7 +64,7 @@ public class Inventory implements AppObservable {
     }
 
     /**
-     * Remove Games to gameCollections. Must be called from InventoryController.
+     * Remove Games to gameCollections. Must be called from InventoryListController.
      * @param game
      */
     public void remove(Game game, Context context){
@@ -78,7 +78,7 @@ public class Inventory implements AppObservable {
     }
 
     /**
-     * Clear all the objects stored in gameCollections. Must be called from InventoryController.
+     * Clear all the objects stored in gameCollections. Must be called from InventoryListController.
      */
     public void clear(){
         gameCollections.clear();
@@ -104,6 +104,16 @@ public class Inventory implements AppObservable {
      */
     public ArrayList<Game> getAllGames() {
         return gameCollections;
+    }
+
+    public ArrayList<Game> getAllPublicGames() {
+        ArrayList<Game> publicOnly = new ArrayList<Game>();
+        for(Game each : gameCollections) {
+            if(each.isShared()) {
+                publicOnly.add(each);
+            }
+        }
+        return publicOnly;
     }
 
     public void addObserver(AppObserver observer) {

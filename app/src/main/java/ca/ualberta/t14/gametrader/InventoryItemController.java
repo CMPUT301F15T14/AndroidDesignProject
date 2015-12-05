@@ -44,9 +44,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 // Controller class of Inventory Class.
-public class InventoryController {
+public class InventoryItemController {
     private Inventory stock;
-    public InventoryController(Inventory inventory){
+    public InventoryItemController(Inventory inventory){
         this.stock=inventory;
     }
 
@@ -84,52 +84,8 @@ public class InventoryController {
         }
     }
 
-
-    public void addItem(Game game){
-        stock.add(game);
-    }
-
-    public void clearInventory(){
-        stock.clear();
-    }
-
     public boolean contains(Game game){
         return stock.contains(game);
-    }
-
-    /**
-     * Returns the games in the inventory whose title contains the given search query
-     * @param query the String to search for
-     * @return a list of games containing the given string
-     */
-    public ArrayList<Game> Search(String query) {
-        ArrayList<Game> result = new ArrayList<Game>();
-
-        for(Game game : stock.getAllGames()) {
-            if(game.getTitle().contains(query)){
-                result.add(game);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Search the inventory by String and Platform
-     * @param query the String to search
-     * @param platform only results for this platform will be returned
-     * @return an array list of Games containing the search results
-     */
-    public ArrayList<Game> Search(String query, Game.Platform platform) {
-        ArrayList<Game> result = new ArrayList<Game>();
-
-        for(Game game : stock.getAllGames()) {
-            if(game.getTitle().contains(query) && game.getPlatform() == platform){
-                result.add(game);
-            }
-        }
-
-        return result;
     }
 
     public boolean clonable(User user){
