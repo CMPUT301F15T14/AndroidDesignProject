@@ -53,10 +53,24 @@ public class PictureViewerController {
 
     private void downloadImages(Game game) {
         if (!game.pictureIdIsEmpty()) {
-            for (String eachId : game.getPictureIds()) {
-                PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(eachId);
-                loadImages(eachId);
-            }
+            final Game g = game;
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    for (String eachId : g.getPictureIds()) {
+                        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(eachId);
+                        final String each = eachId;
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadImages(each);
+                            }
+                        });
+                    }
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
         }
     }
 
