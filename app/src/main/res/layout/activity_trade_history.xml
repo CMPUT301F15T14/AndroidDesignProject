@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/tradeHistory"
-        android:textColor="#ffffff"
+        android:textColor="@color/all_text"
         android:id="@+id/tradeHistory"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tradePendingList"
         android:layout_alignParentStart="true"
-        android:background="#0e97f1"
+        android:background="@color/item_background_color"
         android:layout_below="@+id/tradeHistory"
         android:visibility="visible" />
 

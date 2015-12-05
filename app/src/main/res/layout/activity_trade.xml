@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffffff"
+                android:textColor="@color/all_text"
                 android:id="@+id/tradeWant"
                 android:visibility="visible"
                 android:layout_alignParentStart="true"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tradeFor"
                 android:layout_alignParentStart="true"
-                android:background="#0e97f1"
+                android:background="@color/item_background_color"
                 android:layout_below="@+id/tradeWant"
                 android:visibility="visible" />
 
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/myGames"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#ffffff"
+                android:textColor="@color/all_text"
                 android:id="@+id/myGames"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/tradeFor" />
@@ -53,7 +53,7 @@
                 android:layout_height="100dp"
                 android:id="@+id/tradeOffer"
                 android:layout_alignParentStart="true"
-                android:background="#0e97f1"
+                android:background="@color/item_background_color"
                 android:layout_below="@+id/myGames"
                 android:visibility="visible" />
 
@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/tradeAsk"
-                android:textColor="#ffffff"
+                android:textColor="@color/all_text"
                 android:id="@+id/offerGame"
                 android:layout_below="@+id/tradeOffer"
                 android:layout_alignParentStart="true" />
@@ -73,7 +73,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/cancelTrade"
-        android:textColor="#ffffff"
+        android:textColor="@color/all_text"
         android:id="@+id/cancelTrade"
         android:layout_alignBottom="@+id/scrollView2"
         android:layout_alignParentStart="true" />
@@ -82,7 +82,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/makeTrade"
-        android:textColor="#ffffff"
+        android:textColor="@color/all_text"
         android:id="@+id/makeTrade"
         android:layout_above="@+id/cancelTrade"
         android:layout_alignParentStart="true" />
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:inputType="text"
         android:ems="10"
-        android:textColor="#ffffff"
+        android:textColor="@color/all_text"
         android:id="@+id/comment"
         android:text="Add a comment."
         android:layout_above="@+id/makeTrade"

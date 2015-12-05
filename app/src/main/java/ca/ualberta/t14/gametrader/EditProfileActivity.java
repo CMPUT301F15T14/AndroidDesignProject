@@ -104,6 +104,7 @@ public class EditProfileActivity extends Activity {
                 finish();
             }
         });
+        profileText.requestFocus();
     }
 
 
