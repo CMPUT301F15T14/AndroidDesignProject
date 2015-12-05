@@ -75,7 +75,6 @@ public class InventoryListActivity extends Activity {
         if(ObjParseSingleton.getInstance().keywordExists("User"))
             mainUser = (User)ObjParseSingleton.getInstance().popObject("User");
         if(mainUser == null) {
-            //throw new RuntimeException("InventoryListActivity was not passed a user");
             System.err.print("InventoryListActivity was NOT passed a user, somehow lost mainUser!");
             finish();
             return;

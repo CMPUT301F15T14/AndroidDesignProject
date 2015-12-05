@@ -85,7 +85,9 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
         ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
         if(ownerProfile == null) {
-            throw new RuntimeException("Received null User for game owner.");
+            System.err.print("InventoryItemActivity was NOT passed a user, somehow lost mainUser!");
+            finish();
+            return;
         }
 
         inventoryItemController = new InventoryItemController(ownerProfile.getInventory());
