@@ -65,7 +65,6 @@ public class GameController {
      * @return a boolean if the given user is the owner of the game or not.
      */
     public Boolean isOwner(Game game, User user) {
-        // TODO: 1. get device-id from user here (the owner of this device has a profile) and 2. search for inventory that belongs to this user. 3. Then check this inventory if it contains this game
         Inventory inventory = user.getInventory();
         return inventory.contains(game);
     }
@@ -90,6 +89,12 @@ public class GameController {
         //model.notifyAllObservers();
     }
 
+    /**
+     * This will return a Bitmap, the image-json on file that should be shown must pass it's imageID here.
+     * @param imageId the image id of image to show.
+     * @param context the application's context.
+     * @return a Bitmap of that image.
+     */
     public Bitmap setPreviewImage(String imageId, Context context) {
         String json  = new String();
         try {
@@ -100,12 +105,18 @@ public class GameController {
         return PictureManager.getBitmapFromJson(json);
     }
 
+    /**
+     * This will return a Bitmap after it resolved the given Uri to Bitmap.
+     * @param uri the uri containing the path to an image
+     * @param contentResolver activitie's content resolver
+     * @return Bitmap of uri image
+     */
     public Bitmap setPreviewUriImage(Uri uri, ContentResolver contentResolver) {
         return PictureManager.resolveUri(uri, contentResolver);
     }
 
     /**
-     * Given game, it will add the bitmap given to the game.
+     * Given game, it will add the uri containing a bitmap to the game.
      * @param game the game to receive the image.
      * @param uri the URI of the image to be added to the game.
      * @param contentResolver is the contentResolver from the activitie's getContentResolver();
@@ -122,11 +133,29 @@ public class GameController {
         return success;
     }
 
+    /**
+     * Given game, this will remove an image from the game, as well add it to the removal list
+     * so it will be removed from the database as well.
+     * @param game the game containing the image.
+     * @param imageId the ID of the image
+     * @param context the context of the application
+     * @return a Boolean of whether the image was removed or not
+     */
     public Boolean removePhotos(Game game, String imageId, Context context) {
         PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(imageId);
         return game.removePictureId(imageId, context);
     }
 
+    /**
+     * This updates the temporary image box preview of the image in the activity. These images are not actually in the game
+     * They are preview of what would be added to the game. If all images are removed it will display the "no photos" image.
+     * @param imgBtn The image button that should contain the preview image
+     * @param imageIds a list of imageIds that might become the preview.
+     * @param uriList a list of Uri containing an image that might become the preview
+     * @param context the context of the application.
+     * @param content the contentResolver of the application.
+     * @param activity the activity.
+     */
     public void updateTemporaryImageBox(ImageButton imgBtn, ArrayList<String> imageIds, ArrayList<Uri> uriList, Context context, ContentResolver content, Activity activity) {
         if(!imageIds.isEmpty()) {
             imgBtn.setImageBitmap(setPreviewImage(imageIds.get(0), context));

@@ -109,7 +109,12 @@
             android:name=".AddNewFriendActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Add New Friend"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".FriendUpdatesActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/updates"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

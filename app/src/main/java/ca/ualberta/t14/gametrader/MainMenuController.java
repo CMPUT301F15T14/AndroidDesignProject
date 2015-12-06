@@ -55,7 +55,6 @@ public class MainMenuController {
                         Settings.Secure.ANDROID_ID));
                 System.out.println("Does this print?");
 
-                // TODO: friends presistent
                 FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), c);
                 fc.LoadFriends(c);
 

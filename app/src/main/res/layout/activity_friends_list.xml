@@ -5,7 +5,6 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
     tools:context="ca.ualberta.t14.gametrader.FriendsListActivity"
-    android:background="@drawable/bluebackground"
     android:id="@+id/friendListRelLayout">
 
     <TextView

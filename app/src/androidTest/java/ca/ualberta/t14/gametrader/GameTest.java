@@ -25,6 +25,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class GameTest extends ActivityInstrumentationTestCase2 {
 
@@ -61,12 +62,6 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
     }
 
-    private Bitmap getBitmapFromJson(String json) {
-        byte[] decodedString = Base64.decode(json, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        return decodedByte;
-    }
-
     private Long getImageJpgSize(Bitmap image) {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 85, byteArrayBitmapStream);
@@ -75,56 +70,38 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
     }
 
     public void testGameImages() {
-        PictureManager pm = new PictureManager();
         // Including attaching a photo (4.1 AttachPhotographToItem)
-        Game item = new Game();
-
         Activity activity = getActivity();
 
         Long maxFileSize = new Long(65536);
 
         // Test an image that is too big and gets resized with width being longest edge
-
         Bitmap testImage1 = BitmapFactory.decodeResource(activity.getResources(),R.drawable.big_game);
-        assertTrue(item.setPicture(testImage1, activity.getApplicationContext()));
+        testImage1 = PictureManager.makeImageSmaller(testImage1);
+        FileIO.saveJsonWithObject(testImage1, "testImage1", activity.getApplicationContext());
+        try {
+            testImage1 = (Bitmap) FileIO.loadJsonGivenObject("testImage1", activity.getApplicationContext(), testImage1);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
         // filesize check of testImage1
-        assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
+        assertTrue(maxFileSize > getImageJpgSize(testImage1));
 
         // Test an image that has no resizing issue.
         Bitmap testImage2 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.best_game_ok);
-        assertTrue(item.setPicture(testImage2, activity.getApplicationContext()));
-        testImage2 = item.getPicture();
+        testImage2 = PictureManager.makeImageSmaller(testImage2);
+        FileIO.saveJsonWithObject(testImage2, "testImage2", activity.getApplicationContext());
+        try {
+            testImage2 = (Bitmap) FileIO.loadJsonGivenObject("testImage2", activity.getApplicationContext(), testImage2);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
         // filesize check of testImage2
-        assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
+        assertTrue(maxFileSize > getImageJpgSize(testImage2));
 
-        // Test image that is too big and gets resized with height being longest edge
-        Bitmap testImage3 = BitmapFactory.decodeResource(activity.getResources(), R.drawable.game_goty);
-        assertTrue(item.setPicture(testImage3, activity.getApplicationContext()));
-        // filesize check of testImage3
-        assertTrue(maxFileSize > getImageJpgSize(item.getPicture()));
-
-        // Images being actually changed
-        assertFalse(testImage2.sameAs(item.getPicture()));
-        assertTrue(item.setPicture(testImage2, activity.getApplicationContext()));
-        assertTrue(testImage2.sameAs(item.getPicture()));
-
-
-        // Test for JSON-able bitmap.
-        String json = PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext());
-        Bitmap origImage = getBitmapFromJson(json);
-
-
-        // make sure the pictures are not same initially
-        item.setPicture(testImage3, activity.getApplicationContext());
-        assertFalse(origImage.sameAs(item.getPicture()));
-
-        assertTrue(item.setPictureFromJson(json));
-
-        // json and resulting image are same.
-        assertSame(json, PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext()));
-        assertTrue(origImage.sameAs(item.getPicture()));
+        // Cleanup
+        FileIO.removeFile("testImage1", activity.getApplicationContext());
+        FileIO.removeFile("testImage2", activity.getApplicationContext());
     }
-
-    // TODO: Test Cases testing the Game's observable and observing.
 
 }
