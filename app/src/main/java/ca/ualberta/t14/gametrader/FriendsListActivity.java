@@ -54,6 +54,23 @@ public class FriendsListActivity extends Activity implements AppObserver {
 
             }
         });
+
+        friendsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
+
+                // assuming the adapter view order is same as the array game list order
+                User u = UserSingleton.getInstance().getUser().getFriends().GetFriends().get(position);
+
+                FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
+                fc.RemoveFriend(u);
+
+                friendsArrayList.remove(position);
+                adapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
+
         friendsArrayList.clear();
         for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
             friendsArrayList.add(friend.getUserName());
