@@ -33,7 +33,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(ProfileActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         profileButton = main.getProfileButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -67,7 +67,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(InventoryListActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         inventoryButton = main.getInventoryButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -101,7 +101,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(FriendsListActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         friendsButton = main.getFriendsButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -135,7 +135,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(TradeHistoryActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         tradesButton = main.getTradesButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -169,7 +169,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(SearchPageActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         searchButton = main.getSearchButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -203,7 +203,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(SettingActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         settingsButton = main.getSettingsButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
