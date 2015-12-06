@@ -14,7 +14,7 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
     
     public void testSearch() {
         Inventory testInv = new Inventory();
-        InventoryListController testInvCnt = new InventoryListController(testInv);
+        InventoryListController testInvCnt = new InventoryListController(testInv.getAllGames());
 
         Game g1 = new Game("Halo: Combat Evolved");
         g1.setPlatform(Game.Platform.PC);

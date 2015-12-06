@@ -25,6 +25,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class GameTest extends ActivityInstrumentationTestCase2 {
 
@@ -110,7 +111,13 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
 
 
         // Test for JSON-able bitmap.
-        String json = PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext());
+        String json = new String();
+        try {
+            json = PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext());
+        } catch(IOException e) {
+            e.printStackTrace();
+            assertTrue(Boolean.FALSE);
+        }
         Bitmap origImage = getBitmapFromJson(json);
 
 
@@ -121,10 +128,13 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         assertTrue(item.setPictureFromJson(json));
 
         // json and resulting image are same.
-        assertSame(json, PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext()));
+        try {
+            assertSame(json, PictureManager.loadImageJsonFromJsonFile(item.getFirstPictureId(), activity.getApplicationContext()));
+        } catch(IOException e) {
+            e.printStackTrace();
+            assertTrue(Boolean.FALSE);
+        }
         assertTrue(origImage.sameAs(item.getPicture()));
     }
-
-    // TODO: Test Cases testing the Game's observable and observing.
 
 }
