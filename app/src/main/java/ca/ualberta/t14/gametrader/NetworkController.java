@@ -280,7 +280,8 @@ public class NetworkController implements AppObserver, NetworkerListener {
     }
 
     public ArrayList<Trade> getMyTrades(String id) {
-        HttpPost searchRequest = new HttpPost(tradesLocation + "_search?pretty=1");
+        String searchWho = "&q=" + id;
+        HttpPost searchRequest = new HttpPost(tradesLocation + "_search?pretty=1" + searchWho);
 
         searchRequest.setHeader("Accept", "application/json");
 
@@ -295,16 +296,13 @@ public class NetworkController implements AppObserver, NetworkerListener {
             Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<Trade>>() {
             }.getType();
             ElasticSearchSearchResponse<Trade> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
-            //System.err.println(esResponse);
+            System.err.println(esResponse);
 
             ArrayList < Trade > returnValue = new ArrayList<Trade>();
             if (esResponse.getHits() != null) {
                 for (ElasticSearchResponse<Trade> r : esResponse.getHits()) {
                     Trade result = r.getSource();
-                    if(result.getOwner().compareTo(id) == 0
-                            || result.getBorrower().compareTo(id) == 0) {
-                        returnValue.add(result);
-                    }
+                    returnValue.add(result);
                 }
 
                 return returnValue;
@@ -535,8 +533,11 @@ public class NetworkController implements AppObserver, NetworkerListener {
     }
 
     private void pullTrades(TradeNetworker tradeNetworker, String identityNetTrade) {
+        System.out.print("Getting all trades owner/borrower for user:" + identityNetTrade + "\n");
         ArrayList<Trade> tradingsOnline = getMyTrades(identityNetTrade);
+        System.out.print("Getting all trades owner/borrower the new array go is of size:" + tradingsOnline.size() + "\n");
         tradeNetworker.setAllTradesOnNet(tradingsOnline);
+        tradeNetworker.saveTradeNetworker();
         tradeNetworker.notifyAllObservers();
     }
 

@@ -77,10 +77,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /**
-         * Check Internet status
-         * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
-         * */
+        // remove a possible existing instance of run first.
+        hand.removeCallbacks(run);
+        // first run should be early
+        hand.post(run);
 
         // creating network connection detector instance
         networkConnectivity = new NetworkConnectivity(getApplicationContext());
@@ -165,9 +165,6 @@ public class MainActivity extends Activity {
         super.onStart();
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, updatesList);
         updates.setAdapter(adapter);
-
-        // first run should be early
-        hand.postDelayed(run, 100);
     }
 
     @Override
