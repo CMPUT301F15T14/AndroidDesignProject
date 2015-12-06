@@ -42,8 +42,9 @@ public class NetworkTest extends ActivityInstrumentationTestCase2 {
 
         Inventory testInv = new Inventory();
         testUser.setInventory(testInv);
-        testInv.add(new Game("The Walking Dead"));
-
+        Game testGame = new Game("The Walking Dead");
+        testGame.setShared(true);
+        testInv.add(testGame);
 
 
         try {

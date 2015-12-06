@@ -5,13 +5,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 public class SearchPageActivity extends Activity {
 
     private Spinner gameConsole;
     private Game g;
+
+    private Button SearchButton;
+
+    private ListView gamesList;
+
+    private EditText searchField;
+
+    private ArrayAdapter<String> adapter;
+    private ArrayList<String> results = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,9 +51,32 @@ public class SearchPageActivity extends Activity {
         }
         gameConsole.setSelection(i);
 
+        gamesList = (ListView) findViewById(R.id.searchGamesList);
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item, results);
+        gamesList.setAdapter(adapter);
 
+        searchField = (EditText) findViewById(R.id.searchKey);
+
+        SearchButton = (Button) findViewById(R.id.button);
+        SearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchString = searchField.getText().toString();
+
+                results.clear();
+
+                for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()) {
+                    ArrayList<Game> searchResults = new ArrayList<Game>();
+                    searchResults.addAll(friend.getInventory().Search(searchString));
+                    for(Game result : searchResults) {
+                        results.add(result.getTitle() + " : " + friend.getUserName());
+                    }
+                }
+                
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

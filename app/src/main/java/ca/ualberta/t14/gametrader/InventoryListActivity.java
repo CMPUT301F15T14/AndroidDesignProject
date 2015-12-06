@@ -149,8 +149,9 @@ public class InventoryListActivity extends Activity {
             public void onClick(View view) {
                 adapter.clear();
                 if(gameConsole.getSelectedItemPosition() == 0) {
-                    for (Game game : invtC.Search(SearchString.getText().toString())) {
-                        adapter.add(game.getTitle());
+                    for (Game game : mainUser.getInventory().Search(SearchString.getText().toString())) {
+                        if(game.isShared() || mainUser == UserSingleton.getInstance().getUser())
+                            adapter.add(game.getTitle());
                     }
                 }
                 else {
@@ -170,8 +171,9 @@ public class InventoryListActivity extends Activity {
                     }
 
 
-                    for (Game game : invtC.Search(SearchString.getText().toString(), selectedPlatform)) {
-                        adapter.add(game.getTitle());
+                    for (Game game : mainUser.getInventory().Search(SearchString.getText().toString(), selectedPlatform)) {
+                        if(game.isShared() || mainUser == UserSingleton.getInstance().getUser())
+                            adapter.add(game.getTitle());
                     }
                 }
             }
