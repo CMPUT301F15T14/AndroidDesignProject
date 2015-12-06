@@ -23,7 +23,7 @@ package ca.ualberta.t14.gametrader;
  */
 public interface AppObserver {
     /**
-     * able to receive updates from the observing object.
+     * Able to receive update notification from the observing object that the observing object as changed.
      * @param observable contains the object that is being observed by this class.
      */
     public void appNotify(AppObservable observable);

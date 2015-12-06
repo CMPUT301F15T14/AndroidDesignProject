@@ -93,7 +93,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         receiverActivity.finish();
     }
 
-    //test whether the friends button runs properly (brings you to ProfileActivity)
+    //test whether the friends button runs properly. For some reason Travis Ci cannot pass this test. Nullpointer but in android studio is fine.
     public void testFriendsButton() {
         MainActivity main = (MainActivity)getActivity();
 
@@ -115,9 +115,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         // Validate that ReceiverActivity is started
         final FriendsListActivity receiverActivity = (FriendsListActivity)
                 receiverActivityMonitor.waitForActivityWithTimeout(1000);
+
         assertNotNull("ReceiverActivity is null", receiverActivity);
         assertEquals("Monitor for ReceiverActivity has not been called",
                 1, receiverActivityMonitor.getHits());
+
         assertEquals("Activity is of wrong type",
                 FriendsListActivity.class, receiverActivity.getClass());
 

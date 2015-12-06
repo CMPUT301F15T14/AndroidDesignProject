@@ -98,6 +98,10 @@ public class GameTest extends ActivityInstrumentationTestCase2 {
         }
         // filesize check of testImage2
         assertTrue(maxFileSize > getImageJpgSize(testImage2));
+
+        // Cleanup
+        FileIO.removeFile("testImage1", activity.getApplicationContext());
+        FileIO.removeFile("testImage2", activity.getApplicationContext());
     }
 
 }
