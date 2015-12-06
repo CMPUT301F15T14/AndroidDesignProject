@@ -20,10 +20,8 @@ package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 
-import java.lang.reflect.Array;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -59,7 +57,6 @@ public class Game implements AppObservable {
     private String additionalInfo;
 
 
-    // TODO: many pictures to 1 item... see eclass prof. hindle's response:
     //Re: Pictures of Items by Abram Hindle - Friday, 6 November 2015, 12:39 AM
     //>  Do we have to allow a user to have multiple pictures for an item or can it just be one picture per item?
     //US06.01.01 As an owner, I want to optionally attach photographs of items to the item. Photos are optional for items. => many to 1
@@ -68,11 +65,8 @@ public class Game implements AppObservable {
 
     private int quantities;
 
-    // volatile because GSON shouldn't store this.
+    // transient because GSON shouldn't store this.
     private transient volatile ArrayList<AppObserver> observers;
-
-    private static final String SEARCH_URL = "http://cmput301.softwareprocess.es:8080/cmput301f15t14/game/_search";
-
 
     /**
      * Constructor for the Game class. Initializes variables to a default value..
@@ -104,11 +98,21 @@ public class Game implements AppObservable {
         this.pictureId = new ArrayList<String>();
         if(imgIds != null) {
             for(String each : imgIds) {
-                String json = PictureManager.loadImageJsonFromJsonFile(each, context);
+                String json  = new String();
+                try {
+                    json = PictureManager.loadImageJsonFromJsonFile(each, context);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 User deviceUser = UserSingleton.getInstance().getUser();
                 PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
-                String newId = pm.addImageToJsonFile(json, deviceUser, context);
-                this.pictureId.add(newId);
+                if(!json.isEmpty()) {
+                    String newId = pm.addImageToJsonFile(json, deviceUser, context);
+                    this.pictureId.add(newId);
+                    PictureNetworkerSingleton.getInstance().getPicNetMangager().getLocalCopyOfImageIds().add(newId);
+                    PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newId);
+
+                }
             }
         }
 
@@ -273,24 +277,44 @@ public class Game implements AppObservable {
         return "";
     }
 
+    /**
+     * Returns all the images associated to this game. The image ID's are the filename of these images.
+     * @return Array string containing all the imageIDs that are associated to this game.
+     */
     public ArrayList<String> getPictureIds() {
         return pictureId;
     }
 
+    /**
+     * Checks whether there are no pictures associated to this game.
+     * @return True or False of having images associated to it.
+     */
     public Boolean pictureIdIsEmpty() { return pictureId.isEmpty(); }
 
+    /**
+     * Checks whether a given imageID is associated with this game.
+     * @param id the image id to check
+     * @return true or false if this imageID belongs to this game or not.
+     */
     public Boolean hasPictureId(String id){
         return pictureId.contains(id);
     }
 
+    /**
+     * Remove the given image from the game, and put it in the removal que so
+     * it will be removed from the database as well. The stored json file on device will also be removed.
+     * @param idToRemove The image to remove
+     * @param context the application context from it's activity.
+     * @return whether the image has been successfully removed.
+     *         Returns false if the image is not associated to the game and otherwise.
+     */
     public Boolean removePictureId(String idToRemove, Context context) {
         Boolean success = Boolean.FALSE;
         if(!pictureId.isEmpty() && pictureId.contains(idToRemove)) {
-            // TODO get current picture id and remove it from the elastic search, (add to quene into network option that pushes pulls/updates the elastic search).
             // remove from local files
             success = PictureManager.removeFile(idToRemove, context);
             pictureId.remove(idToRemove);
-            PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToRemove(idToRemove, context);
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToRemove(idToRemove);
             picture = null;
         }
         notifyAllObservers();
@@ -305,7 +329,7 @@ public class Game implements AppObservable {
      */
     public Boolean setPictureFromJson(String jsonBitmap) {
         picture = PictureManager.getBitmapFromJson(jsonBitmap);
-        notifyAllObservers();
+        //notifyAllObservers();
         return picture != null;
     }
 
@@ -330,9 +354,9 @@ public class Game implements AppObservable {
         PictureManager pm = PictureNetworkerSingleton.getInstance().getPicNetMangager().getPictureManager();
         String newIdImage = pm.addImageToJsonFile(pictureJsonable, UserSingleton.getInstance().getUser(), context);
         pictureId.add(newIdImage);
-        PictureNetworkerSingleton.getInstance().getPicNetMangager().setImageFileToUpload(newIdImage, context);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageFileToUpload(newIdImage);
 
-        setPictureFromJson(PictureManager.loadImageJsonFromJsonFile(getFirstPictureId(), context));
+        picture = PictureManager.getBitmapFromJson(pictureJsonable);
 
         notifyAllObservers();
         return Boolean.TRUE;
@@ -340,7 +364,7 @@ public class Game implements AppObservable {
 
 
     /**
-     * The Game Model is observable thus anything wanting to obsserve can be added to the watch list.
+     * The Game Model is observable thus anything wanting to observe can be added to the watch list.
      * @param observer the observer wanting to watch this Model.
      */
     public void addObserver(AppObserver observer) {
@@ -352,16 +376,13 @@ public class Game implements AppObservable {
         observers.remove(o);
     }
 
-
+    /**
+     * Notifies all observers who observe this game. All observer's appNotify methods get called.
+     */
     public void notifyAllObservers() {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
-    }
-
-
-    public String getSearchUrl() {
-        return SEARCH_URL;
     }
 
 }

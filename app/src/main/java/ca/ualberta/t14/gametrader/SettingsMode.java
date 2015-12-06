@@ -24,7 +24,7 @@ package ca.ualberta.t14.gametrader;
  * which judge the switch is off or on.
  */
 public class SettingsMode extends FileIO {
-    private Boolean enableDownloadPhoto1 = Boolean.FALSE;
+    private Boolean enableDownloadPhoto1 = Boolean.TRUE;
     public static final String SETTINGS_FILE = "settings"; // name of settings file
 
     /**

@@ -20,22 +20,20 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class TradeHistoryActivity extends Activity {
+public class TradeHistoryActivity extends Activity implements AppObserver {
 
-    private ArrayList<String> tradeName = new ArrayList<String>();
+    private ArrayList<String> tradeName;
     private ArrayList<Trade> myTrades;
     private ListView tradePendingList;
     private ArrayAdapter<String> adapter;
@@ -47,52 +45,59 @@ public class TradeHistoryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trade_history);
 
-        user1 = new User();
+        tradeName = new ArrayList<String>();
 
-        User user2 = new User();
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item,R.id.listText,tradeName);
 
-        Game mario = new Game();
-        mario.setTitle("Mario Kart 64");
+        TradeNetworkerSingleton.getInstance().getTradeNetMangager().addObserver(this);
 
-        Game sonic = new Game();
-        sonic.setTitle("Sonic Genesis");
+        updateAdapterLists(Boolean.TRUE);
 
-        final Trade trade1 = new Trade(mario, user1, user2);
-        trade1.addBorrowerGame(sonic);
+//        controller = new NetworkController();
+//        myTrades = controller.getMyTrades(user.getAndroidID());
+//        new GetTrades().execute(user.getAndroidID());
+        tradePendingList = (ListView)findViewById(R.id.tradePendingList);
+        //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
+        tradePendingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            // Navigating to InventoryItemActivity.
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
 
+                // assuming the adapter view order is same as the array game list order
+                Trade trade = myTrades.get(position);
+                ObjParseSingleton.getInstance().addObject("trade", trade);
+
+                Intent myIntent = new Intent(TradeHistoryActivity.this, TradeEditActivity.class);
+
+                startActivity(myIntent);
+            }
+        });
+        tradePendingList.setAdapter(adapter);
+    }
+
+    private void updateAdapterLists(Boolean updateLocalList) {
         myTrades = new ArrayList<Trade>();
-        myTrades.add(trade1);
+
+        // first list all trades that have yet to be pushed to the network
+        ArrayList<Trade> toPushTrades = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getTradeToUpload();
+        for(Trade each : toPushTrades) {
+            myTrades.add(each);
+        }
+
+        ArrayList<Trade> tradesOnline = TradeNetworkerSingleton.getInstance().getTradeNetMangager().getAllTradesOnNet(updateLocalList);
+        if(tradesOnline != null) {
+            myTrades.addAll(tradesOnline);
+        }
 
         tradeName.clear();
         for(Trade each : myTrades) {
             tradeName.add(each.getTradeName());
         }
 
-//        controller = new NetworkController();
-//        myTrades = controller.GetMyTrades(user.getAndroidID());
-//        new GetTrades().execute(user.getAndroidID());
-        tradePendingList = (ListView)findViewById(R.id.tradePendingList);
-        //Reference: http://stackoverflow.com/questions/9596663/how-to-make-items-clickable-in-list-view
-        tradePendingList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            // Navigating to InventoryItemActivity.
-            public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
+        // TODO: adapter in trade history crashes too for some reason. If this commented out, then to update it is u have to go back and open the activity again..
+        if(adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
 
-                // assuming the adapter view order is same as the array game list order
-                Trade trade = myTrades.get(position);
-                ObjParseSingleton.getInstance().addObject("trade", trade);
-
-                Intent myIntent = new Intent(TradeHistoryActivity.this, TradeActivity.class);
-
-                startActivity(myIntent);
-            }
-        });
-    }
-
-    @Override
-         public void onStart() {
-        super.onStart();
-        adapter = new ArrayAdapter<String>(this, R.layout.list_item,R.id.listText,tradeName);
-        tradePendingList.setAdapter(adapter);
     }
 
     @Override
@@ -118,13 +123,26 @@ public class TradeHistoryActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void appNotify(AppObservable observable) {
+        // This appNotify gets called by an async elastic search query.
+        // Adapter notifyDataSetChanged Has to be run on ui activity! Else errors.
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                updateAdapterLists(Boolean.FALSE);
+            }
+        };
+        runOnUiThread(r);
+    }
+
 /*    private class GetTrades extends AsyncTask<String, Integer, ArrayList<Trade>> {
         @Override
         protected ArrayList<Trade> doInBackground(String... params) {
             NetworkController nc = new NetworkController();
             String userid = params[0];
 
-            ArrayList<Trade> results = nc.GetMyTrades(userid);
+            ArrayList<Trade> results = nc.getMyTrades(userid);
 
             return results;
         }

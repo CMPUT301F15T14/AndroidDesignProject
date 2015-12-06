@@ -13,6 +13,7 @@ public class NetworkConnectivity{
      * @return a boolean with the network connectivity
      */
     private Context _context;
+    public static String IS_NETWORK_ONLINE = "5465146468";
 
     public NetworkConnectivity(Context context){
         this._context = context;

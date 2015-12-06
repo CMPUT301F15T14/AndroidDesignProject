@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Remove Checked Images"
+                android:textColor="@color/all_text"
                 android:id="@+id/ImageRemoverSave"
                 android:layout_weight="1" />
 
@@ -47,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Check All"
+                android:textColor="@color/all_text"
                 android:id="@+id/ImageRemoverCheckAll"
                 android:layout_weight="1" />
         </LinearLayout>

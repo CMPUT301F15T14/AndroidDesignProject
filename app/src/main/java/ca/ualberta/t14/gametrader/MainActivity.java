@@ -20,8 +20,8 @@ public class MainActivity extends Activity {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> updatesList = new ArrayList<String>();
 
-    MainMenuController mainMenuController = new MainMenuController();
 
+    MainMenuController mainMenuController;
     private Button profileButton;
 
     public Button getProfileButton() {
@@ -68,12 +68,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        mainMenuController.preLoadAllSingletons(getApplicationContext());
+        mainMenuController = new MainMenuController(getApplicationContext());
+
+        mainMenuController.preLoadAllSingletons(getApplicationContext(), this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        hand.postDelayed(run, 60000);
         /**
          * Check Internet status
          * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
@@ -82,8 +83,6 @@ public class MainActivity extends Activity {
         // creating network connection detector instance
         networkConnectivity = new NetworkConnectivity(getApplicationContext());
         isInternetPresent = networkConnectivity.isConnectingToInternet();
-
-
 
         profileButton = (Button) findViewById(R.id.myProfile);
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +108,9 @@ public class MainActivity extends Activity {
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //check friends updates
+                if(isInternetPresent)
+                    new checkForUpdates().execute("not much");
                 Intent intent = new Intent(MainActivity.this, FriendsListActivity.class);
                 startActivity(intent);
             }
@@ -143,15 +145,18 @@ public class MainActivity extends Activity {
 
         updates = (ListView) findViewById(R.id.friendUpdates);
 
-        new checkForUpdates().execute("not much");
+        if(isInternetPresent)
+            new checkForUpdates().execute("GetFriendsUpdates");
     }
 
     @Override
     protected void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, updatesList);
         updates.setAdapter(adapter);
+
+        // first run should be early
+        hand.postDelayed(run, 100);
     }
 
     @Override
@@ -178,9 +183,9 @@ public class MainActivity extends Activity {
     }
 
 
-    private class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
+    public class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
         protected ArrayList<String> doInBackground(String... params) {
-            FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+            FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
             fc.UpdateFriends();
 
             ArrayList<String> foundUpdates = new ArrayList<String>();
@@ -205,6 +210,12 @@ public class MainActivity extends Activity {
         public void run() {
            // get Internet status
             isInternetPresent = networkConnectivity.isConnectingToInternet();
+            ObjParseSingleton.getInstance().addObject(NetworkConnectivity.IS_NETWORK_ONLINE,isInternetPresent);
+
+            if(isInternetPresent) {
+                new checkForUpdates().execute("GetFriendsUpdates");
+                mainMenuController.updateChecker();
+            }
             hand.postDelayed(run, 60000);
         }
     };

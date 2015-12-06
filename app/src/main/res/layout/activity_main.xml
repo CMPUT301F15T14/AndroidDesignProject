@@ -15,7 +15,7 @@
         android:id="@+id/homeText"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="40sp"
+        android:textSize="42sp"
         android:layout_marginBottom="16dp"
         android:textColor="#61ba1c" />
 
@@ -23,67 +23,78 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/myProfile"
+        android:textColor="@color/all_text"
         android:id="@+id/myProfile"
         android:layout_below="@+id/homeText"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="10dp"
+        android:textSize="22dp" />
 
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
         android:text="@string/myInventory"
+        android:textColor="@color/all_text"
         android:id="@+id/myInventory"
         android:layout_below="@+id/myProfile"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="10dp"
+        android:textSize="22dp" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
+        android:textColor="@color/all_text"
         android:text="@string/friends"
         android:id="@+id/friends"
         android:layout_below="@+id/myInventory"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="10dp"
+        android:textSize="22dp" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
+        android:textColor="@color/all_text"
         android:text="@string/pendingTrades"
         android:id="@+id/pendingTrades"
         android:layout_below="@+id/search"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:textSize="22dp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/search"
+        android:textColor="@color/all_text"
         android:id="@+id/search"
         android:layout_below="@+id/friends"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="10dp"
+        android:textSize="22dp" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/setting"
+        android:textColor="@color/all_text"
         android:id="@+id/setting"
         android:layout_below="@+id/pendingTrades"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp" />
+        android:textSize="22dp" />
 
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/friendUpdates"
+        android:textColor="@color/all_text"
         android:layout_below="@+id/setting"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="@color/spinner_background_color" />
 
 
 </RelativeLayout>

@@ -36,8 +36,9 @@ import java.util.ArrayList;
  */
 
 public class InventoryListActivity extends Activity {
-    User mainUser;
+    private User mainUser;
 
+    private ArrayList<Game> extractedInventory;
     private ArrayList<String> mobileArray;
     private ListView GameList;
     private ArrayAdapter<String> adapter;
@@ -47,7 +48,7 @@ public class InventoryListActivity extends Activity {
     private Spinner gameConsole;
     private TextView title;
 
-    private InventoryController invtC;
+    private InventoryListController invtC;
 
     public Button getAddGameButton() {
         return AddGame;
@@ -71,21 +72,31 @@ public class InventoryListActivity extends Activity {
         setContentView(R.layout.activity_inventory_list);
 
         // Load user from JSON. The user contains Inventory.
-        mainUser = (User)ObjParseSingleton.getInstance().popObject("User");
+        if(ObjParseSingleton.getInstance().keywordExists("User"))
+            mainUser = (User)ObjParseSingleton.getInstance().popObject("User");
         if(mainUser == null) {
-            throw new RuntimeException("InventoryListActivity was not passed a user");
+            System.err.print("InventoryListActivity was NOT passed a user, somehow lost mainUser!");
+            finish();
+            return;
         }
 
         title = (TextView) findViewById(R.id.inventoryListText);
         title.setText(mainUser.getUserName() + "\'s inventory");
 
-        invtC = new InventoryController(mainUser.getInventory());
+        extractedInventory = new ArrayList<Game>();
+        if(mainUser == UserSingleton.getInstance().getUser()) {
+            extractedInventory = mainUser.getInventory().getAllGames();
+        } else {
+            extractedInventory = mainUser.getInventory().getAllPublicGames();
+        }
+
+        invtC = new InventoryListController(extractedInventory);
 
         //  Array reserved for storing names of game.
         mobileArray = new ArrayList<String>();
         // later add observer observing the inventory:
         mobileArray.clear();
-        for(Game each : mainUser.getInventory().getAllGames()) {
+        for(Game each : extractedInventory) {
             mobileArray.add(each.getTitle());
         }
 
@@ -97,7 +108,7 @@ public class InventoryListActivity extends Activity {
             public void onItemClick(AdapterView <? > arg0, View view, int position, long id) {
 
                 // assuming the adapter view order is same as the array game list order
-                Game g = mainUser.getInventory().getAllGames().get(position);
+                Game g = extractedInventory.get(position);
 
                 ObjParseSingleton.getInstance().addObject("game", g);
                 ObjParseSingleton.getInstance().addObject("gameOwner", mainUser);
@@ -178,7 +189,13 @@ public class InventoryListActivity extends Activity {
     public void onResume() {
         super.onResume();
         mobileArray.clear();
-        for(Game each : mainUser.getInventory().getAllGames()) {
+        extractedInventory = new ArrayList<Game>();
+        if(mainUser == UserSingleton.getInstance().getUser()) {
+            extractedInventory = mainUser.getInventory().getAllGames();
+        } else {
+            extractedInventory = mainUser.getInventory().getAllPublicGames();
+        }
+        for(Game each : extractedInventory) {
             mobileArray.add(each.getTitle());
         }
     }
@@ -211,7 +228,7 @@ public class InventoryListActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && resultCode == InventoryItemActivity.offerItemSelected){
-            Intent intent = new Intent(InventoryListActivity.this, EditTradeActivity.class);
+            Intent intent = new Intent(InventoryListActivity.this, CreateTradeActivity.class);
             intent.putExtra("offeredItem", data.getStringExtra("offeredItem"));
             setResult(InventoryItemActivity.offerItemSelected, intent);
             Log.d("list",data.getStringExtra("offeredItem"));

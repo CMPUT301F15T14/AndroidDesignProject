@@ -71,6 +71,12 @@ public class ProfileActivity extends Activity {
             }
         });
 
+        if(user != UserSingleton.getInstance().getUser()) {
+            editprof.setVisibility(View.INVISIBLE);
+        } else {
+            editprof.setVisibility(View.VISIBLE);
+        }
+
         inventory = (Button) findViewById(R.id.viewInventory);
         inventory.setOnClickListener(new View.OnClickListener() {
             @Override

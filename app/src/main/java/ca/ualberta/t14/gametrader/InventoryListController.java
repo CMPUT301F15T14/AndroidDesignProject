@@ -35,16 +35,21 @@ package ca.ualberta.t14.gametrader;
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.widget.ImageButton;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 // Controller class of Inventory Class.
-public class InventoryController {
-    private Inventory stock;
-    public InventoryController(Inventory inventory){
+public class InventoryListController {
+    private ArrayList<Game> stock;
+    public InventoryListController(ArrayList<Game> inventory){
         this.stock=inventory;
     }
+
     public void addItem(Game game){
         stock.add(game);
     }
@@ -65,7 +70,7 @@ public class InventoryController {
     public ArrayList<Game> Search(String query) {
         ArrayList<Game> result = new ArrayList<Game>();
 
-        for(Game game : stock.getAllGames()) {
+        for(Game game : stock) {
             if(game.getTitle().contains(query)){
                 result.add(game);
             }
@@ -83,7 +88,7 @@ public class InventoryController {
     public ArrayList<Game> Search(String query, Game.Platform platform) {
         ArrayList<Game> result = new ArrayList<Game>();
 
-        for(Game game : stock.getAllGames()) {
+        for(Game game : stock) {
             if(game.getTitle().contains(query) && game.getPlatform() == platform){
                 result.add(game);
             }
@@ -91,16 +96,4 @@ public class InventoryController {
 
         return result;
     }
-
-    public boolean clonable(User user){
-        return UserSingleton.getInstance().getUser().getUserName() != user.getUserName();
-    }
-
-    public void clone(Game game,Context context){
-        Game clonedGame = new Game(game, context);
-        User deviceUser = UserSingleton.getInstance().getUser();
-        deviceUser.getInventory().add(clonedGame);
-        deviceUser.saveJson("MainUserProfile", context);
-    }
-
 }

@@ -35,6 +35,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 
@@ -140,7 +141,13 @@ public class EditInventoryItemActivity extends Activity {
 
         imageIds = g.getPictureIds();
 
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(g.getFirstPictureId(), getApplicationContext());
+        String jsonStr  = new String();
+        try {
+            jsonStr = PictureManager.loadImageJsonFromJsonFile(g.getFirstPictureId(), getApplicationContext());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
         if(!jsonStr.isEmpty()) {
             imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
         } else {

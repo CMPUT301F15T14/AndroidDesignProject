@@ -36,6 +36,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignEnd="@+id/horizontalScrollView"
         android:enabled="true"
+        android:textColor="@color/all_text"
         android:layout_alignParentRight="true" />
 
 </RelativeLayout>

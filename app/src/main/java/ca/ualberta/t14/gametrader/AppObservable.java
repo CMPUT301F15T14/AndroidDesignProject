@@ -28,6 +28,16 @@ public interface AppObservable {
      * @param observer The observer to be added which wants to be notified on the update.
      */
     public void addObserver(AppObserver observer);
+
+    /**
+     * The ability to remove an observer from the watch list,
+     * thus that observer will not be observing this class anymore.
+     * @param observer This observer will be removed.
+     */
     public void deleteObserver(AppObserver observer);
+
+    /**
+     * A method that should call appNotify on all observers who are watching this class.
+     */
     public void notifyAllObservers();
 }

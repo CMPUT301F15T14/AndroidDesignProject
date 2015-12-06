@@ -20,27 +20,22 @@ public class InventoryItemPictureViewer extends Activity implements AppObserver 
         game = new Game();
         game = (Game) ObjParseSingleton.getInstance().popObject("game");
 
+        game.addObserver(this);
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addObserver(this);
+
         getActionBar().setTitle(game.getTitle() + " Photos");
 
         (findViewById(R.id.horizontalScrollView)).setVerticalFadingEdgeEnabled(Boolean.TRUE);
 
         pictureViewerController = new PictureViewerController(getApplicationContext(), this);
 
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        pictureViewerController.putImages(game);
+        pictureViewerController.putImages(game, Boolean.TRUE);
         pictureViewerController.setButtonClickers();
-
     }
 
     public void appNotify(AppObservable observable) {
         pictureViewerController.clearAllImages();
-        pictureViewerController.putImages(game);
+        pictureViewerController.putImages(game, Boolean.FALSE);
     }
 
     @Override
