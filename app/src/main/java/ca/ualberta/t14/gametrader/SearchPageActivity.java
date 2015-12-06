@@ -72,7 +72,7 @@ public class SearchPageActivity extends Activity {
                         results.add(result.getTitle() + " : " + friend.getUserName());
                     }
                 }
-                
+
                 adapter.notifyDataSetChanged();
             }
         });
