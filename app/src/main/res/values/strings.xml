@@ -74,6 +74,7 @@
     <string name="gameoffer">Offer Game</string>
     <string name="deleteTrade">Delete Trade</string>
     <string name="editTrade">Edit Trade</string>
+    <string name="updates">Friend Updates</string>
 
     <string-array name="platforms_array">
         <item>PC</item>

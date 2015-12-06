@@ -58,6 +58,8 @@ public class MainActivity extends Activity {
         return settingsButton;
     }
 
+    private Button updatesButton;
+
     private ListView updates;
 
     Handler hand = new Handler();
@@ -139,6 +141,15 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        updatesButton = (Button) findViewById(R.id.updates);
+        updatesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FriendUpdatesActivity.class);
                 startActivity(intent);
             }
         });

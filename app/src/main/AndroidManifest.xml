@@ -105,6 +105,11 @@
             android:label="@string/title_activity_game_image_remover"
             android:screenOrientation="portrait" >
         </activity>
+        <activity android:name=".FriendUpdatesActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/updates"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
