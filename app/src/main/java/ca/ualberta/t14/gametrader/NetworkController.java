@@ -53,6 +53,43 @@ public class NetworkController implements AppObserver, NetworkerListener {
         this.context = context;
     }
 
+    public ArrayList<User> getUserList() {
+        HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
+
+        searchRequest.setHeader("Accept", "application/json");
+
+        try {
+            HttpResponse response = httpclient.execute(searchRequest);
+
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
+
+            String json = getEntityContent(response);
+
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<User>>() {
+            }.getType();
+            ElasticSearchSearchResponse<User> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
+            //System.err.println(esResponse);
+
+            ArrayList < User > returnValue = new ArrayList<User>();
+            if (esResponse.getHits() != null) {
+                for (ElasticSearchResponse<User> r : esResponse.getHits()) {
+                    User result = r.getSource();
+                    returnValue.add(result);
+                }
+
+                return returnValue;
+            }
+            searchRequest.getEntity().consumeContent();
+            response.getEntity().consumeContent();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public ArrayList<User> searchByUserName(String str) throws IOException {
         HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
         String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";

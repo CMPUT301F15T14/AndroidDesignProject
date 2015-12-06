@@ -2,7 +2,6 @@ package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,16 +9,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Observable;
 
 
 public class FriendsListActivity extends Activity implements AppObserver {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> friendsArrayList = new ArrayList<String>();
-
+    private Button AddNewFriend;
     private ListView friendsListView;
 
     private FriendsListController friendsListController;
@@ -33,7 +32,14 @@ public class FriendsListActivity extends Activity implements AppObserver {
 
         friendsListController = new FriendsListController(getApplicationContext());
 
-        friendsListController.initButonOnClickListeners(this);
+        AddNewFriend=(Button)findViewById(R.id.addFriendButton);
+        AddNewFriend.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View arg0){
+                Intent myIntent = new Intent(FriendsListActivity.this, AddNewFriendActivity.class);
+                startActivity(myIntent);
+            }
+        });
+        //friendsListController.initButonOnClickListeners(this);
 
         friendsListView = (ListView) findViewById(R.id.friendsList);
 

@@ -105,6 +105,12 @@
             android:label="@string/title_activity_game_image_remover"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".AddNewFriendActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="Add New Friend"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>
