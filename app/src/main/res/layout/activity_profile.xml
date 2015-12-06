@@ -39,10 +39,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-
-        android:text="Contact Information:"
+        android:textStyle="bold"
+        android:text="Contact Information   "
         android:textColor="@color/all_text"
-
         android:id="@+id/textView"
         android:layout_below="@+id/profileInfoName"
         android:layout_alignParentStart="true" />
@@ -102,8 +101,8 @@
         android:text="Some text"
         android:textColor="@color/all_text"
         android:id="@+id/userNameDisplay"
-        android:layout_alignTop="@+id/profileInfoName"
-        android:layout_toEndOf="@id/profileInfoName" />
+        android:layout_above="@+id/textView"
+        android:layout_toEndOf="@+id/textView" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -112,9 +111,9 @@
         android:text="New Text"
         android:textColor="@color/all_text"
         android:id="@+id/phoneDisplay"
-        android:layout_toEndOf="@+id/profileInfoPhone"
-        android:layout_alignTop="@+id/profileInfoPhone"
-        android:phoneNumber="true" />
+        android:phoneNumber="true"
+        android:layout_above="@+id/emailDisplay"
+        android:layout_toEndOf="@+id/textView" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -123,8 +122,8 @@
         android:text="New Text"
         android:textColor="@color/all_text"
         android:id="@+id/emailDisplay"
-        android:layout_toEndOf="@+id/profileInfoEmail"
-        android:layout_alignTop="@+id/profileInfoEmail" />
+        android:layout_above="@+id/addressDisplay"
+        android:layout_alignStart="@+id/phoneDisplay" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -133,7 +132,7 @@
         android:text="New Text"
         android:textColor="@color/all_text"
         android:id="@+id/addressDisplay"
-        android:layout_alignTop="@+id/profileInfoAddress"
-        android:layout_toEndOf="@+id/profileInfoAddress" />
+        android:layout_alignBottom="@+id/profileInfoAddress"
+        android:layout_alignStart="@+id/emailDisplay" />
 
 </RelativeLayout>
