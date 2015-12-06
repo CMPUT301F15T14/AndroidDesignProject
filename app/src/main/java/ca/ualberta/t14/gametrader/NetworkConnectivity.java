@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
+ * Check Internet status
+ * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
  * Created by Brigitte-Ng on 2015-11-28.
  */
 public class NetworkConnectivity{

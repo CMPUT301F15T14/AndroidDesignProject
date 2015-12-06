@@ -77,7 +77,9 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
     }
 
     public ArrayList<Trade> getAllTradesOnNetLocalArray() {
-        return allTradesOnNet;
+        if(allTradesOnNet == null) {
+            allTradesOnNet = new ArrayList<Trade>();
+        }return allTradesOnNet;
     }
 
     public void addTradeToUploadList(Trade trade, Context context) {
