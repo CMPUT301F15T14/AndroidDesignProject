@@ -1,14 +1,18 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -16,17 +20,47 @@ import java.util.ArrayList;
  */
 public class AddNewFriendActivity extends Activity implements AppObserver{
     private ArrayAdapter<String> adapter;
-    private ArrayList<String> friendsArrayList = new ArrayList<String>();
+    private ArrayList<String> userArrayList = new ArrayList<String>();
     private NetworkController network;
-    private EditText searchString;
+    private EditText searchText;
+    private Button searchButton;
+    private ListView UserList;
+    private ArrayList<User> searchResults;
+
+    private ArrayList<String> results = new ArrayList<String>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        UserSingleton.getInstance().getUser().getFriends().addObserver(this);
+        //UserSingleton.getInstance().getUser().getFriends().addObserver(this);
         network=new NetworkController(getApplicationContext());
+        network.addObserver(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_friend);
         //adapter.notifyDataSetChanged();
+
+        searchText=(EditText)findViewById(R.id.searchKey);
+        searchButton=(Button)findViewById(R.id.searchButton);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchString = searchText.getText().toString();
+
+                results.clear();
+                searchResults = new ArrayList<User>();
+                new searchFriends().execute(searchString);
+
+            }
+        });
+    }
+
+    @Override
+    protected void onStart(){
+        super.onStart();
+        UserList=(ListView)findViewById(R.id.friendsList);
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item, results);
+        UserList.setAdapter(adapter);
     }
 
     @Override
@@ -53,17 +87,44 @@ public class AddNewFriendActivity extends Activity implements AppObserver{
     }
 
     public void appNotify(AppObservable observable) {
-        friendsArrayList.clear();
-
-        for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
-            friendsArrayList.add(friend.getUserName());
-        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    private class searchFriends extends AsyncTask<String, Integer, ArrayList<User>> {
+
+        protected ArrayList<User> doInBackground(String... params) {
+
+            String userName = params[0];
+
+            try{
+                ArrayList<User> results = network.searchByUserName(userName);
+
+                if(!results.isEmpty()) {
+                    return results;
+                }
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(ArrayList<User> result) {
+            super.onPostExecute(result);
+            if(result != null) {
+                searchResults=result;
+            }
+            for (User resultname : searchResults) {
+                results.add(resultname.getUserName());
+            }
+            adapter.notifyDataSetChanged();
+        }
     }
 
 }
