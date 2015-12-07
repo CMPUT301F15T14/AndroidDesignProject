@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +51,20 @@ public class AddNewFriendActivity extends Activity implements AppObserver{
                 results.clear();
                 searchResults = new ArrayList<User>();
                 new searchFriends().execute(searchString);
+
+            }
+        });
+        UserList=(ListView)findViewById(R.id.friendsList);
+
+        UserList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
+                // assuming the adapter view order is same as the array game list order
+                //User u = UserSingleton.getInstance().getUser().getFriends().GetFriends().get(position);
+                User u = searchResults.get(position);
+                ObjParseSingleton.getInstance().addObject("userProfile", u);
+                Intent myIntent = new Intent(AddNewFriendActivity.this, ProfileActivity.class);
+
+                startActivityForResult(myIntent, 1);
 
             }
         });
