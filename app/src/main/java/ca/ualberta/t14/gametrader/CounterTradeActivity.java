@@ -1,8 +1,8 @@
 package ca.ualberta.t14.gametrader;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,35 +10,36 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
+import java.util.List;
 
-public class TradeEditActivity extends Activity {
+public class CounterTradeActivity extends Activity {
 
+    Trade trade;
+    Button offerGameButton;
     private TradingEditController tradingEditController;
-
     private ListView tradeFor;
     private ArrayAdapter<String> tradeForAdapter;
-
     private ListView tradeOffer;
     private ArrayAdapter<String> tradeOfferAdapter;
-
     private ArrayList<String> ownerGame;
     private ArrayList<String> borrowerGame;
-    private Button editTrade;
-    private Button deleteTrade;
 
-    private Trade trade;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trade2);
 
-        tradeFor = (ListView)findViewById(R.id.tradeFor);
-        tradeOffer = (ListView)findViewById(R.id.tradeOffer);
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_counter_trade);
 
         trade = (Trade) ObjParseSingleton.getInstance().popObject("trade");
         tradingEditController = new TradingEditController(trade, getApplicationContext(), this);
+
+        tradeFor = (ListView)findViewById(R.id.tradeFor);
+        tradeOffer = (ListView)findViewById(R.id.tradeOffer);
 
         ownerGame = new ArrayList<String>();
         ownerGame.clear();
@@ -52,43 +53,21 @@ public class TradeEditActivity extends Activity {
             borrowerGame.add(each.getTitle());
         }
 
-        editTrade = (Button)findViewById(R.id.editTrade);
-        editTrade.setOnClickListener(new Button.OnClickListener() {
+        offerGameButton = (Button) findViewById(R.id.offerGame);
+        ObjParseSingleton.getInstance().addObject("Borrower",UserSingleton.getInstance().getUser());
+        offerGameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                ObjParseSingleton.getInstance().addObject("trade", trade);
-                Intent myIntent = new Intent(TradeEditActivity.this, CreateTradeActivity.class);
-                finish();
-                startActivity(myIntent);
+                Intent intent = new Intent(CounterTradeActivity.this, InventoryListActivity.class);
+                ObjParseSingleton.getInstance().addObject("User", UserSingleton.getInstance().getUser());
+                ObjParseSingleton.getInstance().addObject("isInTrade", new Boolean(Boolean.TRUE));
+                startActivityForResult(intent, 2);
             }
-        });
 
-        deleteTrade = (Button)findViewById(R.id.deleteTrade);
-        deleteTrade.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                tradingEditController.deleteTrade(trade);
-                finish();
-            }
         });
-
-        // show buttons for approriate users only
-        // US04.06.01 As a borrower, when composing a trade or counter-trade I can delete the trade
-        // US04.05.01 As a borrower or owner, when composing a trade or counter-trade I can edit the trade.
-        if(trade.getBorrower().compareTo(UserSingleton.getInstance().getUser().getAndroidID()) == 0) {
-            editTrade.setVisibility(View.VISIBLE);
-            deleteTrade.setVisibility(View.VISIBLE);
-        } else {
-            editTrade.setText("Accept");
-            deleteTrade.setText("Decline");
-            deleteTrade.setOnClickListener(new Button.OnClickListener(){
-                public void onClick(View v) {
-                    ObjParseSingleton.getInstance().addObject("trade", trade);
-                    Intent myIntent = new Intent(TradeEditActivity.this, CounterTradeActivity.class);
-                    finish();
-                    startActivity(myIntent);
-                }
-            });
-        }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,4 +99,5 @@ public class TradeEditActivity extends Activity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }
