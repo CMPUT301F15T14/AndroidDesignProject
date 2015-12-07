@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Observer;
 
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchResponse;
 import ca.ualberta.t14.gametrader.es.data.ElasticSearchSearchResponse;
@@ -33,9 +34,11 @@ import ca.ualberta.t14.gametrader.es.data.ImagePackage;
  * Stole a lot of code from ESDemo
  * Created by jjohnsto on 11/26/15.
  */
-public class NetworkController implements AppObserver, NetworkerListener {
+public class NetworkController implements AppObserver, NetworkerListener, AppObservable {
     
     transient Context context;
+
+    private transient ArrayList<AppObserver> observers;
 
     private final String netLocation = "http://cmput301.softwareprocess.es:8080/t14/Users/";
     private final String tradesLocation = "http://cmput301.softwareprocess.es:8080/t14/Trades/";
@@ -51,6 +54,44 @@ public class NetworkController implements AppObserver, NetworkerListener {
         PictureNetworkerSingleton.getInstance().getPicNetMangager().addListener(this);
         UserSingleton.getInstance().getUser().addObserver(this);
         this.context = context;
+        observers=new ArrayList<AppObserver>();
+    }
+
+    public ArrayList<User> getUserList() {
+        HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
+
+        searchRequest.setHeader("Accept", "application/json");
+
+        try {
+            HttpResponse response = httpclient.execute(searchRequest);
+
+            String status = response.getStatusLine().toString();
+            System.out.println(status);
+
+            String json = getEntityContent(response);
+
+            Type elasticSearchSearchResponseType = new TypeToken<ElasticSearchSearchResponse<User>>() {
+            }.getType();
+            ElasticSearchSearchResponse<User> esResponse = gson.fromJson(json, elasticSearchSearchResponseType);
+            //System.err.println(esResponse);
+
+            ArrayList < User > returnValue = new ArrayList<User>();
+            if (esResponse.getHits() != null) {
+                for (ElasticSearchResponse<User> r : esResponse.getHits()) {
+                    User result = r.getSource();
+                    returnValue.add(result);
+                }
+
+                return returnValue;
+            }
+            searchRequest.getEntity().consumeContent();
+            response.getEntity().consumeContent();
+        }
+        catch(IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public ArrayList<User> searchByUserName(String str) throws IOException {
@@ -74,19 +115,13 @@ public class NetworkController implements AppObserver, NetworkerListener {
         if(esResponse.getHits()!=null) {
             for (ElasticSearchResponse<User> r : esResponse.getHits()) {
                 User result = r.getSource();
-                User ret = new User();
-                ret.setAddress(result.getAddress());
-                ret.setPhoneNumber(result.getPhoneNumber());
-                ret.setAndroidID(result.getAndroidID());
-                ret.setUserName(result.getUserName());
-                ret.setEmail(result.getEmail());
-                ret.setInventory(result.getInventory());
 
-                returnValue.add(ret);
+                returnValue.add(result);
             }
         }
         searchRequest.getEntity().consumeContent();
         response.getEntity().consumeContent();
+        notifyAllObservers();
 
         return returnValue;
     }
@@ -158,7 +193,7 @@ public class NetworkController implements AppObserver, NetworkerListener {
         try{
             HttpGet getRequest = new HttpGet(netLocation+id);
 
-            getRequest.addHeader("Accept","application/json");
+            getRequest.addHeader("Accept", "application/json");
 
             HttpResponse response = httpclient.execute(getRequest);
 
@@ -582,5 +617,29 @@ public class NetworkController implements AppObserver, NetworkerListener {
         picNetworker.savePictureNetworker();
         picNetworker.notifyAllObservers();
     }
+    /**
+     * Adds the ability to be able to add observers who observe the class.
+     * @param observer The observer to be added which wants to be notified on the update.
+     */
+    public void addObserver(AppObserver observer){
+        observers.add(observer);
+    };
 
+    /**
+     * The ability to remove an observer from the watch list,
+     * thus that observer will not be observing this class anymore.
+     * @param observer This observer will be removed.
+     */
+    public void deleteObserver(AppObserver observer){
+        observers.remove(observer);
+    };
+
+    /**
+     * A method that should call appNotify on all observers who are watching this class.
+     */
+    public void notifyAllObservers(){
+        for (AppObserver ob: observers){
+            ob.appNotify(this);
+        }
+    };
 }

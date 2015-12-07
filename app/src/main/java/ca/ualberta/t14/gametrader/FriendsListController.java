@@ -66,7 +66,7 @@ public class FriendsListController {
         fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), context);
     }
 
-    void initButonOnClickListeners(Activity activity) {
+    /*void initButonOnClickListeners(Activity activity) {
 
         final Context c = context;
         final Activity a = activity;
@@ -113,6 +113,6 @@ public class FriendsListController {
                 }
             }
         });
-    }
+    }*/
 
 }

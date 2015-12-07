@@ -90,7 +90,7 @@ public class InventoryItemController {
     public boolean contains(Game game){
         return stock.contains(game);
     }
-
+    
     /**
      * A method to check if cloning is available to this user. It is used in InventoryItemActivity to check
      * if the given user can clone this game (cannot clone own items basicall)
@@ -100,6 +100,7 @@ public class InventoryItemController {
     public boolean clonable(User user){
         return UserSingleton.getInstance().getUser().getUserName() != user.getUserName();
     }
+
 
     /**
      * Given game and application context, the given game will be cloned to the inventory of the

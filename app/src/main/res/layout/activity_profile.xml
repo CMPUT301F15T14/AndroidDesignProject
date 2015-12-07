@@ -39,8 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:text="Contact Information   "
+        android:text="Contact Information:"
         android:textColor="@color/all_text"
         android:id="@+id/textView"
         android:layout_below="@+id/profileInfoName"
@@ -89,10 +88,10 @@
         android:text="User Name:"
         android:textColor="@color/all_text"
         android:id="@+id/profileInfoName"
-        android:layout_below="@+id/profileText"
-        android:layout_alignParentStart="true"
         android:paddingRight="10dp"
-        android:textSize="18dp" />
+        android:textSize="18dp"
+        android:layout_below="@+id/userNameDisplay"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -101,7 +100,8 @@
         android:text="Some text"
         android:textColor="@color/all_text"
         android:id="@+id/userNameDisplay"
-        android:layout_above="@+id/textView"
+        android:layout_marginTop="53dp"
+        android:layout_below="@+id/editProfile"
         android:layout_toEndOf="@+id/textView" />
 
     <TextView
