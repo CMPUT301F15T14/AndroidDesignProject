@@ -36,12 +36,13 @@ public class ProfileActivity extends Activity {
     }
 
     private User user;
+    private FriendsController friendsController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-
+        friendsController=new FriendsController(UserSingleton.getInstance().getUser().getFriends(),getApplicationContext());
         addressView = (TextView) findViewById(R.id.addressDisplay);
         emailView = (TextView) findViewById(R.id.emailDisplay);
         phoneView = (TextView) findViewById(R.id.phoneDisplay);
@@ -63,27 +64,33 @@ public class ProfileActivity extends Activity {
         editprof = (Button) findViewById(R.id.editProfile);
         if (user.isUser(user)){
             editprof.setText("Edit");
+            editprof.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
         }else if (user.isFriend(user)){
             editprof.setText("Remove");
+            editprof.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    friendsController.RemoveFriend(user);
+                    finish();
+                }
+            });
         }else{
             editprof.setText("Add Friend");
+            editprof.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    friendsController.AddFriend(user.getUserName());
+                    finish();
+                }
+            });
         }
-
-        editprof.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        /*if(user != UserSingleton.getInstance().getUser()) {
-            editprof.setVisibility(View.INVISIBLE);
-        } else {
-            editprof.setVisibility(View.VISIBLE);
-        }*/
-
 
         inventory = (Button) findViewById(R.id.viewInventory);
         inventory.setOnClickListener(new View.OnClickListener() {
