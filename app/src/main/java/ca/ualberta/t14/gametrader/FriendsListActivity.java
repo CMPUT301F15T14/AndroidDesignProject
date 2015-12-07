@@ -48,7 +48,6 @@ public class FriendsListActivity extends Activity implements AppObserver {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
-        //friendsListController = new FriendsListController(getApplicationContext());
 
         AddNewFriend=(Button)findViewById(R.id.addFriendButton);
         AddNewFriend.setOnClickListener(new Button.OnClickListener(){
@@ -124,6 +123,18 @@ public class FriendsListActivity extends Activity implements AppObserver {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        friendsArrayList.clear();
+        for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+            friendsArrayList.add(friend.getUserName());
+            Log.d("friend", "" + friendsArrayList.size());
+
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public void appNotify(AppObservable observable) {
