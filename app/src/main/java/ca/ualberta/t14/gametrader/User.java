@@ -215,6 +215,13 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
     }
 
     public boolean isFriend(User user){
-        return UserSingleton.getInstance().getUser().getFriends().GetFriends().contains(user);
+        String userid=user.getAndroidID();
+        String username=user.getUserName();
+        for (User existingFriend: UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+            if (existingFriend.getUserName().contentEquals(username)||existingFriend.getAndroidID().contentEquals(userid)){
+                return true;
+            }
+        }
+        return false;
     }
 }
