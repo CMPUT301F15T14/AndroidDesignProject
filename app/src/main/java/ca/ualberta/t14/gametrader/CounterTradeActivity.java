@@ -18,6 +18,7 @@ import java.util.List;
 public class CounterTradeActivity extends Activity {
 
     Trade trade;
+    User user;
     Button offerGameButton;
     private TradingEditController tradingEditController;
     private ListView tradeFor;
@@ -54,12 +55,17 @@ public class CounterTradeActivity extends Activity {
         }
 
         offerGameButton = (Button) findViewById(R.id.offerGame);
-        ObjParseSingleton.getInstance().addObject("Borrower",UserSingleton.getInstance().getUser());
         offerGameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                User saveThisUser = null;
                 Intent intent = new Intent(CounterTradeActivity.this, InventoryListActivity.class);
-                ObjParseSingleton.getInstance().addObject("User", UserSingleton.getInstance().getUser());
+                for (User user : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+                    if(user.getAndroidID().compareTo(trade.getBorrower()) == 0){
+                        saveThisUser = user;
+                    }
+                }
+                ObjParseSingleton.getInstance().addObject("User", saveThisUser);
                 ObjParseSingleton.getInstance().addObject("isInTrade", new Boolean(Boolean.TRUE));
                 startActivityForResult(intent, 2);
             }

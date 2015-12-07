@@ -74,6 +74,8 @@ public class Trade extends FileIO implements AppObservable{
     private String ownerAndroidId;
     private ArrayList<Game> ownerOffers;
 
+
+    private ArrayList<User> userAndroidId;
     private String borrowerID;
 
     private String ownersComment;
@@ -95,6 +97,7 @@ public class Trade extends FileIO implements AppObservable{
         this.ownerAndroidId = owner.getAndroidID();
         this.borrowerAndroidId = borrower.getAndroidID();
         borrowerOffers = new ArrayList<Game>();
+        userAndroidId = new ArrayList<User>();
         ownerOffers = new ArrayList<Game>();
         ownerOffers.add(game);
         ownersComment = "";
@@ -140,6 +143,10 @@ public class Trade extends FileIO implements AppObservable{
      */
     public ArrayList<Game> getBorrowerOffers() {
         return borrowerOffers;
+    }
+
+    public ArrayList<User> getUserAndroidId() {
+        return userAndroidId;
     }
 
     /**
