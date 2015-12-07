@@ -117,29 +117,23 @@ public class FriendsController {
         for(User friend : friendsToCheck) {
             User serverFriend = nc.loadUser(friend.getAndroidID());
             if(!friend.equals(serverFriend)) { // if the server copy does not match our local copy
-                Boolean somethingUpdated = Boolean.FALSE;
                 // figure out what was updated, multiple updates at once too.
                 if(friend.getInventory() != serverFriend.getInventory()) {
                     MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their inventory.");
-                    somethingUpdated = Boolean.TRUE;
                 }
-                if(friend.getUserName() != serverFriend.getUserName()) {
+                else if(friend.getUserName() != serverFriend.getUserName()) {
                     MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their user name to: " + serverFriend.getUserName());
-                    somethingUpdated = Boolean.TRUE;
                 }
-                if(friend.getAddress() != serverFriend.getAddress()) {
+                else if(friend.getAddress() != serverFriend.getAddress()) {
                     MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their address to: " + serverFriend.getAddress());
-                    somethingUpdated = Boolean.TRUE;
                 }
-                if (friend.getEmail() != serverFriend.getEmail()) {
+                else if (friend.getEmail() != serverFriend.getEmail()) {
                     MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their email to: " + serverFriend.getEmail());
-                    somethingUpdated = Boolean.TRUE;
                 }
-                if(friend.getPhoneNumber() != serverFriend.getPhoneNumber()) {
+                else if(friend.getPhoneNumber() != serverFriend.getPhoneNumber()) {
                     MostRecentUpdates.add(date + " " + friend.getUserName() + " updated their phone to: " + serverFriend.getPhoneNumber());
-                    somethingUpdated = Boolean.TRUE;
                 }
-                if(somethingUpdated == Boolean.FALSE) {
+                else {
                     // no updates -- do nothing
                     return;
                 }
