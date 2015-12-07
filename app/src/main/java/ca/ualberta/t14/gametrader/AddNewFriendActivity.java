@@ -1,11 +1,13 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 
@@ -15,11 +17,13 @@ import java.util.ArrayList;
 public class AddNewFriendActivity extends Activity implements AppObserver{
     private ArrayAdapter<String> adapter;
     private ArrayList<String> friendsArrayList = new ArrayList<String>();
+    private NetworkController network;
+    private EditText searchString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         UserSingleton.getInstance().getUser().getFriends().addObserver(this);
-
+        network=new NetworkController(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_friend);
         //adapter.notifyDataSetChanged();
