@@ -38,7 +38,6 @@ public class AddNewFriendActivity extends Activity implements AppObserver{
         network.addObserver(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_friend);
-        //adapter.notifyDataSetChanged();
 
         searchText=(EditText)findViewById(R.id.searchKey);
         searchButton=(Button)findViewById(R.id.searchButton);

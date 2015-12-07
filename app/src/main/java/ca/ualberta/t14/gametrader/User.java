@@ -209,4 +209,12 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
     public void appNotify(AppObservable observable) {
         this.notifyAllObservers();
     }
+
+    public boolean isUser(User user){
+        return UserSingleton.getInstance().getUser().getUserName() == user.getUserName();
+    }
+
+    public boolean isFriend(User user){
+        return UserSingleton.getInstance().getUser().getFriends().GetFriends().contains(user);
+    }
 }

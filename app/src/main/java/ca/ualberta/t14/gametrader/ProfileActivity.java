@@ -60,8 +60,15 @@ public class ProfileActivity extends Activity {
 
         //Toast.makeText(this, mainUser.getAddress(), Toast.LENGTH_SHORT).show();
 
-
         editprof = (Button) findViewById(R.id.editProfile);
+        if (user.isUser(user)){
+            editprof.setText("Edit");
+        }else if (user.isFriend(user)){
+            editprof.setText("Remove");
+        }else{
+            editprof.setText("Add Friend");
+        }
+
         editprof.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,11 +78,12 @@ public class ProfileActivity extends Activity {
             }
         });
 
-        if(user != UserSingleton.getInstance().getUser()) {
+        /*if(user != UserSingleton.getInstance().getUser()) {
             editprof.setVisibility(View.INVISIBLE);
         } else {
             editprof.setVisibility(View.VISIBLE);
-        }
+        }*/
+
 
         inventory = (Button) findViewById(R.id.viewInventory);
         inventory.setOnClickListener(new View.OnClickListener() {

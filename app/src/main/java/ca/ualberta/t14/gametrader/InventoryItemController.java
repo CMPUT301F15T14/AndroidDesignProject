@@ -90,10 +90,12 @@ public class InventoryItemController {
         return stock.contains(game);
     }
 
+    // Check if the item belongs to another user.
     public boolean clonable(User user){
         return UserSingleton.getInstance().getUser().getUserName() != user.getUserName();
     }
 
+    // Copy or clone the game object to user's own inventory.
     public void clone(Game game,Context context){
         Game clonedGame = new Game(game, context);
         User deviceUser = UserSingleton.getInstance().getUser();
