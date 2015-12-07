@@ -115,7 +115,8 @@ public class FriendsController {
     void RemoveFriend(User friend) {
         String id = friend.getAndroidID();
         for(User existingFriend : model.GetFriends()) {
-            if( existingFriend.getAndroidID() == id ) {
+            if( existingFriend.getAndroidID().contentEquals(id) || existingFriend.getUserName().contentEquals(friend.getUserName())) {
+                System.out.print("User exists!\n");
                 UserSingleton.getInstance().getUser().getFriends().RemoveFriend(existingFriend);
                 WriteFriends(context);
                 return;

@@ -15,7 +15,9 @@
         android:id="@+id/profileText"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_alignBottom="@+id/editProfile" />
+        android:layout_alignBottom="@+id/editProfile"
+        android:textSize="26dp"
+        android:textStyle="bold" />
 
     <Button
         android:layout_width="wrap_content"
@@ -40,12 +42,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Contact Information:"
+        android:text="Contact Information"
         android:textColor="@color/all_text"
         android:id="@+id/textView"
         android:layout_below="@+id/profileInfoName"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="15dp" />
+        android:layout_marginBottom="15dp"
+        android:textSize="22dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,7 +60,7 @@
         android:layout_below="@+id/textView"
         android:layout_alignParentStart="true"
         android:paddingRight="10dp"
-        android:textSize="18dp"
+        android:textSize="16dp"
         android:layout_marginBottom="15dp" />
 
     <TextView
@@ -70,7 +73,7 @@
         android:layout_below="@+id/profileInfoPhone"
         android:layout_alignParentStart="true"
         android:paddingRight="10dp"
-        android:textSize="18dp"
+        android:textSize="16dp"
         android:layout_marginBottom="15dp" />
 
     <TextView
@@ -83,7 +86,7 @@
         android:layout_below="@+id/profileInfoEmail"
         android:layout_alignParentStart="true"
         android:paddingRight="10dp"
-        android:textSize="18dp" />
+        android:textSize="16dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -140,6 +143,8 @@
         android:text="Large Text"
         android:id="@+id/userNameDisplay"
         android:layout_alignBottom="@+id/profileInfoName"
-        android:layout_alignStart="@+id/phoneDisplay" />
+        android:layout_alignStart="@+id/phoneDisplay"
+        android:textSize="24dp"
+        android:textStyle="bold" />
 
 </RelativeLayout>

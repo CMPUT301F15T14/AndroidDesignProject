@@ -36,9 +36,9 @@
         android:textSize="15dp"
         android:textColor="@color/all_text"
         android:gravity="fill|right|top"
-        android:layout_alignParentEnd="true"
-        android:minHeight="25dp"
-        android:maxHeight="25dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
 
     <EditText
         android:layout_width="fill_parent"
@@ -46,9 +46,9 @@
         android:id="@+id/searchKey"
         android:textColor="#ffffff"
         android:singleLine="true"
-        android:layout_below="@+id/friendsText"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp" />
+        android:layout_below="@+id/addFriendButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp" />
 
     <Button
         android:layout_width="match_parent"
@@ -58,7 +58,7 @@
         android:id="@+id/searchButton"
         android:layout_below="@+id/searchKey"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="8dp" />
 
 
 </RelativeLayout>

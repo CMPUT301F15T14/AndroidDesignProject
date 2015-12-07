@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,14 +58,10 @@ public class AddNewFriendActivity extends Activity implements AppObserver{
 
         UserList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
-                // assuming the adapter view order is same as the array game list order
-                //User u = UserSingleton.getInstance().getUser().getFriends().GetFriends().get(position);
                 User u = searchResults.get(position);
                 ObjParseSingleton.getInstance().addObject("userProfile", u);
                 Intent myIntent = new Intent(AddNewFriendActivity.this, ProfileActivity.class);
-
-                startActivityForResult(myIntent, 1);
-
+                startActivity(myIntent);
             }
         });
     }
@@ -75,6 +72,12 @@ public class AddNewFriendActivity extends Activity implements AppObserver{
         UserList=(ListView)findViewById(R.id.friendsList);
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, results);
         UserList.setAdapter(adapter);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
