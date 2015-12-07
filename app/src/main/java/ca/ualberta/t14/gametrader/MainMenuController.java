@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
@@ -10,7 +28,8 @@ import android.provider.Settings;
 import java.io.IOException;
 
 /**
- * Created by satyabra on 11/27/15.
+ * This class handles some big portion of the MainActivity's functionality.
+ * @author Ryan Satyabrata
  */
 public class MainMenuController {
     User user = new User();
@@ -19,6 +38,10 @@ public class MainMenuController {
     PictureNetworker pn = new PictureNetworker();
     TradeNetworker tn = new TradeNetworker();
 
+    /**
+     * The constructor for MainMenuController. The application context has to be passed to here.
+     * @param context
+     */
     public MainMenuController(Context context) {
         netCtrl = new NetworkController(context);
     }
@@ -104,6 +127,10 @@ public class MainMenuController {
         t.start();
     }
 
+    /**
+     * This method checks/gets updates for some network component, for trade and pictures,
+     * as well upload the current userProfile to the users online.
+     */
     public synchronized void updateChecker() {
         final NetworkController netc = netCtrl;
         // Update device user

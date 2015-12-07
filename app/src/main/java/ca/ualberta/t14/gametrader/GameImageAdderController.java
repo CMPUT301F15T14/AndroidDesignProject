@@ -37,7 +37,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
- * This controller is responsible for the GameImageAdder view.
+ * This class is responsible for the GameImageAdder view.
  * It will handle all input buttons etc.
  *
  * @author  Ryan Satyabrata
@@ -67,6 +67,12 @@ public class GameImageAdderController {
         }
     }
 
+    /**
+     * The constructor for GameImageAdderController, which will initialize all the private variables.
+     * It will store the context and activity. Also makes that the scrollListView have a fancy fade when scrolling.
+     * @param context
+     * @param activity
+     */
     public GameImageAdderController(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
@@ -78,6 +84,9 @@ public class GameImageAdderController {
         imagesLayout = (LinearLayout) activity.findViewById(R.id.ImageAdderImagesLayout);
     }
 
+    /**
+     * This method will set all the onclick listeners for the activity GameImageAdder.
+     */
     public void setOnClickListeners() {
         Button addImages = (Button) activity.findViewById(R.id.ImageAdderAddImages);
         addImages.setOnClickListener(new Button.OnClickListener() {
@@ -103,6 +112,14 @@ public class GameImageAdderController {
 
     }
 
+    /**
+     * This method will add an Uri to the list of potential added images.
+     * each potential added image will then be gotten as a bitmap and displayed
+     * in an ImageView, a RemoveImage button will also be created for tat image, if the user
+     * decides after all to not add this image to the added images.
+     * @param uri The uri of where the bitmap is.
+     * @param cr The content resolver from the activity for the uri.
+     */
     public void addAnImageUri(Uri uri, ContentResolver cr) {
         Bitmap addImage = null;
         try {
