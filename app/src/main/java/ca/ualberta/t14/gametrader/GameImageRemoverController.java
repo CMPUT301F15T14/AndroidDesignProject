@@ -38,7 +38,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by satyabra on 11/29/15.
+ * This class is responsible for the GameImageRemover view.
+ * It handles all the buttons of that activity.
+ * @author Ryan Satyabrata
  */
 public class GameImageRemoverController {
     private Context context;
@@ -54,6 +56,15 @@ public class GameImageRemoverController {
     private HashMap<Integer, String> checkBoxAndImageId;
     private HashMap<Integer, Uri> checkBoxAndUri;
 
+    /**
+     * The constructor for this class. It needs the list of all current imageIDs that exist in the game
+     * and a list of all potential new images that will be added to the game, the uriIDs.
+     * It needs to know the activity's context and the activity itself.
+     * @param imageIds
+     * @param uriIds
+     * @param context
+     * @param activity
+     */
     public GameImageRemoverController(ArrayList<String> imageIds, ArrayList<Uri> uriIds, Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
@@ -142,6 +153,9 @@ public class GameImageRemoverController {
         imagesLayout.addView(entry, -1);
     }
 
+    /**
+     * This method will set all the onclick listeners for the activity GameImageRemover.
+     */
     public void setOnClickButtons() {
         Button btnUncheck = (Button) activity.findViewById(R.id.ImageRemoverCheckAll);
         btnUncheck.setOnClickListener(new Button.OnClickListener() {

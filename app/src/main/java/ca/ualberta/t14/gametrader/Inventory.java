@@ -21,26 +21,9 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-/*
- * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+/**
+ * class Inventory is designed to store a collection (list) of Game objects and associate them with users.
  */
-
-// class Inventory is designed to store a collection (list) of Game objects and associate them with users.
-
 public class Inventory implements AppObservable {
     private volatile transient ArrayList<AppObserver> observers;
 
@@ -106,6 +89,11 @@ public class Inventory implements AppObservable {
         return gameCollections;
     }
 
+    /**
+     * Gets all games from the inventory that are listed as public.
+     * All games with the private flag will be filtered out from the resulting ArrayList.
+     * @return array list of games that are public
+     */
     public ArrayList<Game> getAllPublicGames() {
         ArrayList<Game> publicOnly = new ArrayList<Game>();
         for(Game each : gameCollections) {
@@ -116,10 +104,19 @@ public class Inventory implements AppObservable {
         return publicOnly;
     }
 
+    /**
+     * Adds the ability to be able to add observers who observe the class.
+     * @param observer The observer to be added which wants to be notified on the update.
+     */
     public void addObserver(AppObserver observer) {
         observers.add(observer);
     }
 
+    /**
+     * The ability to remove an observer from the watch list,
+     * thus that observer will not be observing this class anymore.
+     * @param o This observer will be removed.
+     */
     public void deleteObserver(AppObserver o) {
         observers.remove(o);
     }

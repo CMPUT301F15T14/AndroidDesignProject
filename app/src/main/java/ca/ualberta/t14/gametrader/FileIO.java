@@ -30,7 +30,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * Created by Aaron on 11/3/2015.
+ * This class deals with writing and loading files. It has also static methods
+ * for universal access of common unversal file operations.
+ * On 11/3/2015.
+ * @author Aaron Arnason
  */
 public class FileIO {
     /**
