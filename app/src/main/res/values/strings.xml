@@ -114,6 +114,10 @@
     <string name="title_activity_item_picture_viewer">Photos</string>
     <string name="title_activity_game_image_adder">Add Images</string>
     <string name="title_activity_game_image_remover">GameImageRemover</string>
+<<<<<<< HEAD
     <string name="title_activity_counter_trade">CounterTradeActivity</string>
+=======
+    <string name="title_activity_count_trade">CountTrade</string>
+>>>>>>> b10b257f6060099337db29c90ba456ae437655d4
 
 </resources>

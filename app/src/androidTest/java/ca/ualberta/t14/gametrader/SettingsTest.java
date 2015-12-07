@@ -18,31 +18,5 @@ public class SettingsTest extends ActivityInstrumentationTestCase2 {
         SettingsMode downloadPic = new SettingsMode();
         downloadPic.setEnableDownloadPhoto1(Boolean.FALSE);
     }
-    /*
-    public void testEnableDownloadPhotos(){
-        photolist pictures = new photolist();
-        Bitmap photo = new Bitmap("from gallery");
-        pictures.addPhoto(photo);
 
-        Game item = new Game("");
-        item.attachPhotos(photos);
-        
-        photos.disableDownload();
-        assertTrue(photo.isEnable());//ena -> true
-        }
-    */
-
-
-
-    /*
-    public static boolean testEnableDownloadPhoto(){
-        Game game = new Game();
-        if (game.getPicture() == null ){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-    */
 }
