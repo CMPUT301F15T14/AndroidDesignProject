@@ -9,7 +9,11 @@ import java.io.RandomAccessFile;
 import java.util.UUID;
 
 /**
- * This class was entirely taken from http://android-developers.blogspot.ca/2011/03/identifying-app-installations.html
+ * This class generates a unique installation id that exist for this app's installation. This ID is written to
+ * the apps folder and that very same file will be loaded to get the same ID. This ID only change to a new ID when that file "INSTALLATION" is removed.
+ *
+ * Ryan Satyabrata took this entire class from here
+ * http://android-developers.blogspot.ca/2011/03/identifying-app-installations.html
  * as part of an answer from http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id/5626208#5626208
  */
 public class InstallationIdGenerator {
