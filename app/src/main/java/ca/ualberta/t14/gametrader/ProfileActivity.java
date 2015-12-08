@@ -1,6 +1,8 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +20,11 @@ public class ProfileActivity extends Activity {
     TextView phoneView;
     TextView emailView;
     TextView addressView;
+    private AlertDialog removeDialogue;
+
+    public AlertDialog getRemoveDialogue() {
+        return removeDialogue;
+    }
 
     private Button editprof;
 
@@ -77,8 +84,29 @@ public class ProfileActivity extends Activity {
             editprof.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    friendsController.RemoveFriend(user);
-                    finish();
+                    removeDialogue = new AlertDialog.Builder(ProfileActivity.this).create();
+                    removeDialogue.setTitle("Warning");
+                    removeDialogue.setMessage("Are you sure you want to remove this user from friend list?");
+                    removeDialogue.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    friendsController.RemoveFriend(user);
+                                    Toast.makeText(ProfileActivity.this, user.getUserName() + " has been removed from your friend list!", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+
+                    removeDialogue.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }
+                    );
+
+                    removeDialogue.show();
+
                 }
             });
         }else{
@@ -87,6 +115,7 @@ public class ProfileActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     friendsController.AddFriend(user.getUserName());
+                    Toast.makeText(ProfileActivity.this, user.getUserName()+" has been added from your friend list!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
