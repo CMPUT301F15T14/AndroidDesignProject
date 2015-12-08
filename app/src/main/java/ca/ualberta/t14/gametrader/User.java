@@ -49,9 +49,6 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         // otherwise, create a new user file and prompt the user to create a user name
         observers = new ArrayList<AppObserver>();
         inventory = new Inventory();
-        inventory.addObserver(this);
-
-
         friends = new Friends();
     }
 
@@ -127,21 +124,36 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
 
     private String phoneNumber;
 
-
+    /**
+     * Get the stored android id from the device. Used to identify the user.
+     * @return the stored android id.
+     */
     public String getAndroidID() {
         return androidID;
     }
 
+    /**
+     * Sets and stores the android id. The input should be Settings.Secure.ANDROID_ID
+     * @param androidID the value of Settings.Secure.ANDROID_ID
+     */
     public void setAndroidID(String androidID) {
         this.androidID = androidID;
     }
 
     private String androidID; // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
 
+    /**
+     * Gets the stored android app's installation id from the device.
+     * @return The installation id.
+     */
     public String getInstallationId() {
         return installationId;
     }
 
+    /**
+     * Sets and stores the installation id of the android app. The input should be value generated from InstallationIdGenerator
+     * @param installationId the value generated/loaded from InstallationIdGenerator
+     */
     public void setInstallationId(String installationId) {
         this.installationId = installationId;
     }
@@ -149,11 +161,18 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
     // used as a unique identifier http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id
     private String installationId;
 
-
+    /**
+     * Retrieves the user's inventory which contains Game objects that the user owns.
+     * @return the user's inventory
+     */
     public Inventory getInventory() {
         return inventory;
     }
 
+    /**
+     * Sets an inventory to the user. This inventory will hold all that user's game objects.
+     * @param inventory that the user should have.
+     */
     public void setInventory(Inventory inventory) {
         this.inventory = inventory;
     }
@@ -189,5 +208,20 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
      */
     public void appNotify(AppObservable observable) {
         this.notifyAllObservers();
+    }
+
+    public boolean isUser(User user){
+        return UserSingleton.getInstance().getUser().getUserName() == user.getUserName();
+    }
+
+    public boolean isFriend(User user){
+        String userid=user.getAndroidID();
+        String username=user.getUserName();
+        for (User existingFriend: UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+            if (existingFriend.getUserName().contentEquals(username)||existingFriend.getAndroidID().contentEquals(userid)){
+                return true;
+            }
+        }
+        return false;
     }
 }

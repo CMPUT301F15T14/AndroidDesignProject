@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 /**
+ * Check Internet status
+ * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
  * Created by Brigitte-Ng on 2015-11-28.
  */
 public class NetworkConnectivity{
@@ -13,6 +15,7 @@ public class NetworkConnectivity{
      * @return a boolean with the network connectivity
      */
     private Context _context;
+    public static String IS_NETWORK_ONLINE = "5465146468";
 
     public NetworkConnectivity(Context context){
         this._context = context;

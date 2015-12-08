@@ -1,14 +1,6 @@
 package ca.ualberta.t14.gametrader;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.Instrumentation;
-import android.content.DialogInterface;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 
@@ -22,7 +14,7 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
     
     public void testSearch() {
         Inventory testInv = new Inventory();
-        InventoryController testInvCnt = new InventoryController(testInv);
+        InventoryListController testInvCnt = new InventoryListController(testInv.getAllGames());
 
         Game g1 = new Game("Halo: Combat Evolved");
         g1.setPlatform(Game.Platform.PC);
@@ -33,7 +25,7 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         Game g4 = new Game("Teletubies Invade Earth");
         g3.setPlatform(Game.Platform.PLAYSTATION1);
 
-        ArrayList<Game> result = testInvCnt.Search("Halo");
+        ArrayList<Game> result = testInv.Search("Halo");
         assertTrue(result.isEmpty());
 
         testInvCnt.addItem(g1);
@@ -46,12 +38,12 @@ public class InventoryTest extends ActivityInstrumentationTestCase2{
         expectedResult.add(g2);
         expectedResult.add(g3);
 
-        result = testInvCnt.Search("Halo");
+        result = testInv.Search("Halo");
 
         assertTrue(result.containsAll(expectedResult));
         assertFalse(result.contains(g4));
 
-        result = testInvCnt.Search("Halo", Game.Platform.PC);
+        result = testInv.Search("Halo", Game.Platform.PC);
         assertTrue(result.contains(g1));
         assertFalse(result.contains(g2));
         assertFalse(result.contains(g3));

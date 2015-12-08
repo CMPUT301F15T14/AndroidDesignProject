@@ -5,39 +5,60 @@
     android:paddingTop="16dp"
     android:paddingBottom="16dp"
     tools:context="ca.ualberta.t14.gametrader.FriendsListActivity"
-    android:background="@drawable/bluebackground"
     android:id="@+id/friendListRelLayout">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Friends"
-        android:textColor="#ffffff"
+        android:text="My Friends"
+        android:textColor="@color/all_text"
         android:id="@+id/friendsText"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
     <ListView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/friendsList"
-        android:layout_below="@+id/friendsText"
+        android:background="#0a6737"
+        android:layout_below="@+id/searchButton"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="10dp"
+        android:longClickable="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add Friend"
+        android:text="Add New Friends"
         android:id="@+id/addFriendButton"
         android:enabled="true"
         android:textSize="15dp"
-        android:textColor="#ffffff"
+        android:textColor="@color/all_text"
         android:gravity="fill|right|top"
-        android:layout_alignParentEnd="true"
-        android:minHeight="25dp"
-        android:maxHeight="25dp" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchKey"
+        android:textColor="#ffffff"
+        android:singleLine="true"
+        android:layout_below="@+id/addFriendButton"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="8dp" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search"
+        android:textColor="#ffffff"
+        android:id="@+id/searchButton"
+        android:layout_below="@+id/searchKey"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp" />
 
 
 </RelativeLayout>

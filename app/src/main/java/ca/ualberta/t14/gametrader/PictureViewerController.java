@@ -1,7 +1,9 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
@@ -10,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.io.FileNotFoundException;
 
 /**
  * Created by satyabra on 11/28/15.
@@ -33,17 +37,76 @@ public class PictureViewerController {
         });
         }
 
-    public void putImages(Game game) {
-
-        if(!game.pictureIdIsEmpty()) {
-            for(String eachId : game.getPictureIds()) {
-                String loadedJson = PictureManager.loadImageJsonFromJsonFile(eachId, context);
-                setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
-            }
+    public void putImages(Game game, Boolean askDownload) {
+        PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
+        if (!SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()
+                && !pn.getLocalCopyOfImageIds().containsAll(game.getPictureIds())) {
+            askManualDownloadImages(game, askDownload);
+        } else if(!pn.getLocalCopyOfImageIds().containsAll(game.getPictureIds())) {
+            downloadImages(game);
         } else {
-            setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
+            for (String eachId : game.getPictureIds()) {
+                loadImages(eachId);
+            }
         }
+    }
 
+    private void downloadImages(Game game) {
+        if (!game.pictureIdIsEmpty()) {
+            final Game g = game;
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int num = g.getPictureIds().size();
+                    for (int i = 0; i < num; i++) {
+                        setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.saveimages));
+                    }
+                }
+            });
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    for (String eachId : g.getPictureIds()) {
+                        PictureNetworkerSingleton.getInstance().getPicNetMangager().addImageToDownload(eachId);
+                    }
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
+        }
+    }
+
+    private void loadImages(String imageId) {
+        try {
+            String loadedJson = PictureManager.loadImageJsonFromJsonFile(imageId, context);
+            setImageBitmap(PictureManager.getBitmapFromJson(loadedJson));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void askManualDownloadImages(Game game, Boolean askDownload) {
+        if(askDownload) {
+            final Game g = game;
+            AlertDialog SinglePrompt = new AlertDialog.Builder(activity).create();
+            SinglePrompt.setTitle("Warning");
+            SinglePrompt.setMessage("Would you like to download all photos for " + g.getTitle() + "?");
+            SinglePrompt.setButton(AlertDialog.BUTTON_POSITIVE, "Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            downloadImages(g);
+                            dialog.dismiss();
+                        }
+                    }
+            );
+            SinglePrompt.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            setImageBitmap(BitmapFactory.decodeResource(activity.getResources(), R.drawable.cd_empty));
+                            dialog.dismiss();
+                        }
+                    }
+            );
+            SinglePrompt.show();
+        }
     }
 
     private void setImageBitmap(Bitmap img) {

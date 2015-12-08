@@ -12,7 +12,7 @@ public class ElasticSearchSearchResponse<T> {
     Hits<T> hits;
     boolean exists;
     public Collection<ElasticSearchResponse<T>> getHits() {
-        return hits.getHits();
+            return hits.getHits();
     }
     public Collection<T> getSources() {
         Collection<T> out = new ArrayList<T>();

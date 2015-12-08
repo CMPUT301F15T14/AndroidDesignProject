@@ -21,26 +21,9 @@ import android.content.Context;
 
 import java.util.ArrayList;
 
-/*
- * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+/**
+ * class Inventory is designed to store a collection (list) of Game objects and associate them with users.
  */
-
-// class Inventory is designed to store a collection (list) of Game objects and associate them with users.
-
 public class Inventory implements AppObservable {
     private volatile transient ArrayList<AppObserver> observers;
 
@@ -55,7 +38,7 @@ public class Inventory implements AppObservable {
     }
 
     /**
-     * Add Games to gameCollections. Must be called from InventoryController.
+     * Add Games to gameCollections. Must be called from InventoryListController.
      * @param game
      */
     public void add(Game game){
@@ -64,7 +47,7 @@ public class Inventory implements AppObservable {
     }
 
     /**
-     * Remove Games to gameCollections. Must be called from InventoryController.
+     * Remove Games to gameCollections. Must be called from InventoryListController.
      * @param game
      */
     public void remove(Game game, Context context){
@@ -78,7 +61,7 @@ public class Inventory implements AppObservable {
     }
 
     /**
-     * Clear all the objects stored in gameCollections. Must be called from InventoryController.
+     * Clear all the objects stored in gameCollections. Must be called from InventoryListController.
      */
     public void clear(){
         gameCollections.clear();
@@ -106,10 +89,34 @@ public class Inventory implements AppObservable {
         return gameCollections;
     }
 
+    /**
+     * Gets all games from the inventory that are listed as public.
+     * All games with the private flag will be filtered out from the resulting ArrayList.
+     * @return array list of games that are public
+     */
+    public ArrayList<Game> getAllPublicGames() {
+        ArrayList<Game> publicOnly = new ArrayList<Game>();
+        for(Game each : gameCollections) {
+            if(each.isShared()) {
+                publicOnly.add(each);
+            }
+        }
+        return publicOnly;
+    }
+
+    /**
+     * Adds the ability to be able to add observers who observe the class.
+     * @param observer The observer to be added which wants to be notified on the update.
+     */
     public void addObserver(AppObserver observer) {
         observers.add(observer);
     }
 
+    /**
+     * The ability to remove an observer from the watch list,
+     * thus that observer will not be observing this class anymore.
+     * @param o This observer will be removed.
+     */
     public void deleteObserver(AppObserver o) {
         observers.remove(o);
     }
@@ -122,5 +129,40 @@ public class Inventory implements AppObservable {
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
+    }
+
+    /**
+     * Returns the games in the inventory whose title contains the given search query
+     * @param query the String to search for
+     * @return a list of games containing the given string
+     */
+    public ArrayList<Game> Search(String query) {
+        ArrayList<Game> result = new ArrayList<Game>();
+
+        for(Game game : gameCollections) {
+            if(game.getTitle().contains(query)){
+                result.add(game);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Search the inventory by String and Platform
+     * @param query the String to search
+     * @param platform only results for this platform will be returned
+     * @return an array list of Games containing the search results
+     */
+    public ArrayList<Game> Search(String query, Game.Platform platform) {
+        ArrayList<Game> result = new ArrayList<Game>();
+
+        for(Game game : gameCollections) {
+            if(game.getTitle().contains(query) && game.getPlatform() == platform){
+                result.add(game);
+            }
+        }
+
+        return result;
     }
 }

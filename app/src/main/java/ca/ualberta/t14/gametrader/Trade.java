@@ -36,7 +36,7 @@ import java.util.ArrayList;
  */
 public class Trade extends FileIO implements AppObservable{
 
-    private volatile ArrayList<AppObserver> observers;
+    private volatile transient ArrayList<AppObserver> observers;
 
     @Override
     public void addObserver(AppObserver observer) {
@@ -50,6 +50,11 @@ public class Trade extends FileIO implements AppObservable{
 
 
     public void notifyAllObservers() {
+        // Since it's stored somewhere, and observers is transient,
+        // the constructor might not be called, resulting observers to be null.
+        if(observers == null) {
+            observers = new ArrayList<AppObserver>();
+        }
         for(AppObserver obs : observers) {
             obs.appNotify(this);
         }
@@ -64,15 +69,17 @@ public class Trade extends FileIO implements AppObservable{
      */
     public enum TradeStatus {OWNERAPPROVAL,BORROWERAPPROVAL,COMPLETE}
 
-    private User borrower;
+    private String borrowerAndroidId;
     private ArrayList<Game> borrowerOffers;
-    private User owner;
+    private String ownerAndroidId;
     private ArrayList<Game> ownerOffers;
 
     private String borrowerID;
 
     private String ownersComment;
     private TradeStatus status;
+
+    private String tradeId;
 
     /**
      * creates a trade using a Game passed by the activity, adding it to ownerOffers.
@@ -85,8 +92,8 @@ public class Trade extends FileIO implements AppObservable{
      * @param game
      */
     public Trade(Game game, User owner, User borrower) {
-        this.owner = owner;
-        this.borrower = borrower;
+        this.ownerAndroidId = owner.getAndroidID();
+        this.borrowerAndroidId = borrower.getAndroidID();
         borrowerOffers = new ArrayList<Game>();
         ownerOffers = new ArrayList<Game>();
         ownerOffers.add(game);
@@ -99,17 +106,20 @@ public class Trade extends FileIO implements AppObservable{
     }
 
     public String getTradeName() {
-        String tradeName = "Trade " + ownerOffers.get(0).getTitle() + " for " + borrowerOffers.get(0).getTitle();
+        String tradeName = "Trade " + ownerOffers.get(0).getTitle();
+        if(!borrowerOffers.isEmpty()) {
+           tradeName += " for " + borrowerOffers.get(0).getTitle();
+        }
         return tradeName;
     }
 
     /**
      * A getter of the creator of the trade.
      *
-     * @return User who first offered the trade (borrower)
+     * @return User's AndroidId who first offered the trade (borrower)
      */
-    public User getBorrower() {
-        return borrower;
+    public String getBorrower() {
+        return borrowerAndroidId;
     }
 
     /**
@@ -119,7 +129,7 @@ public class Trade extends FileIO implements AppObservable{
      * @param borrower
      */
     public void setBorrower(User borrower) {
-        this.borrower = borrower;
+        this.borrowerAndroidId = borrower.getAndroidID();
         notifyAllObservers();
     }
 
@@ -154,10 +164,10 @@ public class Trade extends FileIO implements AppObservable{
     /**
      * A getter of the receiver of the trade offer
      *
-     * @return the User who gets offered the trade (owner)
+     * @return the User's AndroidId who gets offered the trade (owner)
      */
-    public User getOwner() {
-        return owner;
+    public String getOwner() {
+        return ownerAndroidId;
     }
 
     /**
@@ -167,7 +177,7 @@ public class Trade extends FileIO implements AppObservable{
      * @param owner
      */
     public void setOwner(User owner) {
-        this.owner = owner;
+        this.ownerAndroidId = owner.getAndroidID();
         notifyAllObservers();
     }
 
@@ -237,5 +247,13 @@ public class Trade extends FileIO implements AppObservable{
     public void setStatus(TradeStatus status) {
         this.status = status;
         notifyAllObservers();
+    }
+
+    public String getTradeId() {
+        return tradeId;
+    }
+
+    public void setTradeId(String tradeId) {
+        this.tradeId = tradeId;
     }
 }

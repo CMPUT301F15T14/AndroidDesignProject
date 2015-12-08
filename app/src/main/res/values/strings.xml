@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="all_text">#FFFFFF</color>
+    <color name="item_background_color">#0e97f1</color>
+    <color name="spinner_background_color">#0e97f1</color>
+    <!--<color name="spinner_background_color">#96c8ff</color>-->
+    <!--<color name="spinner_background_color">#da2db7df</color>-->
+
     <string name="app_name">Game Trader</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -47,7 +53,7 @@
     <string name="uploadImage">Upload image</string>
     <string name="gameTitle">Game Title</string>
     <string name="addInfo">Additional Info</string>
-    <string name="home">Home</string>
+    <string name="home">Game Trader</string>
     <string name="myProfile">My Profile</string>
     <string name="myInventory">My Inventory</string>
     <string name="friends">Friends</string>
@@ -68,6 +74,7 @@
     <string name="gameoffer">Offer Game</string>
     <string name="deleteTrade">Delete Trade</string>
     <string name="editTrade">Edit Trade</string>
+    <string name="updates">Friend Updates</string>
 
     <string-array name="platforms_array">
         <item>PC</item>

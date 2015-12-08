@@ -33,7 +33,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(ProfileActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         profileButton = main.getProfileButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -67,7 +67,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(InventoryListActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         inventoryButton = main.getInventoryButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -93,7 +93,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         receiverActivity.finish();
     }
 
-    //test whether the friends button runs properly (brings you to ProfileActivity)
+    //test whether the friends button runs properly. For some reason Travis Ci cannot pass this test. Nullpointer but in android studio is fine.
     public void testFriendsButton() {
         MainActivity main = (MainActivity)getActivity();
 
@@ -101,7 +101,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(FriendsListActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         friendsButton = main.getFriendsButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -115,9 +115,11 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         // Validate that ReceiverActivity is started
         final FriendsListActivity receiverActivity = (FriendsListActivity)
                 receiverActivityMonitor.waitForActivityWithTimeout(1000);
+
         assertNotNull("ReceiverActivity is null", receiverActivity);
         assertEquals("Monitor for ReceiverActivity has not been called",
                 1, receiverActivityMonitor.getHits());
+
         assertEquals("Activity is of wrong type",
                 FriendsListActivity.class, receiverActivity.getClass());
 
@@ -135,7 +137,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(TradeHistoryActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         tradesButton = main.getTradesButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -169,7 +171,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(SearchPageActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         searchButton = main.getSearchButton();
         main.runOnUiThread(new Runnable() {
             public void run() {
@@ -203,7 +205,7 @@ public class MainActivityTest extends ActivityInstrumentationTestCase2 {
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(SettingActivity.class.getName(),
                         null, false);
-
+        getInstrumentation().waitForIdleSync();
         settingsButton = main.getSettingsButton();
         main.runOnUiThread(new Runnable() {
             public void run() {

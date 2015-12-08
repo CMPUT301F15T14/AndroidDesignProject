@@ -1,19 +1,3 @@
-package ca.ualberta.t14.gametrader;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-
 /*
  * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
  *
@@ -31,11 +15,28 @@ import com.google.gson.Gson;
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
+package ca.ualberta.t14.gametrader;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
+
+import java.io.FileNotFoundException;
 
 public class InventoryItemActivity extends Activity implements AppObserver {
 
     Game game;
-    InventoryController inventorycontroller;
+    InventoryItemController inventoryItemController;
     User ownerProfile;
 
     public String getGameTitle() {
@@ -79,12 +80,16 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
         game.addObserver(this);
 
+        PictureNetworkerSingleton.getInstance().getPicNetMangager().addObserver(this);
+
         ownerProfile = (User) ObjParseSingleton.getInstance().popObject("gameOwner");
         if(ownerProfile == null) {
-            throw new RuntimeException("Received null User for game owner.");
+            System.err.print("InventoryItemActivity was NOT passed a user, somehow lost mainUser!");
+            finish();
+            return;
         }
 
-        inventorycontroller = new InventoryController(ownerProfile.getInventory());
+        inventoryItemController = new InventoryItemController(ownerProfile.getInventory());
 
         gameTitle = (TextView) findViewById(R.id.gameInfoTitle);
         platform = (TextView) findViewById(R.id.gameInfoConsole);
@@ -103,58 +108,68 @@ public class InventoryItemActivity extends Activity implements AppObserver {
         address.setText(ownerProfile.getAddress());
         additionalInfo.setText(game.getAdditionalInfo());
         // Important, have to load bitmap from it's json first! Because bitmap is volatile.
-        String imageJson = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!imageJson.isEmpty()) {
-            game.setPictureFromJson(imageJson);
-            imageButton.setImageBitmap(game.getPicture());
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        String imageJson  = new String();
+        try {
+            imageJson =  PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            PictureNetworkerSingleton.getInstance().getPicNetMangager().getLocalCopyOfImageIds().remove(game.getFirstPictureId());
         }
-        Button tradeItem  = (Button)findViewById(R.id.tradeButton);
-        tradeItem.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
 
-                ObjParseSingleton.getInstance().addObject("tradegame", game);
+        Boolean isInTrade = ObjParseSingleton.getInstance().keywordExists("isInTrade");
+        Button tradeItem = (Button) findViewById(R.id.tradeButton);
+        Button offerItem = (Button) findViewById(R.id.offerMyItemButton);
 
-                Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
+        if(UserSingleton.getInstance().getUser().getInventory().contains(game) && isInTrade) {
+            // Show offerItem ONLY if game belongs to device user AND currently in a trade session.
+            offerItem.setVisibility(View.VISIBLE);
+            offerItem.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    Intent myIntent = new Intent(InventoryItemActivity.this, CreateTradeActivity.class);
+                    myIntent.putExtra("offeredItem", gson.toJson(game));
 
-                startActivity(myIntent);
+                    ObjParseSingleton.getInstance().popObject("isInTrade");
+                    setResult(offerItemSelected, myIntent);
+                    finish();
 
-//                myIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                startActivityForResult(myIntent, 1);
+                    //TODO: add item back if trade is cancelled
+                }
+            });
+            tradeItem.setVisibility(View.INVISIBLE);
+        } else if (ownerProfile != UserSingleton.getInstance().getUser()){
+            // Trade item ONLY if the game currently viewing is not the current device user.
+            tradeItem.setVisibility(View.VISIBLE);
+            tradeItem.setOnClickListener(new Button.OnClickListener() {
+                public void onClick(View v) {
+                    ObjParseSingleton.getInstance().addObject("tradegame", game);
+                    ObjParseSingleton.getInstance().addObject("tradeGameOwner", ownerProfile);
 
-            }
-        });
+                    Intent myIntent = new Intent(InventoryItemActivity.this, CreateTradeActivity.class);
 
-        Button offerItem  = (Button)findViewById(R.id.offerMyItemButton);
-        offerItem.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-
-
-                Intent myIntent = new Intent(InventoryItemActivity.this, EditTradeActivity.class);
-                myIntent.putExtra("offeredItem",gson.toJson(game));
-
-                setResult(offerItemSelected, myIntent);
-                finish();
-
-                //TODO: add item back if trade is cancelled
-            }
-        });
+                    startActivity(myIntent);
+                }
+            });
+            offerItem.setVisibility(View.INVISIBLE);
+        } else {
+            // not in a trading or friendInventory session at all.
+            tradeItem.setVisibility(View.INVISIBLE);
+            offerItem.setVisibility(View.INVISIBLE);
+        }
 
         editGame = (Button)findViewById(R.id.buttonEditItem);
-        if (!inventorycontroller.clonable(ownerProfile)){
+        if (!inventoryItemController.clonable(ownerProfile)){
             editGame.setText("Edit");
         }else{
             editGame.setText("Clone");
         }
         editGame.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                if (!inventorycontroller.clonable(ownerProfile)){
+                if (!inventoryItemController.clonable(ownerProfile)){
                     ObjParseSingleton.getInstance().addObject("game", game);
                     Intent myIntent = new Intent(InventoryItemActivity.this, EditInventoryItemActivity.class);
                     startActivityForResult(myIntent, 1);
                 }else{
-                    inventorycontroller.clone(game,getApplicationContext());
+                    inventoryItemController.clone(game,getApplicationContext());
                     Toast.makeText(InventoryItemActivity.this, "Game has been cloned to your inventory!", Toast.LENGTH_SHORT).show();
 
                 };
@@ -169,7 +184,12 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             }
         });
 
-
+        inventoryItemController.tryDownloadImages(game, getApplicationContext());
+        if(!imageJson.isEmpty()) {
+            inventoryItemController.setImageToImageButtons(game, imageButton, this);
+        } else {
+            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
+        }
     }
 
     @Override
@@ -179,28 +199,6 @@ public class InventoryItemActivity extends Activity implements AppObserver {
             finish();
         }
 
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // todo: these should be observers shouldnt they?
-
-        // When coming back to the activity and the data were updated.
-        gameTitle.setText(game.getTitle());
-        platform.setText(game.getPlatform().toString());
-        condition.setText(game.getCondition().toString());
-        owner.setText(ownerProfile.getUserName());
-        phone.setText(ownerProfile.getPhoneNumber());
-        address.setText(ownerProfile.getAddress());
-        additionalInfo.setText(game.getAdditionalInfo());
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!jsonStr.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
-        }
     }
 
     @Override
@@ -233,12 +231,14 @@ public class InventoryItemActivity extends Activity implements AppObserver {
 
 
     public void appNotify(AppObservable observable) {
-        String jsonStr = PictureManager.loadImageJsonFromJsonFile(game.getFirstPictureId(), getApplicationContext());
-        if(!jsonStr.isEmpty()) {
-            imageButton.setImageBitmap(PictureManager.getBitmapFromJson(jsonStr));
-        } else {
-            imageButton.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.cd_empty));
-        }
+        inventoryItemController.setImageToImageButtons(game, imageButton, this);
+        gameTitle.setText(game.getTitle());
+        platform.setText(game.getPlatform().toString());
+        condition.setText(game.getCondition().toString());
+        owner.setText(ownerProfile.getUserName());
+        phone.setText(ownerProfile.getPhoneNumber());
+        address.setText(ownerProfile.getAddress());
+        additionalInfo.setText(game.getAdditionalInfo());
     }
 
 }

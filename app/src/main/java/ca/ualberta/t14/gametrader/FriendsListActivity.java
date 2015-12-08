@@ -1,8 +1,25 @@
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,19 +27,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Observable;
 
 
 public class FriendsListActivity extends Activity implements AppObserver {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> friendsArrayList = new ArrayList<String>();
-
+    private Button AddNewFriend;
     private ListView friendsListView;
 
-    private FriendsListController friendsListController = new FriendsListController();
+    //private FriendsListController friendsListController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +48,19 @@ public class FriendsListActivity extends Activity implements AppObserver {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
 
-        friendsListController.initButonOnClickListeners(this, getApplicationContext());
+
+        AddNewFriend=(Button)findViewById(R.id.addFriendButton);
+        AddNewFriend.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View arg0){
+                Intent myIntent = new Intent(FriendsListActivity.this, AddNewFriendActivity.class);
+                startActivity(myIntent);
+            }
+        });
 
         friendsListView = (ListView) findViewById(R.id.friendsList);
 
+        adapter = new ArrayAdapter<String>(this, R.layout.list_item, friendsArrayList);
+        friendsListView.setAdapter(adapter);
 
         friendsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
@@ -43,7 +69,7 @@ public class FriendsListActivity extends Activity implements AppObserver {
                 // assuming the adapter view order is same as the array game list order
                 User u = UserSingleton.getInstance().getUser().getFriends().GetFriends().get(position);
 
-                ObjParseSingleton.getInstance().addObject("userProfile", u); // TODO: pass the right user, not just phone owner!
+                ObjParseSingleton.getInstance().addObject("userProfile", u);
                 Intent myIntent = new Intent(FriendsListActivity.this, ProfileActivity.class);
 
                 startActivityForResult(myIntent, 1);
@@ -51,17 +77,23 @@ public class FriendsListActivity extends Activity implements AppObserver {
             }
         });
 
-    }
+        friendsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> arg0, View view, int position, long id) {
 
-    @Override
-    protected void onStart() {
-        // TODO Auto-generated method stub
-        super.onStart();
-        adapter = new ArrayAdapter<String>(this, R.layout.list_item, friendsArrayList);
-        friendsListView.setAdapter(adapter);
+                // assuming the adapter view order is same as the array game list order
+                User u = UserSingleton.getInstance().getUser().getFriends().GetFriends().get(position);
+
+                FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
+                fc.RemoveFriend(u);
+
+                friendsArrayList.remove(position);
+                adapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
 
         friendsArrayList.clear();
-
         for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
             friendsArrayList.add(friend.getUserName());
             Log.d("friend", "" + friendsArrayList.size());
@@ -69,7 +101,6 @@ public class FriendsListActivity extends Activity implements AppObserver {
         }
         adapter.notifyDataSetChanged();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -94,15 +125,29 @@ public class FriendsListActivity extends Activity implements AppObserver {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        friendsArrayList.clear();
+        for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+            friendsArrayList.add(friend.getUserName());
+            Log.d("friend", "" + friendsArrayList.size());
+
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     public void appNotify(AppObservable observable) {
         friendsArrayList.clear();
 
         for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
             friendsArrayList.add(friend.getUserName());
         }
-        adapter.notifyDataSetChanged();
-
-        FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
-        //fc.WriteFriends(getApplicationContext());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 }

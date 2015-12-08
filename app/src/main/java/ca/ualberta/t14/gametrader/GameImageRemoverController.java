@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
@@ -6,7 +24,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
-import android.text.InputFilter;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -15,11 +32,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by satyabra on 11/29/15.
+ * This class is responsible for the GameImageRemover view.
+ * It handles all the buttons of that activity.
+ * @author Ryan Satyabrata
  */
 public class GameImageRemoverController {
     private Context context;
@@ -35,6 +56,15 @@ public class GameImageRemoverController {
     private HashMap<Integer, String> checkBoxAndImageId;
     private HashMap<Integer, Uri> checkBoxAndUri;
 
+    /**
+     * The constructor for this class. It needs the list of all current imageIDs that exist in the game
+     * and a list of all potential new images that will be added to the game, the uriIDs.
+     * It needs to know the activity's context and the activity itself.
+     * @param imageIds
+     * @param uriIds
+     * @param context
+     * @param activity
+     */
     public GameImageRemoverController(ArrayList<String> imageIds, ArrayList<Uri> uriIds, Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
@@ -64,7 +94,14 @@ public class GameImageRemoverController {
 
     private void createTheContent() {
         for(String each : imageIdList) {
-            String imgJson = PictureManager.loadImageJsonFromJsonFile(each, context);
+            String imgJson = new String();
+            try {
+                imgJson = PictureManager.loadImageJsonFromJsonFile(each, context);
+
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+
             Bitmap showImage = PictureManager.getBitmapFromJson(imgJson);
 
             addToViews(showImage, checkboxIds);
@@ -116,6 +153,9 @@ public class GameImageRemoverController {
         imagesLayout.addView(entry, -1);
     }
 
+    /**
+     * This method will set all the onclick listeners for the activity GameImageRemover.
+     */
     public void setOnClickButtons() {
         Button btnUncheck = (Button) activity.findViewById(R.id.ImageRemoverCheckAll);
         btnUncheck.setOnClickListener(new Button.OnClickListener() {

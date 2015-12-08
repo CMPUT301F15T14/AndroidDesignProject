@@ -1,3 +1,21 @@
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
@@ -21,11 +39,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
- * Created by satyabra on 11/27/15.
+ * this is a class that handles input for the FriendsListActivity
+ * @author Ryan Satyabrata
  */
 public class FriendsListController {
-    final FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
-
+    FriendsController fc;
+    Context context;
     private final int EDIT_TEXT_ID = 1337;
 
     private Button addFriend;
@@ -41,11 +60,13 @@ public class FriendsListController {
     // 2 states, if false, no input text and clicking it will open a text box. True then clicking it will submit that text and remove that editText.
     private Boolean addFriendButtonState;
 
-    FriendsListController() {
+    FriendsListController(Context context) {
         addFriendButtonState = Boolean.FALSE;
+        this.context = context;
+        fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), context);
     }
 
-    void initButonOnClickListeners(Activity activity, final Context context) {
+    /*void initButonOnClickListeners(Activity activity) {
 
         final Context c = context;
         final Activity a = activity;
@@ -92,6 +113,6 @@ public class FriendsListController {
                 }
             }
         });
-    }
+    }*/
 
 }

@@ -1,5 +1,22 @@
-package ca.ualberta.t14.gametrader;
+/*
+ * Copyright (C) 2015  Aaron Arnason, Tianyu Hu, Michael Xi, Ryan Satyabrata, Joel Johnston, Suzanne Boulet, Ng Yuen Tung(Brigitte)
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
+package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -20,8 +37,8 @@ public class MainActivity extends Activity {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> updatesList = new ArrayList<String>();
 
-    MainMenuController mainMenuController = new MainMenuController();
 
+    MainMenuController mainMenuController;
     private Button profileButton;
 
     public Button getProfileButton() {
@@ -58,6 +75,8 @@ public class MainActivity extends Activity {
         return settingsButton;
     }
 
+    private Button updatesButton;
+
     private ListView updates;
 
     Handler hand = new Handler();
@@ -68,22 +87,21 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        mainMenuController.preLoadAllSingletons(getApplicationContext());
+        mainMenuController = new MainMenuController(getApplicationContext());
+
+        mainMenuController.preLoadAllSingletons(getApplicationContext(), this);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        hand.postDelayed(run, 60000);
-        /**
-         * Check Internet status
-         * Source code is from http://www.androidhive.info/2012/07/android-detect-internet-connection-status/
-         * */
+        // remove a possible existing instance of run first.
+        hand.removeCallbacks(run);
+        // first run should be early
+        hand.post(run);
 
         // creating network connection detector instance
         networkConnectivity = new NetworkConnectivity(getApplicationContext());
         isInternetPresent = networkConnectivity.isConnectingToInternet();
-
-
 
         profileButton = (Button) findViewById(R.id.myProfile);
         profileButton.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +127,9 @@ public class MainActivity extends Activity {
         friendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //check friends updates
+                if(isInternetPresent)
+                    new checkForUpdates().execute("not much");
                 Intent intent = new Intent(MainActivity.this, FriendsListActivity.class);
                 startActivity(intent);
             }
@@ -141,14 +162,23 @@ public class MainActivity extends Activity {
             }
         });
 
+        updatesButton = (Button) findViewById(R.id.updates);
+        updatesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, FriendUpdatesActivity.class);
+                startActivity(intent);
+            }
+        });
+
         updates = (ListView) findViewById(R.id.friendUpdates);
 
-        new checkForUpdates().execute("not much");
+        if(isInternetPresent)
+            new checkForUpdates().execute("GetFriendsUpdates");
     }
 
     @Override
     protected void onStart() {
-        // TODO Auto-generated method stub
         super.onStart();
         adapter = new ArrayAdapter<String>(this, R.layout.list_item, updatesList);
         updates.setAdapter(adapter);
@@ -178,9 +208,9 @@ public class MainActivity extends Activity {
     }
 
 
-    private class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
+    public class checkForUpdates extends AsyncTask<String, Integer, ArrayList<String>> {
         protected ArrayList<String> doInBackground(String... params) {
-            FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends());
+            FriendsController fc = new FriendsController(UserSingleton.getInstance().getUser().getFriends(), getApplicationContext());
             fc.UpdateFriends();
 
             ArrayList<String> foundUpdates = new ArrayList<String>();
@@ -205,6 +235,12 @@ public class MainActivity extends Activity {
         public void run() {
            // get Internet status
             isInternetPresent = networkConnectivity.isConnectingToInternet();
+            ObjParseSingleton.getInstance().addObject(NetworkConnectivity.IS_NETWORK_ONLINE,isInternetPresent);
+
+            if(isInternetPresent) {
+                new checkForUpdates().execute("GetFriendsUpdates");
+                mainMenuController.updateChecker();
+            }
             hand.postDelayed(run, 60000);
         }
     };
