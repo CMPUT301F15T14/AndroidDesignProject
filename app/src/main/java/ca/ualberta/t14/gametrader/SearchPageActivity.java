@@ -88,6 +88,31 @@ public class SearchPageActivity extends Activity {
             }
         });
 
+        SearchButton = (Button) findViewById(R.id.searchButton);
+        SearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchString = searchField.getText().toString();
+                Game.Platform platform = Game.Platform.values()[gameConsole.getSelectedItemPosition()];
+
+                results.clear();
+                gamesFound.clear();
+                gamesUsers.clear();
+
+                for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()) {
+                    ArrayList<Game> searchResults = new ArrayList<Game>();
+                    searchResults.addAll(friend.getInventory().Search(searchString, platform));
+                    for(Game result : searchResults) {
+                        results.add(result.getTitle() + " : " + friend.getUserName());
+                        gamesFound.add(result);
+                        gamesUsers.add(friend);
+                    }
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         gamesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             // Navigating to InventoryItemActivity.
             public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
