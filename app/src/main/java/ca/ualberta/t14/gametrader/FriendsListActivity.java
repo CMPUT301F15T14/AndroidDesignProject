@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -37,7 +38,9 @@ public class FriendsListActivity extends Activity implements AppObserver {
     private ArrayAdapter<String> adapter;
     private ArrayList<String> friendsArrayList = new ArrayList<String>();
     private Button AddNewFriend;
+    private Button searchFriend;
     private ListView friendsListView;
+    private EditText searchString;
 
     //private FriendsListController friendsListController;
 
@@ -100,6 +103,31 @@ public class FriendsListActivity extends Activity implements AppObserver {
 
         }
         adapter.notifyDataSetChanged();
+
+        searchString=(EditText)findViewById(R.id.searchKey);
+        searchFriend=(Button)findViewById(R.id.searchButton);
+        searchFriend.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View view){
+                String username=searchString.getText().toString();
+                if (!username.isEmpty()){
+                    adapter.clear();
+                    for (User existingFriend: UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+                        if (existingFriend.getUserName().contentEquals(username)){
+                            adapter.add(existingFriend.getUserName().toString());
+                        }
+                    }
+                    adapter.notifyDataSetChanged();
+                }else{
+                    adapter.clear();
+                    for(User friend : UserSingleton.getInstance().getUser().getFriends().GetFriends()){
+                        friendsArrayList.add(friend.getUserName());
+                        Log.d("friend", "" + friendsArrayList.size());
+
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     @Override
