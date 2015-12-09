@@ -210,10 +210,18 @@ public class User extends FileIO implements Serializable, AppObservable, AppObse
         this.notifyAllObservers();
     }
 
+    /**
+     * Check if an input User object is the current user of the app or not.
+     * @param user
+     */
     public boolean isUser(User user){
         return UserSingleton.getInstance().getUser().getUserName() == user.getUserName();
     }
 
+    /**
+     * Check if an input User object is in the current user's friends list.
+     * @param user
+     */
     public boolean isFriend(User user){
         String userid=user.getAndroidID();
         String username=user.getUserName();
