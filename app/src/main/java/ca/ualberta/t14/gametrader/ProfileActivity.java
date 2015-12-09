@@ -20,6 +20,7 @@ public class ProfileActivity extends Activity {
     TextView phoneView;
     TextView emailView;
     TextView addressView;
+    TextView profileText;
     private AlertDialog removeDialogue;
 
     public AlertDialog getRemoveDialogue() {
@@ -50,6 +51,7 @@ public class ProfileActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         friendsController=new FriendsController(UserSingleton.getInstance().getUser().getFriends(),getApplicationContext());
+        profileText= (TextView) findViewById(R.id.profileText);
         addressView = (TextView) findViewById(R.id.addressDisplay);
         emailView = (TextView) findViewById(R.id.emailDisplay);
         phoneView = (TextView) findViewById(R.id.phoneDisplay);
@@ -69,7 +71,9 @@ public class ProfileActivity extends Activity {
         //Toast.makeText(this, mainUser.getAddress(), Toast.LENGTH_SHORT).show();
 
         editprof = (Button) findViewById(R.id.editProfile);
+
         if (user.isUser(user)){
+            profileText.setText("My Profile");
             editprof.setText("Edit");
             editprof.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -80,6 +84,7 @@ public class ProfileActivity extends Activity {
                 }
             });
         }else if (user.isFriend(user)){
+            profileText.setText(user.getUserName()+"'s Profile");
             editprof.setText("Remove");
             editprof.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,12 +115,13 @@ public class ProfileActivity extends Activity {
                 }
             });
         }else{
+            profileText.setText(user.getUserName()+"'s Profile");
             editprof.setText("Add Friend");
             editprof.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     friendsController.AddFriend(user.getUserName());
-                    Toast.makeText(ProfileActivity.this, user.getUserName()+" has been added from your friend list!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProfileActivity.this, user.getUserName()+" has been added to your friend list!", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
