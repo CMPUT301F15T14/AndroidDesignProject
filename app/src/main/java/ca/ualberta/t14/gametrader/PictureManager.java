@@ -44,20 +44,34 @@ public class PictureManager extends FileIO {
 
     private Manager imgMng;
 
+    /**
+     * Constructor for the PictureManager class
+     */
     public PictureManager() {
         imgMng = new Manager();
     }
 
+    /**
+     * Saves a given base64 encoded image into a file with a unique filename
+     * that becomes that image's image ID.
+     * @param imageJsonString The base64 encoded image as a string
+     * @param userToGetInstallationId The user's android ID
+     * @param context
+     * @return the image ID of that image, which is the file name of the saved base64 image as well.
+     */
     public String addImageToJsonFile(String imageJsonString, User userToGetInstallationId, Context context) {
         String id = imgMng.addItemToTrack(userToGetInstallationId, "img");
         // Save file here as IO.
-        // TODO: put in the elastic search to-be-updated.
         saveJsonWithObject(imageJsonString, id, context);
 
         return id;
     }
 
-    // @return a string containing the byteArray of the bitmap encoded as a string in Base64.
+    /**
+     * This static method retrieves the base64 encoded image as a string from the
+     * saved base64 encoded image that is stored on the user's device in the application folder.
+     * @return a string containing the byteArray of the bitmap encoded as a string in Base64.
+     */
     public static String loadImageJsonFromJsonFile(String fileName, Context context) throws FileNotFoundException {
         String imageJson = "";
         // Load file here as IO.
@@ -69,6 +83,12 @@ public class PictureManager extends FileIO {
         return imageJson;
     }
 
+    /**
+     * This static method converts a given Bitmap image into a base64 encoded string representation
+     * of that image.
+     * @param image
+     * @return the base64 encoded string.
+     */
     public static String getStringFromBitmap(Bitmap image) {
         // Make the Bitmap JSON-able (Bitmap is not JSON-able) Taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
         ByteArrayOutputStream byteArrayBitmapStream = null;
@@ -98,6 +118,11 @@ public class PictureManager extends FileIO {
         return null;
     }
 
+    /**
+     * This static method estimates the Base64 encoded file size of the given Bitmap.
+     * @param image the Bitmap image to estimate the file size.
+     * @return the estimated file size.
+     */
     public static Long getImageFileSize(Bitmap image) {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, PictureManager.COMPRESSION_QUALITY, byteArrayBitmapStream);
@@ -109,6 +134,11 @@ public class PictureManager extends FileIO {
         return size;
     }
 
+    /**
+     * This static method decodes a given Base64 image to android's Bitmap format.
+     * @param jsonBitmap base64 to decode
+     * @return the Android's Bitmap
+     */
     public static Bitmap getBitmapFromJson(String jsonBitmap) {
         //taken from http://mobile.cs.fsu.edu/converting-images-to-json-objects/
         byte[] decodedString = Base64.decode(jsonBitmap, Base64.DEFAULT);
@@ -119,6 +149,12 @@ public class PictureManager extends FileIO {
         return null;
     }
 
+    /**
+     * This static method resolves the Uri given and returns the Bitmap that the Uri points to.
+     * @param uri
+     * @param contentResolver
+     * @return Android's bitmap image from that Uri.
+     */
     public static Bitmap resolveUri(Uri uri, ContentResolver contentResolver){
         Bitmap selectedImage = null;
         try {
@@ -134,6 +170,12 @@ public class PictureManager extends FileIO {
         return selectedImage;
     }
 
+    /**
+     * This static method takes a Bitmap and resizes it until it's estimated filesize is smaller
+     * than the PictureManager's MAXSIZE value. That smaller image will then be returned.
+     * @param image
+     * @return The resized Bitmap image.
+     */
     public static Bitmap makeImageSmaller(Bitmap image) {
         Bitmap img = image;
         if(getImageFileSize(img) < MAXSIZE) {

@@ -23,7 +23,10 @@ import android.content.Context;
 import java.util.ArrayList;
 
 /**
- * Created by Ryan on 2015-11-30.
+ * TradeNetworker class handles the Trades that are to be posted online and to be fetched.
+ * It like an offline storage for all the trades online, and keeps track of which trades
+ * to be removed or added from this user's device.
+ * @author Ryan Satyabrata
  */
 public class TradeNetworker extends FileIO implements AppObservable, NetworkerCommander {
     public static final String TradeNetworkId = "TradeManagerAndNetworker";
@@ -41,8 +44,9 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
     public static final int PUSH_TRADES = 124;
     public static final int PUSH_TRADES_TO_DELETE = 126;
 
-    // update all stuff first, then pull.
-
+    /**
+     * Constructor for TradeNetworker
+     */
     public TradeNetworker() {
         tradeIdToUpload = new ArrayList<Trade>();
         tradeIdToRemove = new ArrayList<Trade>();
@@ -51,14 +55,29 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         manager = new Manager();
     }
 
+    /**
+     * To set the application context of the TradeNetworker
+     * @param context
+     */
     public  void setContext(Context context) {
         this.context = context;
     }
 
+    /**
+     * retrieves the list of all trades that are waiting to be uploaded.
+     * @return
+     */
     public ArrayList<Trade> getTradeToUpload() {
         return tradeIdToUpload;
     }
 
+    /**
+     * Retrieves all the trades from online only if the parameter updateLocalList is True, and the
+     * device has internet access. Otherwise it just acts a getter for the local items that
+     * it stored from the previous fetch of the elastic search server.
+     * @param updateLocalList
+     * @return
+     */
     public ArrayList<Trade> getAllTradesOnNet(Boolean updateLocalList) {
         if(allTradesOnNet == null) {
             allTradesOnNet = new ArrayList<Trade>();
@@ -72,16 +91,29 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         return allTradesOnNet;
     }
 
+    /**
+     * Sets the local representation of all trades on elastic search server to a given array list.
+     * @param allTradesGot
+     */
     public void setAllTradesOnNet(ArrayList<Trade> allTradesGot) {
         this.allTradesOnNet = allTradesGot;
     }
 
+    /**
+     * Retrieves the local representation of all trades on the elastic search server.
+     * @return
+     */
     public ArrayList<Trade> getAllTradesOnNetLocalArray() {
         if(allTradesOnNet == null) {
             allTradesOnNet = new ArrayList<Trade>();
         }return allTradesOnNet;
     }
 
+    /**
+     * Adds a given trade to the to-upload list that will eventually be uploaded to the elastic search server.
+     * @param trade
+     * @param context
+     */
     public void addTradeToUploadList(Trade trade, Context context) {
 
         replaceSame(trade, tradeIdToUpload);
@@ -94,10 +126,20 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
             notifyAllListeners(PUSH_TRADES);
     }
 
+    /**
+     * Retrieve all the trades that are waiting to be removed from the server.
+     * @return
+     */
     public ArrayList<Trade> getTradeToRemove() {
         return tradeIdToRemove;
     }
 
+    /**
+     * Adds a given trade to the to-remove list that eventually causes the trade to be removed from
+     * the elastic search server.
+     * @param trade
+     * @param context
+     */
     public void addTradeToRemoveList(Trade trade, Context context) {
         replaceSame(trade, tradeIdToRemove);
         this.tradeIdToRemove.add(trade);
@@ -122,10 +164,17 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         }
     }
 
+    /**
+     * Saves the TradeNetworker as a json into a presistent file on the user's android device.
+     */
     public void saveTradeNetworker() {
         saveJson(TradeNetworkId, context);
     }
 
+    /**
+     * Enables to subscribe to the Networker class.
+     * @param listener
+     */
     public void addListener(NetworkerListener listener) {
         if(listeners == null) {
             listeners = new ArrayList<NetworkerListener>();
@@ -133,12 +182,22 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         listeners.add(listener);
     }
 
+    /**
+     * Enables removing listeners from the Networker class.
+     * @param listener
+     */
     public void deletelisteners(NetworkerListener listener) {
         if(listeners != null) {
             listeners.remove(listener);
         }
     }
 
+    /**
+     * A method to generate a unique tradeID for a trade using the creator's Android_ID.
+     * It does not assign this generated tradeID to the trade.
+     * @param tradeCreator
+     * @return the string of the tradeID
+     */
     public String getTradeId(User tradeCreator) {
         // stamp the trade with an id.
         return manager.addItemToTrack(tradeCreator, "trd");
@@ -156,6 +215,9 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
         }
     }
 
+    /**
+     * Called to notify all observers that the model has been updated.
+     */
     public void notifyAllObservers() {
         if(observers != null) {
             for(AppObserver each : observers) {
@@ -165,7 +227,8 @@ public class TradeNetworker extends FileIO implements AppObservable, NetworkerCo
     }
 
     /**
-     * Called to notify all observers that the model has been updated.
+     * The method that calls all listeners/subscribers and give them a command code.
+     * @param commandCode
      */
     public void notifyAllListeners(int commandCode) {
         if(listeners != null) {
