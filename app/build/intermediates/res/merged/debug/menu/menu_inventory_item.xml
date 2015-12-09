@@ -1,7 +1,0 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="ca.ualberta.t14.gametrader.InventoryItemActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" android:showAsAction="never" />
-</menu>
-<!-- From: file:/cshome/satyabra/Cmput%20301/GroupProject/AndroidDesignProject/app/src/main/res/menu/menu_inventory_item.xml -->
