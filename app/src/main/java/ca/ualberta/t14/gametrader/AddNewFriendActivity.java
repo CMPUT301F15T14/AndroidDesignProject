@@ -34,7 +34,6 @@ public class AddNewFriendActivity extends Activity implements AppObserver{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //UserSingleton.getInstance().getUser().getFriends().addObserver(this);
         network=new NetworkController(getApplicationContext());
         network.addObserver(this);
         super.onCreate(savedInstanceState);

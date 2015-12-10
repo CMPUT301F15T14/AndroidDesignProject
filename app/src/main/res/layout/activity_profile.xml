@@ -20,7 +20,7 @@
         android:textStyle="bold" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:text="Edit Profile"
         android:textColor="@color/all_text"
