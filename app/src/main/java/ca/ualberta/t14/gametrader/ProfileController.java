@@ -18,9 +18,11 @@
 package ca.ualberta.t14.gametrader;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Observer;
 
 /**
  * Created by jjohnston on 10/30/15.
@@ -29,16 +31,38 @@ import java.util.ArrayList;
  *  such as contact info).
  */
 
-public class ProfileController {
+public class ProfileController implements AppObserver, AppObservable {
     public static String MainUser = "MainUserProfile";
     private static Context context;
+    private NetworkController network;
+    private ArrayList<User> searchResults;
+    private Boolean canAdd;
 
     public ProfileController(User model, Context context) {
         this.context = context;
         this.model = model;
+        network=new NetworkController(context);
+        canAdd = Boolean.FALSE;
+        observers = new ArrayList<AppObserver>();
     }
 
+
+    private ArrayList<AppObserver> observers;
+
+    public void addObserver(AppObserver observer){ observers.add(observer);}
+
+    public void deleteObserver(AppObserver observer){observers.remove(observer);}
+
+    public void notifyAllObservers(){
+        for(AppObserver o : observers) {
+            o.appNotify(this);
+        }
+    }
+
+
+
     private User model;
+
 
     /**
      * Saves any changes to the profile information. Used by EditProfileActivity upon clicking save.
@@ -54,5 +78,71 @@ public class ProfileController {
         UserSingleton.getInstance().getUser().setPhoneNumber(phoneNumber);
         UserSingleton.getInstance().getUser().saveJson(MainUser, this.context);
         UserSingleton.getInstance().getUser().notifyAllObservers();
+    }
+
+    public boolean profileExist(String inputName){
+        searchResults = new ArrayList<User>();
+        new searchFriends().execute(inputName);
+        if (!searchResults.isEmpty()){
+            return true;
+        }else {
+            System.out.print("Checking if profile exists\n");
+            return false;
+        }
+    }
+
+    public Boolean getcanAdd() {
+        return canAdd;
+    }
+
+
+    public void appNotify(AppObservable observable) {
+        this.notifyAllObservers();
+    }
+
+    private class searchFriends extends AsyncTask<String, Integer, ArrayList<User>> implements AppObservable {
+
+        private ArrayList<AppObserver> obs;
+
+        searchFriends() {
+            obs = new ArrayList<AppObserver>();
+        }
+
+        public void addObserver(AppObserver observer){ obs.add(observer);}
+
+        public void deleteObserver(AppObserver observer){obs.remove(observer);}
+
+        public void notifyAllObservers(){
+            for(AppObserver o : obs) {
+                o.appNotify(this);
+            }
+        }
+
+
+        protected ArrayList<User> doInBackground(String... params) {
+
+            String userName = params[0];
+            ProfileController pc = ProfileController.this;
+            addObserver(pc);
+
+            try{
+                ArrayList<User> results = network.searchByUserName(userName);
+                return results;
+            }
+            catch(IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(ArrayList<User> result) {
+            super.onPostExecute(result);
+            canAdd = result.isEmpty();
+
+            /*for (User resultname : searchResults) {
+                results.add(resultname.getUserName());
+            }*/
+        }
     }
 }
