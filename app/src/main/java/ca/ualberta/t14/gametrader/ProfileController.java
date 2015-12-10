@@ -20,6 +20,8 @@ package ca.ualberta.t14.gametrader;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import org.apache.http.impl.conn.SingleClientConnManager;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Observer;
@@ -58,8 +60,6 @@ public class ProfileController implements AppObserver, AppObservable {
             o.appNotify(this);
         }
     }
-
-
 
     private User model;
 
@@ -120,29 +120,36 @@ public class ProfileController implements AppObserver, AppObservable {
 
 
         protected ArrayList<User> doInBackground(String... params) {
-
             String userName = params[0];
             ProfileController pc = ProfileController.this;
             addObserver(pc);
 
+            ArrayList<User> results = new ArrayList<User>();
             try{
-                ArrayList<User> results = network.searchByUserName(userName);
-                return results;
+                results = network.searchByUserName(userName);
+                User toRemove = null;
+                for(User each : results) {
+                    // User is not changing his profile name, self don't count
+                    User deviceUser = UserSingleton.getInstance().getUser();
+                    if(each.getAndroidID().compareTo(deviceUser.getAndroidID()) == 0) {
+                        toRemove = each;
+                        break;
+                    }
+                }
+                if(toRemove != null)
+                    results.remove(toRemove);
             }
             catch(IOException e) {
                 e.printStackTrace();
             }
 
-            return null;
+            return results;
         }
 
         protected void onPostExecute(ArrayList<User> result) {
             super.onPostExecute(result);
             canAdd = result.isEmpty();
-
-            /*for (User resultname : searchResults) {
-                results.add(resultname.getUserName());
-            }*/
+            notifyAllObservers();
         }
     }
 }

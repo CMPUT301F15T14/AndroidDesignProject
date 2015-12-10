@@ -108,15 +108,13 @@ public class EditProfileActivity extends Activity implements AppObserver{
         saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                if( ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
-                        && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE))){
-
-                    profileController.profileExist(profileText.getText().toString());
-                } else {
-                    appNotify(profileController);
-                }
-
-
+            if( ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                    && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE))){
+                profileController.profileExist(profileText.getText().toString());
+            } else {
+                // offline saves everything, doesn't handle duplicates.
+                saveProfile();
+            }
         }
         });
 
@@ -130,35 +128,35 @@ public class EditProfileActivity extends Activity implements AppObserver{
         profileText.requestFocus();
     }
 
+    private void saveProfile() {
+        profileController.SaveProfileEdits(profileText.getText().toString(),
+                emailText.getText().toString(),
+                addressText.getText().toString(),
+                phoneText.getText().toString());
+
+        finish();
+
+        Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public void appNotify(AppObservable observable) {
+        if (profileController.getcanAdd()){
+            saveProfile();
+        }else {
+            Dialog = new AlertDialog.Builder(EditProfileActivity.this).create();
+            Dialog.setTitle("Warning");
+            Dialog.setMessage("Username exists on server!");
+            Dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Dismiss", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
 
-
-            if (profileController.getcanAdd()){
-                profileController.SaveProfileEdits(profileText.getText().toString(),
-                        emailText.getText().toString(),
-                        addressText.getText().toString(),
-                        phoneText.getText().toString());
-
-                finish();
-
-                Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
-            }else {
-                Dialog = new AlertDialog.Builder(EditProfileActivity.this).create();
-                Dialog.setTitle("Warning");
-                Dialog.setMessage("Username exists on server!");
-                Dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Dismiss", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                dialog.dismiss();
-                            }
+                            dialog.dismiss();
                         }
-                );
+                    }
+            );
 
-                Dialog.show();
-            }
-
+            Dialog.show();
+        }
     }
 
     @Override
