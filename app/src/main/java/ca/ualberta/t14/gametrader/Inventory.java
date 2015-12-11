@@ -77,11 +77,6 @@ public class Inventory implements AppObservable {
     }
 
     /**
-     * Set Owner as User.
-     * @param owner
-     */
-
-    /**
      * Getter of gameCollections.
      * @return gameCollections.
      */
