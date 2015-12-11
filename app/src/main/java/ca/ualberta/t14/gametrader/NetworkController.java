@@ -49,6 +49,11 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
     private HttpClient httpclient = new DefaultHttpClient();
     Gson gson = new Gson();
 
+    /**
+     * Constructor for NetworkController. Sets TradeNetworker, PictureNetworker,
+     * and User of device as observers to this object. Initializes private variables.
+     * @param context
+     */
     public NetworkController(Context context) {
         TradeNetworkerSingleton.getInstance().getTradeNetMangager().addListener(this);
         PictureNetworkerSingleton.getInstance().getPicNetMangager().addListener(this);
@@ -57,6 +62,10 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
         observers=new ArrayList<AppObserver>();
     }
 
+    /**
+     * Method to get the list of all users from elastic search.
+     * @return an array list of Users.
+     */
     public ArrayList<User> getUserList() {
         HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
 
@@ -94,6 +103,12 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
         return null;
     }
 
+    /**
+     * This method Searches the elastic search for the given username.
+     * @param str the username string to search for
+     * @return an array list of Users that matched the search query.
+     * @throws IOException
+     */
     public ArrayList<User> searchByUserName(String str) throws IOException {
         HttpPost searchRequest = new HttpPost(netLocation + "_search?pretty=1");
         String query = 	"{\"query\" : {\"query_string\" : {\"default_field\" : \"userName\",\"query\" : \"" + str + "\"}}}";
@@ -226,6 +241,10 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
         return user;
     }
 
+    /**
+     * This method converts the trade into json and then uploads it to the elastic search server.
+     * @param trade
+     */
     public Boolean postTrade(Trade trade) {
         HttpPost httpPost = new HttpPost(tradesLocation + trade.getTradeId());
 
@@ -277,6 +296,12 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
         return Boolean.TRUE;
     }
 
+    /**
+     * This method retrieves all trades for the given user's android id. The user is involved in the
+     * trade if they are borrower or owner of the trade.
+     * @param id the device user's android id.
+     * @return the array list of all the trades that the given user is involved in.
+     */
     public ArrayList<Trade> getMyTrades(String id) {
         String searchWho = "&q=" + id;
         HttpPost searchRequest = new HttpPost(tradesLocation + "_search?pretty=1" + searchWho);
@@ -316,6 +341,7 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
     }
 
     /**
+     * This method removes a given url from the elastic search server.
      * Code taken from the ES Demo project.
      * @throws IOException
      */
@@ -343,6 +369,13 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
         }
     }
 
+    /**
+     * This method wraps the base64 encoded image into a class that stores the encoding and
+     * the imageID. That class gets converted into json and uploaded to the elastic search server.
+     * @param imageId the image ID of the image.
+     * @param json the base64 string representation of the image.
+     * @return whether this method was successful or not.
+     */
     public Boolean postImages(String imageId, String json) {
         HttpPost httpPost = new HttpPost(imagesLocation + imageId);
 
@@ -400,6 +433,14 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
         return Boolean.TRUE;
     }
 
+    /**
+     * This method, given image ID will fetch and download that given image onto the user's device.
+     * The base64 encoded image will be taken out of the class and saved as a file whoese filename
+     * is the image ID.
+     * @param imageId
+     * @param context
+     * @return
+     */
     public ImagePackage getImages(String imageId, Context context) {
         String searchCommand = "_search?pretty=1&q=";
         HttpPost searchRequest = new HttpPost(imagesLocation + searchCommand + imageId);
@@ -493,6 +534,12 @@ public class NetworkController implements AppObserver, NetworkerListener, AppObs
         return json;
     }
 
+    /**
+     * Used by Networker classes (like TradeNetworker, and PictureNetworker).
+     * They can call this method to launch this class' methods in a different thread.
+     *
+     * @param commandRequest
+     */
     public void netListenerNotify(int commandRequest) {
         final int command = commandRequest;
         final String identityNetTrade = UserSingleton.getInstance().getUser().getAndroidID();

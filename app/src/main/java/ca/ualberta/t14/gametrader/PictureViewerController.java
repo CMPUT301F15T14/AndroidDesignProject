@@ -16,18 +16,27 @@ import android.widget.LinearLayout;
 import java.io.FileNotFoundException;
 
 /**
- * Created by satyabra on 11/28/15.
+ * This class controls the InventoryItemPictureViewer view
+ * @author Ryan Satyabrata
  */
 public class PictureViewerController {
 
     private Context context;
     private Activity activity;
 
+    /**
+     * Constructor for the PictureViewerController class.
+     * @param context
+     * @param activity
+     */
     public PictureViewerController(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
     }
 
+    /**
+     * Sets the view button's functionality. Basically just the close button.
+     */
     public void setButtonClickers() {
         Button buttonClose = (Button) activity.findViewById(R.id.PictureViewerClose);
         buttonClose.setOnClickListener(new Button.OnClickListener() {
@@ -37,6 +46,15 @@ public class PictureViewerController {
         });
         }
 
+    /**
+     * This method tries to retrieve all images of the given game, and put them into the view's body
+     * so that the images will be displayed.
+     * It will first try load image from disk, if found. If nonexistend on local storage, it will
+     * try to download it from the elastic server. If settings are so that disables automatic download
+     * it will ask if the user wants to download all the images only if the askDownload parameter is True.
+     * @param game
+     * @param askDownload whether to display a dialog that ask to download all images or not
+     */
     public void putImages(Game game, Boolean askDownload) {
         PictureNetworker pn = PictureNetworkerSingleton.getInstance().getPicNetMangager();
         if (!SettingsSingleton.getInstance().getSettings().getEnableDownloadPhoto1()
@@ -125,6 +143,9 @@ public class PictureViewerController {
         photoContainer.addView(iv, -1);
     }
 
+    /**
+     * Removes all the images from inside the view.
+     */
     public void clearAllImages() {
         LinearLayout photoContainer = (LinearLayout) activity.findViewById(R.id.viewPhotoScroller);
         photoContainer.removeAllViewsInLayout();

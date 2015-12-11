@@ -124,18 +124,16 @@
         </RadioGroup>
 
     <Button
-        android:layout_width="30dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:text="@string/save"
         android:id="@+id/saveInventory"
         android:clickable="true"
         android:textColor="@color/all_text"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/AddInfoText"
-        android:layout_marginRight="18dp"
         android:textSize="20dp"
-        android:background="#0a6737" />
+        android:background="#0a6737"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -158,18 +156,17 @@
         android:layout_toEndOf="@+id/gameConditionText" />
 
     <Button
-        android:layout_width="fill_parent"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:text="@string/delete"
         android:textColor="@color/all_text"
         android:id="@+id/deleteInventory"
         android:clickable="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/saveInventory"
         android:background="#911b1b"
         android:textSize="20dp"
-        android:maxHeight="10dp" />
+        android:maxHeight="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

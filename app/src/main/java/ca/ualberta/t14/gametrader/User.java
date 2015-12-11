@@ -17,12 +17,8 @@
 
 package ca.ualberta.t14.gametrader;
 
-import android.content.ContentResolver;
-import android.provider.Settings;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Observable;
 
 /**
  * Created by jjohnston on 10/30/15.

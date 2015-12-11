@@ -93,22 +93,24 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:text="Save"
         android:textColor="@color/all_text"
         android:id="@+id/saveProfileButton"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:background="#0a6737" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:textColor="@color/all_text"
         android:id="@+id/cancelButton"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:background="#911b1b" />
 
     <EditText
         android:layout_width="wrap_content"

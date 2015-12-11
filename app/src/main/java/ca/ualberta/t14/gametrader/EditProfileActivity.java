@@ -19,6 +19,8 @@
 package ca.ualberta.t14.gametrader;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -33,7 +35,7 @@ import android.widget.Toast;
 import java.io.IOException;
 
 // Offers a set controls to change a user's information.
-public class EditProfileActivity extends Activity {
+public class EditProfileActivity extends Activity implements AppObserver{
 
     public EditText getProfileText() {
         return profileText;
@@ -66,6 +68,7 @@ public class EditProfileActivity extends Activity {
 
     private Button saveButton;
     private Button cancelEditProfileButton;
+    private AlertDialog Dialog;
 
     ProfileController profileController; // we need to instantiate this with an intent
 
@@ -82,6 +85,7 @@ public class EditProfileActivity extends Activity {
         user = UserSingleton.getInstance().getUser();
 
         profileController = new ProfileController(user, this.getApplicationContext());
+        profileController.addObserver(EditProfileActivity.this);
 
         phoneText = (EditText) findViewById(R.id.phone);
 
@@ -104,14 +108,13 @@ public class EditProfileActivity extends Activity {
         saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                profileController.SaveProfileEdits(profileText.getText().toString(),
-                        emailText.getText().toString(),
-                        addressText.getText().toString(),
-                        phoneText.getText().toString());
-                finish();
-
-                Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
-
+            if( ObjParseSingleton.getInstance().keywordExists(NetworkConnectivity.IS_NETWORK_ONLINE)
+                    && ((Boolean)ObjParseSingleton.getInstance().getObject(NetworkConnectivity.IS_NETWORK_ONLINE))){
+                profileController.profileExist(profileText.getText().toString());
+            } else {
+                // offline saves everything, doesn't handle duplicates.
+                saveProfile();
+            }
         }
         });
 
@@ -125,6 +128,36 @@ public class EditProfileActivity extends Activity {
         profileText.requestFocus();
     }
 
+    private void saveProfile() {
+        profileController.SaveProfileEdits(profileText.getText().toString(),
+                emailText.getText().toString(),
+                addressText.getText().toString(),
+                phoneText.getText().toString());
+
+        finish();
+
+        Toast.makeText(EditProfileActivity.this, "Saved!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void appNotify(AppObservable observable) {
+        if (profileController.getcanAdd()){
+            saveProfile();
+        }else {
+            Dialog = new AlertDialog.Builder(EditProfileActivity.this).create();
+            Dialog.setTitle("Warning");
+            Dialog.setMessage("Username exists on server!");
+            Dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Dismiss", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+                        }
+                    }
+            );
+
+            Dialog.show();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
