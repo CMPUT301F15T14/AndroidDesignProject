@@ -112,7 +112,7 @@ public class FriendsListActivity extends Activity implements AppObserver {
                 if (!username.isEmpty()){
                     adapter.clear();
                     for (User existingFriend: UserSingleton.getInstance().getUser().getFriends().GetFriends()){
-                        if (existingFriend.getUserName().contentEquals(username)){
+                        if (existingFriend.getUserName().contains(username)){
                             adapter.add(existingFriend.getUserName().toString());
                         }
                     }
